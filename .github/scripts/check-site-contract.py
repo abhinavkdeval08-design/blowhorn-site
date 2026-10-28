@@ -289,6 +289,12 @@ PAGES = {
     "welcome/index.html": [
         "main", "download-the-app", "sign-in", "connect-chrome",
     ],
+    "coming-soon/thanks/index.html": [
+        "main", "thanks-title",
+    ],
+    "newsletter/index.html": [
+        "main", "newsletter-title", "signup-form",
+    ],
 }
 # Redirect pages: published path -> the URL its redirect page must point to.
 # GitHub Pages serves no server-side redirects, so each path is a meta refresh

@@ -238,7 +238,9 @@
                 <img src="{{ printf "%s%s.webp" $mascot .file | relURL }}" alt="{{ .alt }}" width="{{ .w }}" height="{{ .h }}" loading="lazy">
               </div>
               <div class="asset-meta">
-                <p class="ui asset-name">{{ .name }}</p>
+                <div>
+                  <p class="ui asset-name">{{ .name }}</p>
+                </div>
                 {{- $name := printf "Major Blowhorn, %s" .name }}{{ $file := .file }}
                 <span class="asset-gets" role="group" aria-label="Download {{ $name }}">
                   {{- range slice (dict "ext" "png" "label" "PNG") (dict "ext" "webp" "label" "WebP") }}

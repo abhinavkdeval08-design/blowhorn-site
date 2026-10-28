@@ -7,7 +7,8 @@
   illustrations are HTML and SVG, decorative (aria-hidden): each step's caption
   carries the meaning. Not indexed and not in the sitemap. */ -}}
 {{ define "main" }}
-    {{- $dmg := printf "https://github.com/blowhorn-ai/blowhorn-site/releases/download/v%s/Blowhorn-mac.dmg" site.Data.download.version }}
+    {{- $dmgName := printf "Blowhorn-%s-mac-universal.dmg" site.Data.download.version }}
+    {{- $dmg := printf "https://github.com/blowhorn-ai/blowhorn-site/releases/download/v%s/%s" site.Data.download.version $dmgName }}
     {{- $cws := "https://chromewebstore.google.com/detail/fcflpiagmpcfifgknledeknedfopnapf" }}
     {{- $icon := "assets/brand/logo/blowhorn-app-icon.svg" | relURL }}
     {{- $cursor := `<svg class="mini-cursor" viewBox="0 0 16 22" aria-hidden="true" focusable="false"><path d="M1.5 1.5v16.2l4.1-3.9 2.6 6.1 3-1.3-2.6-6h5.9z" /></svg>` | safeHTML }}
@@ -26,12 +27,12 @@
                 <div class="mini-url"><span>blowhorn.ai/download</span><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" /><path d="M8 4.5v6M5.5 8.2 8 10.7l2.5-2.5" /></svg></div>
                 <div class="mini-panel">
                   <p class="mini-title">Downloads</p>
-                  <div class="mini-file"><img src="{{ $icon }}" alt="" width="24" height="24"><span><b>Blowhorn-mac.dmg</b><small>Done</small></span></div>
+                  <div class="mini-file"><img src="{{ $icon }}" alt="" width="24" height="24"><span><b>{{ $dmgName }}</b><small>Done</small></span></div>
                 </div>
                 {{ $cursor }}
               </div>
             </div>
-            <p class="step-text">Open <b>Blowhorn-mac.dmg</b> from your <b>Downloads</b> folder</p>
+            <p class="step-text">Open <b>{{ $dmgName }}</b> from your <b>Downloads</b> folder</p>
           </li>
           <li class="step">
             <span class="step-num" aria-hidden="true">2</span>
@@ -73,7 +74,7 @@
         </ol>
 
         <div class="thanks-updates">
-          {{ partial "newsletter.html" (dict "id" "updates-email" "label" "Get release updates" "button" "Sign up" "class" "newsletter-center") }}
+          {{ partial "newsletter.html" (dict "id" "updates-email" "label" "Get release updates" "button" "Sign up" "class" "newsletter-center" "page" .) }}
         </div>
         <p class="thanks-help caption muted">Need a hand? See the <a href="{{ "docs/how-to/set-up/install-the-app/" | relURL }}">install guide</a>.</p>
       </div>

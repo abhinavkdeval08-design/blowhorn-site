@@ -83,8 +83,8 @@ guided setup progress (`onboarding-progress.json`). The next time you open
 Blowhorn it starts as a first run. A signed-in session that actually survived
 is the only case that can pick up a setup you left partway.
 
-Kept at the end, and named: the store connection file
-(`~/.config/blowhorn/store.yaml`), the rest of the app's state
+Kept at the end, and named: the store connection file an older version
+wrote (`~/.config/blowhorn/store.yaml`; Blowhorn no longer reads it), the rest of the app's state
 under `~/Library/Application Support/Blowhorn` (its preferences, its engine
 record and, for the engine the app carries, that engine's folder `home/`),
 Blowhorn's own Chrome trees, the per-user Library state, the checkout's
@@ -97,10 +97,9 @@ is never removed, under any flag, and the summary names it. Delete that folder
 yourself if you no longer need it. The engine's `home/` is not a checkout:
 `--purge` removes it with the rest of the app's state.
 
-The summary ends by saying the shared store was not touched. If your store
-connection shows `127.0.0.1` (for example `postgresql://127.0.0.1:9432`), that
-is the local tunnel Blowhorn opens to your account's database, not a database
-on this computer.
+The summary ends by saying your Blowhorn account was not touched: your
+profiles, content items, schedules and run history live in your account, not on
+this computer, and no flag removes them.
 
 ## Uninstall from the app
 
@@ -205,11 +204,11 @@ When your account will never be reachable again from this computer, give the
 records up instead with `blowhorn uninstall --discard-unsynced-runs`, which
 asks you to type `discard` (pass `--yes` from a script or with piped input).
 
-If this computer was never signed in to the store (no `~/.config/blowhorn/store.yaml`),
-the records can never be sent from here, and `blowhorn store --replay-spool`
-fails with "no connection is configured". The refusal says so and points to
-`--discard-unsynced-runs`, or to `blowhorn store --import` first if you want
-to keep them.
+The replay sends the records to the account this computer is signed in to.
+If it is signed out, `blowhorn store --replay-spool` fails with "Not signed in
+to Blowhorn": run `blowhorn auth login`, then replay. If you can no longer sign
+in to that account, the records cannot be sent from here; give them up with
+`--discard-unsynced-runs`.
 
 To quit the desktop app, click the Blowhorn icon in the menu bar and choose
 **Quit Blowhorn**. Closing the window is not enough: the app keeps running in
@@ -228,8 +227,9 @@ rm -rf ~/code/blowhorn
 ## Reinstalling afterwards
 
 Installing the app again from its DMG, or a fresh `./tools/install.sh` from the
-same checkout, produces a working install. The store connection file is picked
-up as it was. The sign-in is not.
+same checkout, produces a working install. Your Blowhorn account and
+everything in it are untouched; sign in again with `blowhorn auth login` or
+from the app.
 
 ## Replacing the app by hand
 

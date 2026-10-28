@@ -116,7 +116,7 @@
           "description": "The h1. Plain text, hyphens never em dashes.",
           "type": "string",
           "minLength": 1,
-          "maxLength": 60,
+          "maxLength": 80,
           "not": { "pattern": "\u2014" }
         },
         "subhead": {
@@ -124,6 +124,13 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 220,
+          "not": { "pattern": "\u2014" }
+        },
+        "identification": {
+          "description": "The self-identification line shown under the subhead, in plain words, for heroes that carry one. Optional. Plain text, hyphens never em dashes.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180,
           "not": { "pattern": "\u2014" }
         },
         "cta": {

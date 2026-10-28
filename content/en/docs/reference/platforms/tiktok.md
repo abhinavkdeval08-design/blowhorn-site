@@ -9,6 +9,10 @@ weight: 243
 will work on TikTok in your own signed-in Chrome, and this page will list what
 it can do there.
 
+## Notify me when it ships
+
+{{< signup-form kind="waitlist" topic="tiktok" >}}
+
 ## Supported actions
 
 {{< supported-actions "tiktok" >}}

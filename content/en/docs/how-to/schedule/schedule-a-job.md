@@ -15,10 +15,11 @@ Open **Activity** in the rail and switch to its **Routines** view. It opens on a
 day in the month opens that day, and the day view becomes the one it
 remembers.
 
-To add one, choose "schedule something", or click a free time in the day or week
-calendar to start one at that time. Pick what it should do (for example, accept
-LinkedIn invitations, or post on X), who it is for, and how often: every day at
-a time, weekdays, or every few hours. Advanced opens the full editor, with the
+To add one, press the round **+** button in the lower right (or ⌘N) and
+choose **Advanced standing orders** under When to march, or click a free time
+in the day or week calendar to start one at that time. (The rest of that
+window, New order, queues a one-off post; see
+[Use the desktop app](/docs/reference/use-the-desktop-app/#the-console).) The routine editor has the
 command, the browser route, and the exact call, for a case those choices do not
 cover. A command that only runs in one place, such as accept on LinkedIn, can
 only be saved for that place. One you saved on "all" before keeps running there.

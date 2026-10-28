@@ -99,5 +99,7 @@ once per reaction. Every other profile in the run is still tried.
   platforms.
 - [Follow accounts on GitHub](/docs/how-to/grow/follow-on-github/) - the other
   GitHub path, and the same 404 diagnosis for follows.
+- [Star repositories on GitHub](/docs/how-to/grow/star-on-github/) - star repositories
+  from every selected profile, and the same 404 diagnosis for starring.
 - [Sign a profile in to each platform](/docs/how-to/set-up/platform-accounts/) -
   storing and checking the token.

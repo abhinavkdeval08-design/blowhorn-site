@@ -1,0 +1,26 @@
+{{- /* A video category page (/resources/videos/<category>/): the grid for
+  one category, linked from the videos landing and the sitemap. The
+  landing's tabs are the interactive route to the same content. */ -}}
+{{ define "main" }}
+    <main id="main" class="page resources-page videos-page">
+      <div class="wrap">
+        <header>
+          <p class="label"><a href="{{ (site.GetPage "/resources/videos").RelPermalink }}">Videos</a></p>
+          <h1 class="display">{{ .Title }}</h1>
+          <p class="body-lg muted lede">{{ .Description }}</p>
+        </header>
+        <ul class="video-grid" data-video-grid>
+          {{- range .RegularPages.ByDate.Reverse }}
+          {{ partial "video-card.html" . }}
+          {{- end }}
+        </ul>
+        <p><a href="{{ (site.GetPage "/resources/videos").RelPermalink }}">All videos</a></p>
+      </div>
+    </main>
+    {{ partial "video-dialog.html" . }}
+{{ end }}
+
+{{ define "scripts" }}
+    {{- $js := resources.Get "js/resources.js" | minify | fingerprint }}
+    <script src="{{ $js.RelPermalink }}" defer></script>
+{{ end }}

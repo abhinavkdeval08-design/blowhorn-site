@@ -63,6 +63,11 @@
     var assets = Array.isArray(release.assets) ? release.assets : [];
     var version = release.tag_name || release.name || "";
     var aliasAsset = assets.find(function (a) { return a.name === alias; });
+    // The file a visitor saves is named after the URL, so the page shows the
+    // versioned disk image (same bytes as the alias) and falls back to the alias.
+    var versioned = assets.find(function (a) {
+      return a.name === "Blowhorn-" + version.replace(/^v/, "") + "-mac-universal.dmg";
+    }) || aliasAsset;
     var sums = assets.find(function (a) { return a.name === "SHA256SUMS.txt"; });
     if (!aliasAsset) {
       return;
@@ -74,7 +79,7 @@
     var actions = card.querySelector(".actions");
     var size = actions && actions.querySelector(".caption");
     if (size) {
-      size.textContent = aliasAsset.name + " · " + megabytes(aliasAsset.size);
+      size.textContent = versioned.name + " · " + megabytes(versioned.size);
     }
     var title = el("h2", "Blowhorn " + version + " for Mac", { class: "h3" });
     var body = el("p", "The Mac app runs your activities and installs the Blowhorn command.");

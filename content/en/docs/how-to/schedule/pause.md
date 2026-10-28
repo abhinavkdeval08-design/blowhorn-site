@@ -45,8 +45,9 @@ already running on another computer finishes the activity it is on
 instead of stopping mid-pass. The command says so when it happens.
 
 In the app, **stop everything** is in the popover footer, beside the
-pauses. It asks for a reason and a confirmation first - nothing stops on
-the first click. The paused board then shows a **stop** line with who
+Stand down controls. It asks for a reason and a confirmation first - nothing
+stops on the first click. Stop everything is the emergency control; Stand
+down is not. The standing down board then shows a **stop** line with who
 stopped it, when and why, and that board's **stop everything** control
 is the way back: turning it off lifts the stop, and the pause it raised
 with it. A pause you set by hand is never the stop's to lift, and its
@@ -70,11 +71,14 @@ A job already running finishes first. Killing a browser flow mid-post can leave
 a half-done action on the platform, so the pause stops the next claim, never
 the running job.
 
-In the app, choose "pause this computer" in the popover or the menu, or
-**Pause** beside the status line at the bottom of the console rail. It is one
-toggle: choose it again to turn the pause off. While
-paused, the app also skips its session probe, so a paused Blowhorn opens no
-browser at all.
+In the app this pause is called **Stand down**, and lifting it is
+**Reenlist**. Use the duty toggle at the bottom of the console rail: it reads
+**On duty** with **Stand down** beside it, or **Standing down** with
+**Reenlist**, and the round thumb is teal or amber to match. ⌘⇧P does the same,
+and so does "stand down this computer" in the popover or the menu. It takes one
+click and no reason. Home's Fleet card offers the same toggle on this
+computer's row. While this computer is standing down, the app also skips its
+session probe, so it opens no browser at all.
 
 ## Pause every computer, or one activity
 
@@ -88,11 +92,23 @@ blowhorn schedule resume --activity 7
 An activity is claimed only when none of the three scopes says paused: this computer,
 all computers, or that activity. `--all` and `--activity` live in your account, so every
 computer sharing it honours them on its next claim; the flagless pause never
-touches your account. In the app the same three scopes are "pause this
-computer", "pause all computers" and "pause this one" (in an item's drawer),
-each with a reason; the first two are toggles you press again to turn the
-pause off. Home says which pause holds - "Paused on this computer", "Paused
-on all computers", or both - and its "Turn pause off" lifts that pause only.
+touches your account. In the app every scope is a Stand down / Reenlist pair:
+
+- **This computer** - the rail's duty toggle, the flagless pause above.
+- **The fleet** (every computer sharing your schedule, `--all`) - the
+  **Entire fleet** row on Home's Fleet card, or "stand down the fleet" in the
+  popover, This computer and Safety. A reason is optional; on Home you type
+  it beside the toggle and it saves as you type. While the fleet stands down,
+  the card shows who stood it down, when and why, and this computer's row
+  waits for the fleet to reenlist.
+- **This order** (`--activity N`) - the duty switch inside an item's drawer:
+  **Scheduled** with **Stand down**, or **Standing down** with **Reenlist**.
+  The optional reason field above it saves as you type, with a teal check
+  once saved, and goes out with the Stand down. The item's list row reads
+  **standing down** while it is held.
+
+There is no Stand down for another computer: stand that computer down from
+its own Blowhorn app, or stand down the whole fleet.
 
 Lifting one scope leaves the other two as they were. A held activity still reads
 `due: yes` beside `paused: yes` in `blowhorn schedule list`: due keeps meaning

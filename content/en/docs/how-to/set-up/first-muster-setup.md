@@ -1,6 +1,7 @@
 ---
-title: "Set up Blowhorn the first time"
-description: "What each step of the desktop app's first-run setup does, and what it never does."
+title: "Set up Blowhorn at first muster"
+aliases: [/docs/how-to/set-up/first-run-setup/]
+description: "What each step of the desktop app's first-muster setup does, and what it never does."
 weight: 33
 ---
 
@@ -9,7 +10,7 @@ The guided setup opens by itself the first time you open Blowhorn, and every
 time after that until you finish it. If you quit partway and you are still
 signed in, it picks up at the step you left. If you are not signed in, it
 starts at Sign in. Uninstalling removes that progress with the sign-in, so
-the next open is a first run. If you set Blowhorn up before this setup
+the next open is a first muster. If you set Blowhorn up before this setup
 existed and you are still signed in, it doesn't open by itself. Updating
 alone never opens it again; it reopens by itself, from the first step, only
 when a new version of Blowhorn needs something your earlier setup did not do.
@@ -65,11 +66,20 @@ when a new version of Blowhorn needs something your earlier setup did not do.
   longer than usual. A computer that already has the extension from an
   earlier setup keeps that setup's route; there, each profile you chose
   gets an **Enable in** button the same way. One ready profile you chose
-  is enough to go on. See
+  is enough to go on. If Chrome is on this computer but has never been
+  opened, setup stops on its own screen and asks you to open Chrome
+  once, then check again: Chrome creates its profile list on that first
+  open, and there is no list for Blowhorn to read before it. The same
+  screen appears when you reopen Blowhorn already signed in, or come back
+  to a setup you left. If a step
+  does stop with something wrong, its screen says what stopped in one
+  sentence, and **Copy details** keeps the full details for support. See
   [Install the Chrome extension](/docs/how-to/set-up/install-the-chrome-extension/).
 - **First post:** write a post and pick where it goes. It lands in your queue
   as a draft, and nothing is posted until you approve it in Content. You can
-  also skip this. See [Post content](/docs/how-to/publish/post-content/).
+  also skip this: **Skip for now** finishes guided setup, and Home won't ask
+  for a first post again. Write one any time with **New activity**. See
+  [Post content](/docs/how-to/publish/post-content/).
 - **Home:** you're done. Connect your platform accounts any time. See
   [Platform accounts](/docs/how-to/set-up/platform-accounts/).
 
@@ -92,7 +102,7 @@ nothing here.
 
 ## The rest of the app stays limited until Getting ready
 
-- **Limited until then:** the rail's places other than Home, and New activity,
+- **Limited until then:** the rail's places (the logo, which is Home, stays open), and the **+** New activity button,
   stay locked until you're signed in and the extension is ready. Home, and
   any place you already opened, stay on screen, and anything that would
   take you somewhere else - a rail item, the menu bar's buttons, a capture

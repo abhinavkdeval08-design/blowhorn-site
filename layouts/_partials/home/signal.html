@@ -14,6 +14,7 @@
             <p class="body-lg hero-sub">
               {{- range $rot.heroes }}<span data-hero-only="{{ .id }}">{{ .subhead }}</span>{{ end -}}
             </p>
+            {{- range $rot.heroes }}{{ if .identification }}<p class="body hero-identification" data-hero-only="{{ .id }}">{{ .identification }}</p>{{ end }}{{ end -}}
             <div class="hero-actions">
               <a class="button button-primary button-pop" href="{{ "download/" | relURL }}">
                 <svg aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#glyph-download"></use></svg>
@@ -25,12 +26,6 @@
               <span data-hero-only="{{ .id }}"><a class="button button-secondary" href="{{ $href }}">{{ .cta.label }}</a></span>
               {{- end }}
             </div>
-            <p class="hero-note caption muted">
-              <span>For macOS 13 or later.</span>
-              <span>As many social profiles as you want. About a minute to set up.</span>
-            </p>
-            {{- /* One proof spot per hero banner, each paired with a different user (placements "hero-<id>" in data/testimonials.json). */}}
-            {{- range $rot.heroes }}<div data-hero-only="{{ .id }}">{{ partial "social-proof.html" (dict "slot" "hero" "heroId" .id) }}</div>{{ end -}}
           </div>
           {{- /* data/hero.json media.video (placement inline-expand): the film
             sits small beside the copy (below it on phones) and expands into
@@ -208,7 +203,7 @@
               <li><b>No AI tax</b><span>Actions are scripted, so no model bill hides in your plan. Bring your own model at no extra charge.</span></li>
               <li><b>You say when</b><span>Like a server grating cheese onto your plate until you tap the table. You are in control.</span></li>
             </ul>
-            <p><a class="button button-secondary" href="{{ "pricing/" | relURL }}">See plans and prices</a></p>
+            <p><a class="button button-secondary" href="{{ "pricing/" | relURL }}">See the plans</a></p>
           </div>
         </div>
       </section>

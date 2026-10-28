@@ -47,7 +47,7 @@
                     <li><a class="mm-card" href="https://chromewebstore.google.com/detail/fcflpiagmpcfifgknledeknedfopnapf">
                       {{ partial "interface-art.html" "extension" }}
                       <span class="mm-card-title">Chrome extension</span>
-                      <span class="mm-card-desc">Blowhorn inside your own Chrome, where the posting happens</span>
+                      <span class="mm-card-desc">Blowhorn inside your own Chrome, where the work happens</span>
                       <span class="mm-card-arrow" aria-hidden="true"></span>
                     </a></li>
                     <li><a class="mm-card" href="https://cloud.blowhorn.ai">
@@ -71,7 +71,7 @@
                     <li><a class="mm-card mm-card-plan" href="{{ "pricing/" | relURL }}">
                       <span class="mm-card-plan-mark" aria-hidden="true">1</span>
                       <span class="mm-card-title">One subscription</span>
-                      <span class="mm-card-desc">Every way in, on every paid plan. Free to start, from $19 a month</span>
+                      <span class="mm-card-desc">Every way in, one subscription</span>
                       <span class="mm-card-arrow" aria-hidden="true"></span>
                     </a></li>
                   </ul>
@@ -151,10 +151,12 @@
               <button type="button" class="mm-trigger" aria-expanded="false" aria-controls="mm-resources">Resources<span class="mm-chev" aria-hidden="true"></span></button>
               <div class="mm-panel" id="mm-resources">
                 <div class="mm-intro">
-                  <p class="mm-intro-title">Resources</p>
+                  <p class="mm-intro-title"><a href="{{ (site.GetPage "/resources").RelPermalink }}">Resources</a></p>
                   <p class="mm-intro-text">Guides, answers and the story behind the horn.</p>
                 </div>
                 <ul class="mm-links mm-cols-2">
+                  {{- partial "mm-link.html" (dict "href" (site.GetPage "/resources/videos").RelPermalink "title" "Videos" "desc" "Short films and walkthroughs") }}
+                  {{- partial "mm-link.html" (dict "href" (site.GetPage "/resources/articles").RelPermalink "title" "Articles" "desc" "Product intelligence and tips") }}
                   {{- partial "mm-link.html" (dict "href" (site.GetPage "/docs").RelPermalink "title" "Docs" "desc" "Set up, how-to guides and reference") }}
                   {{- partial "mm-link.html" (dict "href" (site.GetPage "/field-manual").RelPermalink "title" "Field Manual" "desc" "What each feed rewards and punishes") }}
                   {{- partial "mm-link.html" (dict "href" (site.GetPage "/docs/reference/support").RelPermalink "title" "Get help" "desc" "Support and troubleshooting") }}

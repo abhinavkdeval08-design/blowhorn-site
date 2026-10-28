@@ -19,7 +19,7 @@ Download the latest build from
 current release's files from the
 [blowhorn-site releases](https://github.com/blowhorn-ai/blowhorn-site/releases).
 
-- `Blowhorn-mac.dmg` - the latest build, for Apple silicon and Intel Macs.
+- `Blowhorn-<version>-mac-universal.dmg` - the latest build, for Apple silicon and Intel Macs.
 - `SHA256SUMS.txt` - the checksums for that release.
 
 Verify the download before you open it. With both files in the same folder:
@@ -28,7 +28,7 @@ Verify the download before you open it. With both files in the same folder:
 shasum -a 256 -c SHA256SUMS.txt --ignore-missing
 ```
 
-The line for `Blowhorn-mac.dmg` must read `OK`.
+The line for `Blowhorn-<version>-mac-universal.dmg` must read `OK`.
 
 ## Install
 
@@ -45,7 +45,7 @@ drives the Chrome profiles you already sign in to, through its Chrome
 extension, which you add to each Chrome profile you post from
 ([Install the Chrome extension](/docs/how-to/set-up/install-the-chrome-extension/)).
 
-## First run
+## First muster
 
 The app opens on its Setup screen until its engine is ready; after that the
 guided setup takes over (see below). Setup checks, in order, the engine
@@ -75,7 +75,7 @@ Connecting the Blowhorn Chrome extension to this computer takes no pop-up:
 - **Guided setup:** the first time you open the app, the guided setup walks
   you through signing in, Getting ready and the rest, one step at a time.
 
-See [Set up Blowhorn the first time](/docs/how-to/set-up/first-run-setup/).
+See [Set up Blowhorn at first muster](/docs/how-to/set-up/first-muster-setup/).
 
 Then check sessions and run a dry-run post. Nothing is published until you
 post without `--dry-run`.

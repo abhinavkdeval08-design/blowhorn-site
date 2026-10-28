@@ -248,6 +248,64 @@ local Blowhorn app. Re-run it after moving the checkout or
 reinstalling the app; without a current host file the extension cannot
 talk to the engine.
 
+When a run needs the extension and finds it missing, stale, or outdated
+in the run's mapped Chrome profile, it ensures it on demand instead of
+failing with a manual step: it repairs the native host manifest and
+launcher when missing or stale, registers the extension for that
+profile's data directory when nothing is there yet, and re-probes hello
+once. If the socket is still missing, the run fails naming what was
+repaired and the one remaining step, usually to launch or relaunch
+Chrome with that profile. A profile already carrying a Chrome Web Store
+install is left alone: Chrome's updater owns it, and Blowhorn never
+forces a store update. While another run holds the bridge, no ensure
+runs. The same ensure runs ahead of a run with
+`blowhorn chrome extension-install --profile <name> --ensure`
+(or `--chrome-profile <directory>`); `--dry-run` writes nothing and
+reports what it would do. The ensure never starts, restarts, or kills
+Chrome, never touches an unmapped profile, and runs once per failure,
+never in a loop. Note the registration file is per data directory, not
+per profile: it offers the extension to every profile in that one data
+directory. A missing native host manifest does not stop a run before the
+ensure: the run goes straight to the ensure, and only says the manifest
+is missing when the ensure could not write it. When the ensure repaired
+or registered something and the extension then connects, the run says
+so once on stderr, for example `repaired the native host manifest and
+registered the extension; the Blowhorn extension (1.36.6) is connected`.
+
+### The minimum extension version, both ways
+
+The minimum is checked from both sides. A run refuses an extension older
+than the oldest version this Blowhorn accepts (`extension_outdated`, or
+the version-skew sentence) and ensures it as above. The app also tells
+the extension that minimum: the native host's `host_status` answer
+carries `min_extension_version` (host protocol 4). An extension older
+than that minimum never shows "You're all set". Its popup says the
+extension needs an update and offers **Upgrade** and **Check for
+update**, and the extension asks Chrome for an update on its own, at
+most once every ten minutes. An older host that sends no minimum sets
+no floor.
+
+Both buttons use Chrome's own update calls
+(`chrome.runtime.requestUpdateCheck`), never `chrome://extensions`, and
+the popup says what Chrome answered: an update downloading, up to date,
+checked too recently (try again in a few minutes), or the check failed.
+Chrome installs a downloaded update only while the extension is idle,
+and the extension is rarely idle while the Blowhorn app runs, so the
+extension restarts itself into a downloaded update as soon as no run is
+at work: never while a run holds a tab or has not yet released its
+input, however long it waits on you. The
+ready popup keeps a quiet **Check for update** (or **Upgrade to** the
+downloaded version once Chrome has one), so you can take an update
+before you fall behind. A store update still needs the Chrome Web Store
+to publish it first: Blowhorn never claims an update Chrome did not
+report. An unpacked install gets nothing from the store; the popup says
+so, and the ensure plus a Chrome relaunch is the way forward there.
+
+The extension logs every check, every deferred update and every update
+it applies (`upgrading from <old> to <new>`), and logs `updated from
+<old> to <new>` when Chrome reports the update installed, in its service
+worker's console.
+
 ## What a site sees: the user agent by driver
 
 Your own user agent, on every driver. The extension and attach drivers
@@ -406,7 +464,9 @@ and lists every profile whose entry came from the Chrome Web Store
 For a store install the report never says Load unpacked: a version too
 old for this Blowhorn is told to update in `chrome://extensions`, and a
 missing native host is told to run `blowhorn chrome extension-install`.
-It writes nothing in that directory.
+It writes nothing in that directory. A run itself does not stop there:
+when it needs the extension it ensures it on demand, as
+`blowhorn chrome extension-install` describes.
 
 `--json` also carries `profile_states`: one item per Chrome profile
 directory (`Default` and `Profile N` with a `Preferences` file), each

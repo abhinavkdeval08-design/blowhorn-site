@@ -37,7 +37,7 @@ Blowhorn's store page in that one profile, and your click there installs
 it only there. A profile you leave out is never given the extension by
 guided setup; if an earlier setup already put it there, setup cannot
 remove it from that one profile - see
-[Leaving a Chrome profile out](/docs/how-to/set-up/first-run-setup/#leaving-a-chrome-profile-out).
+[Leaving a Chrome profile out](/docs/how-to/set-up/first-muster-setup/#leaving-a-chrome-profile-out).
 
 A computer that already has the extension from an earlier setup - put
 there by Chrome's external-extensions file - stays on that route

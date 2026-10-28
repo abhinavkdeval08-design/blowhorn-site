@@ -351,7 +351,49 @@ adds a module import, `github.com/blowhorn-ai/blowhorn`, with its own mounts:
   [[module.imports.mounts]]
     source = "internal/engineering/hugo/engineering"
     target = "content/internal/engineering"
+  [[module.imports.mounts]]
+    source = "internal/design/hugo/design"
+    target = "content/internal/design"
+  [[module.imports.mounts]]
+    source = "internal/design"
+    target = "content/internal/design"
+    excludeFiles = ["hugo/**", "README.md"]
+  [[module.imports.mounts]]
+    source = "internal/specs/hugo/specs"
+    target = "content/internal/specs"
+  [[module.imports.mounts]]
+    source = "internal/specs"
+    target = "content/internal/specs"
+    excludeFiles = ["hugo/**", "README.md"]
+  [[module.imports.mounts]]
+    source = "internal/plans/hugo/plans"
+    target = "content/internal/plans"
+  [[module.imports.mounts]]
+    source = "internal/plans"
+    target = "content/internal/plans"
+    excludeFiles = ["hugo/**", "README.md"]
+  [[module.imports.mounts]]
+    source = "internal/research/hugo/research"
+    target = "content/internal/research"
+  [[module.imports.mounts]]
+    source = "internal/research"
+    target = "content/internal/research"
+    excludeFiles = ["hugo/**", "README.md"]
 ```
+
+Four sections render the blowhorn repository's own document folders as
+they are: `internal/design`, `internal/specs`, `internal/plans` and
+`internal/research` mount directly into `/internal/<area>/`, so the plans,
+designs, specs and research that live only in the repository are on the
+internal site without moving or copying a file. Each area's `hugo/<area>/`
+folder carries only the section scaffold (`_index.md`: title, weight,
+description); the raw mount excludes that folder and the area's root
+`README.md`, which is the folder's GitHub index, not a site page. The
+Each document carries only `title` (its own first heading) and
+`layout: internal` as front matter, added in place in the repository;
+nothing else about the documents changes. Relative links between
+documents keep their repository shape and resolve in the repository, not
+in the site.
 
 `make site-internal-build` points the import at the clone with
 `HUGO_MODULE_REPLACEMENTS="github.com/blowhorn-ai/blowhorn -> <abs BLOWHORN_DIR>"`,
@@ -456,7 +498,9 @@ The workflow, in order (each step is a make target):
    managed default-deny pair. This runs before any private content reaches
    the runner.
 4. Checks out blowhorn-ai/blowhorn (sparse: `marketing/strategy`,
-   `marketing/capability-comparison`) with the read-only deploy key.
+   `marketing/capability-comparison`, `internal/engineering`,
+   `internal/design`, `internal/specs`, `internal/plans`,
+   `internal/research`) with the read-only deploy key.
 5. `site-internal-build` with `BASE_URL=https://internal.blowhorn.ai/`, output
    suppressed.
 6. `site-internal-worker-deploy`: `wrangler deploy` with a filtered summary,

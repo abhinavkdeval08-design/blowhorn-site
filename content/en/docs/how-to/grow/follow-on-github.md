@@ -89,5 +89,7 @@ and stops, rather than failing once per account.
   repository's people into your account first.
 - [Amplify an issue or pull request on GitHub](/docs/how-to/publish/amplify-on-github/) -
   the other GitHub path.
+- [Star repositories on GitHub](/docs/how-to/grow/star-on-github/) - star the repositories
+  worth endorsing, from every selected profile.
 - [Sign a profile in to each platform](/docs/how-to/set-up/platform-accounts/) -
   the session, login, or token each platform follows with.

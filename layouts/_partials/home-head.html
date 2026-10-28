@@ -27,6 +27,6 @@
         "url": "https://blowhorn.ai/",
         "description": {{ $heroDesc | jsonify | safeJS }},
         "author": { "@type": "Organization", "name": "Blowhorn", "url": "https://blowhorn.ai/" },
-        "downloadUrl": {{ printf "https://github.com/blowhorn-ai/blowhorn-site/releases/download/v%s/Blowhorn-mac.dmg" site.Data.download.version | jsonify | safeJS }}
+        "downloadUrl": {{ printf "https://github.com/blowhorn-ai/blowhorn-site/releases/download/v%s/Blowhorn-%s-mac-universal.dmg" site.Data.download.version site.Data.download.version | jsonify | safeJS }}
       }
     </script>

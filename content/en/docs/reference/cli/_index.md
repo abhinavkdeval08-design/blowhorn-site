@@ -28,7 +28,7 @@ This is a standing rule, not a one-off pass. `tests/test_cli_help_coverage.py` e
 CLI framework: Python `Typer` (inspired by modern CLIs like `docker`, `kubectl`, and `gh`).
 If `typer`/`click` are missing, `blowhorn` attempts a one-time bootstrap install via `python -m pip install typer click` using the active interpreter.
 Should that bootstrap fail, `blowhorn` falls back to an argparse parser built from the same help and example constants as the Typer app, and the same test file asserts the two surfaces expose the same commands with identical prose - so the fallback can never drift into a second, staler help text.
-For a fresh virtualenv, install the full project runtime with `pip install -r engine/requirements.txt`; the CLI depends on `PyYAML`, `requests`, `playwright`, `tweepy`, `psycopg`, `pandas`, and `xlrd` in addition to `typer` and `click` (`gspread` and `oauth2client` are still listed only for the migration script's last step and go with it).
+For a fresh virtualenv, install the full project runtime with `pip install -r engine/requirements.txt`; the CLI depends on `PyYAML`, `requests`, `playwright`, `tweepy`, `pandas`, and `xlrd` in addition to `typer` and `click`. `psycopg`, `gspread` and `oauth2client` are still listed only for one-time maintainer scripts; no command imports them, and they go with those scripts.
 
 Global flags (available on all commands):
 
@@ -64,7 +64,7 @@ Blowhorn drives only the installed Google Chrome: `/Applications/Google Chrome.a
 
 For commands that support multi-profile execution (`post`, `accept`, `follow`, `unfollow`, `comment`, `analytics`, `report`), you can pass `--profile all` or a comma-delimited subset such as `--profile profile-a,profile-b` to run only that set of profiles.
 
-All commands accept `--dry-run`, but they do not all preview the same amount. `post`, `report`, `find`, `withdraw`, and `accept` run their real pipeline with every write suppressed, so they print what *would* happen. (`withdraw` goes further: preview is its default and it acts only when you pass `--apply` - for it `--dry-run` simply forces the preview it would have produced anyway. `accept` does the same on the received-invitations page: it opens the page, resolves the same Accept controls a real run would click, names everyone it found, and clicks nobody - see [Accepting incoming invitations](/docs/how-to/grow/accept-invitations/).) The remaining action commands - `follow`, `unfollow`, `comment`, and `analytics` - stop immediately and report `dry-run: no changes made` without doing any work. (`source --platform github` lists the audience and, on `--dry-run`, writes nothing; a real run stores one row per login and prints no email address.) (`follow --platform github` is the one exception inside that list: it has no browser to stop before, so its preview performs the real follower walk and names exactly who would be followed - see [Previewing a GitHub follow run](/docs/how-to/grow/follow-on-github/#previewing-a-github-follow-run).) (`unfollow` runs on Bluesky only, with `--platform bluesky --target <handle>`, and its `--limit` is accepted and not read. On X, or with no platform, the platform is refused by name before a browser opens and the run exits 1, dry run included: X unfollow does not run until a follow-back badge and a confirmed landing are both read. `unfollow` cannot be scheduled.) `schedule`, `desktop`, `service`, `store`, `auth`, `uninstall` and `setup` are not covered by that sentence: they implement their own dry-run output (for example `schedule tick --dry-run` reports the activities it would run, `service start --dry-run` prints the command it would run, `store --import --dry-run` prints the import report without writing the connection file, `auth login --dry-run` names where it would sign you in and opens, waits for and saves nothing, `auth logout --dry-run` lists what it would remove, and `uninstall --dry-run` lists every item it would remove or keep, and `setup --dry-run` reports each step it would write as `planned`). Either way nothing is published.
+All commands accept `--dry-run`, but they do not all preview the same amount. `post`, `report`, `find`, `withdraw`, and `accept` run their real pipeline with every write suppressed, so they print what *would* happen. (`withdraw` goes further: preview is its default and it acts only when you pass `--apply` - for it `--dry-run` simply forces the preview it would have produced anyway. `accept` does the same on the received-invitations page: it opens the page, resolves the same Accept controls a real run would click, names everyone it found, and clicks nobody - see [Accepting incoming invitations](/docs/how-to/grow/accept-invitations/).) The remaining action commands - `follow`, `unfollow`, `comment`, and `analytics` - stop immediately and report `dry-run: no changes made` without doing any work. (`source --platform github` lists the audience and, on `--dry-run`, writes nothing; a real run stores one row per login and prints no email address.) (`follow --platform github` and `star` are the exceptions inside that list: neither has a browser to stop before, so follow's preview performs the real follower walk and names exactly who would be followed - see [Previewing a GitHub follow run](/docs/how-to/grow/follow-on-github/#previewing-a-github-follow-run) - and star's preview reads each repository's star state and names exactly which would be starred, issuing no PUT - see [Star repositories on GitHub](/docs/how-to/grow/star-on-github/).) (`unfollow` runs on Bluesky only, with `--platform bluesky --target <handle>`, and its `--limit` is accepted and not read. On X, or with no platform, the platform is refused by name before a browser opens and the run exits 1, dry run included: X unfollow does not run until a follow-back badge and a confirmed landing are both read. `unfollow` cannot be scheduled.) `schedule`, `desktop`, `service`, `store`, `auth`, `uninstall` and `setup` are not covered by that sentence: they implement their own dry-run output (for example `schedule tick --dry-run` reports the activities it would run, `service start --dry-run` prints the command it would run, `store --replay-spool --dry-run` counts what a replay would push without writing any of it, `auth login --dry-run` names where it would sign you in and opens, waits for and saves nothing, `auth logout --dry-run` lists what it would remove, and `uninstall --dry-run` lists every item it would remove or keep, and `setup --dry-run` reports each step it would write as `planned`). Either way nothing is published.
 
 Because the `COMMAND SUMMARY` footer is shown only when `-v` / `--verbose` is used, a dry run of one of the stop-early commands prints nothing at all without `-v` - except `source --platform github`, which lists the audience it would store. That silence is expected, not a failure.
 
@@ -80,7 +80,7 @@ and checked against it, so a page says what `--help` says.
 | --- | --- |
 | [`blowhorn accept`](/docs/reference/cli/accept/) | Accept pending LinkedIn connection invitations other people have sent you, one at a time with a randomized pause between each. |
 | [`blowhorn analytics`](/docs/reference/cli/analytics/) | blowhorn analytics: activity, history, import-exports, operations, pages. |
-| [`blowhorn auth`](/docs/reference/cli/auth/) | blowhorn auth: login, logout, status, switch-organization. |
+| [`blowhorn auth`](/docs/reference/cli/auth/) | blowhorn auth: anonymous-usage-stats, login, logout, status, switch-organization. |
 | [`blowhorn chrome`](/docs/reference/cli/chrome/) | blowhorn chrome: attach-chrome, confirm, discover, extension-enable, extension-install, extension-mode, extension-status, map, open-profile, profiles, status, suggest, unmap. |
 | [`blowhorn comment`](/docs/reference/cli/comment/) | Post LinkedIn, Reddit, or Bluesky comments from scheduled activities or ad-hoc target/message flags. |
 | [`blowhorn config`](/docs/reference/cli/config/) | blowhorn config: get, path, set, show. |
@@ -98,8 +98,9 @@ and checked against it, so a page says what `--help` says.
 | [`blowhorn setup`](/docs/reference/cli/setup/) | Set up Blowhorn on this computer, safely and repeatably. |
 | [`blowhorn slack`](/docs/reference/cli/slack/) | blowhorn slack: delete, edit, profiles, react, send, whoami. |
 | [`blowhorn source`](/docs/reference/cli/source/) | GitHub lists one audience of one or more repositories (stargazers unless you name another) and stores one row per login. |
+| [`blowhorn star`](/docs/reference/cli/star/) | Star GitHub repositories. |
 | [`blowhorn stop`](/docs/reference/cli/stop/) | Stop everything, right now: on this machine, or on every machine sharing the store with `--all`. |
-| [`blowhorn store`](/docs/reference/cli/store/) | Report whether this computer can reach the Blowhorn database, and say why not when it cannot. |
+| [`blowhorn store`](/docs/reference/cli/store/) | Report whether this computer can use Blowhorn, and say why not when it cannot: signed in, a client the server still accepts, and a member of the organization. |
 | [`blowhorn unfollow`](/docs/reference/cli/unfollow/) | Unfollow one Bluesky account (`--platform` bluesky `--target` &lt;handle&gt;) through the Bluesky API. |
 | [`blowhorn uninstall`](/docs/reference/cli/uninstall/) | Remove Blowhorn from this machine. |
 | [`blowhorn upgrade`](/docs/reference/cli/upgrade/) | Carry this Mac's local data from an earlier home into this one. |
@@ -126,10 +127,12 @@ the account in `cloud.yaml` and the local attestation cache
 ([auth switch-organization](/docs/reference/cli/auth/#blowhorn-auth-switch-organization)).
 
 `blowhorn store` is a single command, not a group: it reports whether this
-machine can reach your account and why not, opens the bastion tunnel
-when nothing is listening, and with `--import` fills the connection once from your account configuration. It exits 3, a code nothing else uses, when your account is unreachable. During early access the connection is set up by your Blowhorn
-administrator. `blowhorn config get
-<key>` reads one option and says which document holds it.
+machine can use your account and why not (signed in, a build the server still
+accepts, a member of the organization), and `--replay-spool` sends the run
+records waiting in the local spool. It exits 3, a code nothing else uses, when
+your account cannot be used; [Fix cannot reach your account](/docs/how-to/troubleshoot/store-unavailable/)
+maps each cause to its fix. There is no local or self-hosted store to connect
+to. `blowhorn config get <key>` reads one option and says which document holds it.
 
 `blowhorn setup` is a single command: it checks that `blowhorn` is on `PATH`,
 reads your Chrome profiles from Chrome's `Local State` file, writes the Chrome
@@ -165,12 +168,12 @@ not unregistered, and when a real run cannot read an account Keychain item.
 The sign-in on this machine (the Keychain item `ai.blowhorn.cloud-token`, the
 entitlement cache `ai.blowhorn.entitlement.v2`, `cloud.yaml` and the `cloud-token`
 file) is removed on every uninstall. Local data is kept and named (the store
-connection file, the
+connection file an older version wrote, which Blowhorn no longer reads, the
 desktop app's state, Blowhorn's own Chrome trees under `~/.blowhorn`, the app's
-per-user Library state, the checkout's `data/cache/` and each profile's `browser/`
-sessions); `--purge` removes it after you type `purge` at the prompt, or with
+per-user Library state and the checkout's `data/cache/`, which holds each
+profile's runtime state); `--purge` removes it after you type `purge` at the prompt, or with
 `--yes` when there is no terminal (`--json --purge` needs `--yes` outside a dry
-run, and `--yes` without `--purge` or `--discard-unsynced-runs` is refused). The shared store is never touched.
+run, and `--yes` without `--purge` or `--discard-unsynced-runs` is refused). Your Blowhorn account is never touched.
 Dragging the app to the Trash does not run this command. After this version has recorded the bundle once, the next launch of a different copy signs out, unless that copy is a genuine Blowhorn signed by Blowhorn's own developer team (another macOS user on this Mac reinstalling Blowhorn does not sign you out). An in-app update keeps the sign-in. The first launch of this version keeps it.
 Nothing under a Chrome profile is read or written. It is refused by name, in a
 dry run too, while a scheduler tick, a service pass, an extension run,

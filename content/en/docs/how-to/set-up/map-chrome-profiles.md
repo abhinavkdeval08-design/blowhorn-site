@@ -64,7 +64,7 @@ is refused by name and nothing opens.
 
 ## Confirm troops in guided setup
 
-The first-run setup's **Confirm troops** step does the whole job from what
+The first-muster setup's **Confirm troops** step does the whole job from what
 Chrome already knows. For each Chrome profile it shows the Google account
 and the platform accounts discovery found there, proposes the Blowhorn
 profile each one becomes, and lets you mark each Chrome profile and each

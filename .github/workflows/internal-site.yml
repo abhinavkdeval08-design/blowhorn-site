@@ -101,6 +101,11 @@ jobs:
           sparse-checkout: |
             marketing/strategy
             marketing/capability-comparison
+            internal/engineering
+            internal/design
+            internal/specs
+            internal/plans
+            internal/research
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
@@ -124,9 +129,13 @@ jobs:
           fi
           test -f public-internal/internal/index.html || { echo "::error::The internal build produced no /internal/ index."; exit 1; }
           test -f public-internal/internal/finance/report/index.html || { echo "::error::The internal build produced no finance report."; exit 1; }
+          test -f public-internal/internal/engineering/index.html || { echo "::error::The internal build produced no engineering index."; exit 1; }
           pages="$(find public-internal -name '*.html' | wc -l | tr -d ' ')"
           echo "Built $pages HTML pages."
           rm -rf .internal-src
+
+      - name: Point the internal worker at the signups database
+        run: bash .github/scripts/resolve-d1.sh internal-worker
 
       - name: Deploy to the blowhorn-internal Worker
         run: make site-internal-worker-deploy

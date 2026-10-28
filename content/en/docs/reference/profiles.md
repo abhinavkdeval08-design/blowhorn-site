@@ -68,9 +68,8 @@ Both take `--dry-run`, which makes the same checks and sends nothing.
 each one's user id, name and email.
 
 The desktop app's Add profile form and profile detail use the commands
-above. Use `profile create` to create a profile in your account:
-`blowhorn profile set <name> EMAIL=<address> --create` is still in the CLI
-for the maintainer database, and writes nothing on your computer either.
+above. `profile create` is the only way to create a profile, and who a
+profile represents is a member you pick, never an email you type.
 
 ## Reading, credentials and deleting
 
@@ -81,11 +80,21 @@ never with its value. `blowhorn profile status` reports every profile with
 its sessions.
 
 `blowhorn profile set <name> KEY=VALUE` writes a platform key to that
-platform's credential in your account. Any other key is refused by name
-before anything is written.
+platform's credential in your account, and a run setting to the profile's
+settings there. The run settings are `Risk Profile`, `Risk Profile By
+Platform`, `Daily Caps`, `Quiet Hours` and `Quiet Hours Time Zone`; a value
+a run could not read is refused. Any other key is refused by name before
+anything is sent, and a blank value clears a key. If someone else changes the
+profile while you set it, Blowhorn reads it again and applies your keys once
+more, so their change is kept; if it changes a second time, nothing is written
+and the command says so - run it again.
 
-`blowhorn profile delete <name>` deletes the profile in your organization
-and unlinks its accounts. The accounts themselves are kept, and nothing on
+```bash
+blowhorn profile set kate "Risk Profile=cautious" "Quiet Hours=22:00-07:00"
+```
+
+`blowhorn profile delete <name-or-id>` deletes the profile in your
+organization and unlinks its accounts. The accounts themselves are kept, and nothing on
 your computer is moved or removed. A deleted profile cannot be brought
 back; create a new one.
 

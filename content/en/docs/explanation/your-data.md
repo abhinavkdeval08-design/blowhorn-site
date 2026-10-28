@@ -21,8 +21,8 @@ your account, never a file on your computer. Every action
 Blowhorn takes runs on one of your computers; Blowhorn never signs in or
 acts for you from a server. The daily
 logs, the run ledger copy, and the scheduler heartbeat live under the
-log directory. The account connection file lives outside the engine's folder at
-mode 0600. A plan attestation, once fetched, is kept in your keychain
+log directory. The sign-in to your account lives in your keychain, or in a 0600
+`cloud-token` file beside `cloud.yaml` outside the engine's folder. A plan attestation, once fetched, is kept in your keychain
 for the offline grace.
 
 In your account: the content activities, the schedule, the
@@ -59,7 +59,7 @@ The [privacy page at blowhorn.ai](https://blowhorn.ai/legal/privacy/) states the
 follows it, and the privacy page wins on any difference.
 
 What never belongs in a report, an issue, or a chat message:
-credentials, session files, the private connection file, and anything
+credentials, session files, the sign-in (`cloud.yaml`, the `cloud-token` file), and anything
 from your Chrome profile directories. A refusal sentence and an exit
 code are enough to diagnose with.
 
@@ -97,6 +97,23 @@ The contact support dialog, at a failure line, sends a separate
 message only when you submit it: a category, your message, and your
 email only if you typed one in, plus the report id only if you left
 "include the failure report" checked.
+
+## Anonymous usage data
+
+Separately from failure reports, your Blowhorn account has a setting for
+anonymous usage data, **share anonymous usage data for product
+improvement**. It is on until you turn it off, and it is kept in your
+account rather than on one computer, so every computer you use Blowhorn on
+follows it.
+
+Today this is a preference and nothing more: Blowhorn records your choice
+and checks it, but does not collect or send usage data yet. When sharing is
+on, Blowhorn may share anonymous usage data, such as which features run and
+how often, so we can see what to improve. It would never include what you
+post or send, your credentials or sign-in, platform account names, or the
+contents of any page Blowhorn drives. With the setting off, none is shared.
+To change it, see
+[Turn anonymous usage data on or off](/docs/how-to/settings/share-usage-data/).
 
 ## Related
 

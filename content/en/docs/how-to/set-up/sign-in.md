@@ -71,9 +71,10 @@ Open `blowhorn://signin`, the link the Blowhorn Chrome extension's **Sign in**
 offers. The app opens [Blowhorn](https://cloud.blowhorn.ai) in your browser; sign in there, or create
 an account, then choose **Allow**. `blowhorn://signup` starts the same sign-in for a new account
 (see [Create a Blowhorn account](/docs/how-to/set-up/create-an-account/)). The sign-in sends its
-answer to the command line on this computer (`127.0.0.1`), and the browser
-tab closes on its own while the app comes forward with the sign-in
-finished. If the tab stays open, close it and return to the app. The token is kept by Blowhorn's command line, never by
+answer to the command line on this computer (`127.0.0.1`), and the app comes
+forward with the sign-in finished. The browser tab says **Authorization complete**
+and usually stays open: close it, or choose **Return to Blowhorn** to bring the app
+forward. Now and then the tab closes on its own. The token is kept by Blowhorn's command line, never by
 the app. If the browser stays on an update page, update Blowhorn. If it stays on a Blowhorn error page instead, the sign-in was refused: no answer comes back. If Blowhorn cannot be reached at all, the app says it could not reach cloud.blowhorn.ai: check your connection, then try again. In guided setup, **Cancel** on the
 waiting screen stops the wait at once; left alone, the app tells you
 you're not signed in once the wait runs out. Try again, and if that page
@@ -101,7 +102,7 @@ remove and removes nothing.
 
 ## Related
 
-- [Install the app](/docs/how-to/set-up/install-the-app/) - download and first run.
+- [Install the app](/docs/how-to/set-up/install-the-app/) - download and first muster.
 - [Add a profile](/docs/how-to/set-up/add-a-profile/) - create a profile once you are signed in.
 - [The Blowhorn app, screen by screen](/docs/reference/use-the-desktop-app/) -
   the Setup screen.
