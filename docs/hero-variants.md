@@ -1,12 +1,28 @@
 # Home page hero variants
 
-The home page hero's headline, subhead and illustration come from [`data/hero.json`](../data/hero.json),
+The home page hero's headline, tagline and illustration come from [`data/hero.json`](../data/hero.json),
 which must validate against [`schemas/hero.schema.json`](../schemas/hero.schema.json)
 (`make check-schemas`, part of `make site-check` and so of CI). Each variant has an `id`,
-a `headline` (up to 80 characters), a `subhead`, an optional `identification` line
-shown under the subhead, an optional `art` (`stage` or `fan`, default `stage`), the
-numbers of the canonical differentiators it rests on and an optional reviewer `note`.
+a `headline` (up to 80 characters), an optional `art` (`stage` or `fan`, default `stage`),
+the numbers of the canonical differentiators it rests on and an optional reviewer `note`.
 Copy may only state what those differentiators allow, in their wording rules.
+
+## The tagline
+
+`tagline` is one top-level line, the plain description of what Blowhorn is, shown
+under the headline for every hero:
+
+> Social media management for you and your AI agents.
+
+It is sentence case, up to 80 characters, and sits on one line on desktop; on phones
+it wraps in balanced lines (`.hero-tagline` in `assets/css/site.css`). It is rendered
+once, not per hero, so switching heroes never changes it.
+
+A variant may still carry a `subhead` (a longer plain-words description) and an
+`identification` line ("If this is you: ..."). Both are optional and neither is rendered
+in the hero anymore; they stay in the data for reference and for the issue #254 heroes.
+The `default` variant's `subhead`, when it has one, still feeds the meta, Open Graph,
+Twitter and JSON-LD descriptions (the tagline stands in when it does not).
 
 ## The rotation
 
@@ -15,13 +31,46 @@ Copy may only state what those differentiators allow, in their wording rules.
 to rotate every variant. Variants not listed never rotate, but still render after the
 rotating ones, so `?hero=<id>` reaches them for review (`?hero=<n>` counts rotating heroes only).
 
-Production rotates these five, one per UTC day (the AI hybrid messaging, Yi, 2026-10-20):
+Production rotates 23 heroes, one per UTC day: the five AI hybrid heroes first (Yi,
+2026-10-20), then the 18 round 2 heroes. With 23 ids a given hero comes back every 23
+days. The five AI hybrid heroes:
 
 1. `plug-in-ai`: "Automate your social voice. Plug in AI anytime."
 2. `scripted-ai-ready`: "Scripted where it counts. AI where it helps." Default and fallback (Yi, 2026-10-20).
 3. `same-rules`: "You post. Your agent posts. Same rules."
 4. `ai-optional`: "Your voice, automated. AI optional, never in charge."
 5. `human-or-ai`: "One queue. Every profile. Human or AI."
+
+The 18 round 2 heroes (Blowhorn Marketing, 2026-10-27, approved by Lee), in rotation
+order, have a headline only, no subhead and no `cta`, so their secondary button is
+"See how it works":
+
+| id | Headline |
+| --- | --- |
+| `r2-sound-wave` | Make a sound wave, not a ripple. |
+| `r2-advocacy` | Employee advocacy, minus the enterprise invoice. |
+| `r2-whisper` | The algorithm can't hear a whisper. |
+| `r2-ovation` | Your launch deserves an ovation, not a pity like. |
+| `r2-password` | Your password called. It wants to stay home. |
+| `r2-scarecrows` | Bought likes are scarecrows with thumbs up. |
+| `r2-manners` | Automation with manners. |
+| `r2-backup` | Not a bot. Just you, with backup. |
+| `r2-every-computer` | Every computer you own, reporting for duty. |
+| `r2-army-marches` | Close your laptop. The army keeps marching. |
+| `r2-halt` | Second thoughts? One button halts the whole army. |
+| `r2-juggling` | Juggling clients? Put the balls down. |
+| `r2-agency-name` | Your agency's name on it. Our army behind it. |
+| `r2-remote-team` | Remote team. One battle plan. Everyone keeps their own keys. |
+| `r2-no-meter` | No meter. No credits. No rationing. |
+| `r2-per-breath` | Social tools charge per seat, per post, per breath. |
+| `r2-crickets` | Built by a tiny team that got tired of crickets. |
+| `r2-ai-orders` | Let your AI give the orders. Blowhorn follows them. |
+
+Hero copy says computer, never Mac, and browser, never Chrome (Lee, 2026-10-28).
+`make check-naming` enforces the Mac half, with no exceptions.
+
+`r2-remote-team` is the longest headline: check it at 1440 and 390 px wide after any
+hero type or layout change (four lines on both, no overflow).
 
 The earlier five (`not-a-bot`, `real-you`, `your-fleet`, `sound-wave`,
 `own-your-voice`) stay in the file outside the rotation, so their `?hero=` links
@@ -53,8 +102,8 @@ never changes while someone is reading the page.
   the data file and fails the build if `rotation.ids` names an unknown variant
   or if `default` is not in the rotating ids. Mode and `intervalSeconds` are
   schema-checked (`make check-schemas`).
-- [`layouts/home.html`](../layouts/home.html) renders the hero once: one `h1` and one
-  subhead holding a `<span data-hero-only="<id>">` per rotating hero, the shared label,
+- [`layouts/home.html`](../layouts/home.html) renders the hero once: one `h1` with a
+  `<span data-hero-only="<id>">` per hero inside it, the one tagline, the shared label,
   buttons and social proof, and one figure per art used by the rotation, each from its own
   partial in [`layouts/_partials/hero-art/`](../layouts/_partials/hero-art/).
 - [`layouts/_partials/hero-rotation-head.html`](../layouts/_partials/hero-rotation-head.html),
@@ -94,7 +143,7 @@ blowhorn `marketing/videos/blowhorn-battalion-thunder`), 1080p,
 about 2.1 MB MP4 and 2.2 MB WebM.
 
 `media.video.placement` is `inline-expand` (the only placement): the film
-sits small in the hero beside the headline, subhead and calls to action
+sits small in the hero beside the headline, tagline and calls to action
 (below them on phones), on its poster with a Play the film button.
 `?hero=<id>` still swaps the copy. `assets/js/hero-video.js` then:
 
@@ -169,7 +218,7 @@ the default hero are unchanged. Their ids, in issue order, are `copy-paste`,
 `not-rental`, `nine-likes`, `no-begging`, `say-it-like-you-mean-it`,
 `hundred-seats`, `298-stack` and `too-small-for-demo`. Each carries its
 plain-words subhead and its self-identification line (`identification` in the
-data file, rendered under the subhead on the Signal and Reveille home pages).
+data file). Neither is rendered: like every hero, they show the tagline.
 To promote one to production, add its id to `rotation.ids`; do not change
 `default` unless the no-JavaScript, crawler and social-preview hero should
 change with it.
@@ -180,8 +229,7 @@ Press `h` on the home page to advance to the next rendered hero, in render
 order (rotating heroes first, then the rest, including the 12 from issue
 #254). Press Shift+h to go back one. The hotkey is in
 `layouts/_partials/hero-rotation-head.html`, so it works on the Signal home
-page and the Reveille preview page, and it swaps headline, subhead,
-identification line, secondary button, art and media together,
+page and the Reveille preview page, and it swaps headline, secondary button, art and media together,
 because they all key off the same `data-hero` attribute. It updates
 `?hero=<id>` in the address bar, so the shown hero survives a reload and can
 be shared. It does nothing while typing in a form field, while a dialog is

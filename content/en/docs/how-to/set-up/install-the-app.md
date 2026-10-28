@@ -19,7 +19,7 @@ Download the latest build from
 current release's files from the
 [blowhorn-site releases](https://github.com/blowhorn-ai/blowhorn-site/releases).
 
-- `Blowhorn-<version>-mac-universal.dmg` - the latest build, for Apple silicon and Intel Macs.
+- `Blowhorn-mac.dmg` - the latest build, for Apple silicon and Intel Macs.
 - `SHA256SUMS.txt` - the checksums for that release.
 
 Verify the download before you open it. With both files in the same folder:
@@ -28,7 +28,7 @@ Verify the download before you open it. With both files in the same folder:
 shasum -a 256 -c SHA256SUMS.txt --ignore-missing
 ```
 
-The line for `Blowhorn-<version>-mac-universal.dmg` must read `OK`.
+The line for `Blowhorn-mac.dmg` must read `OK`.
 
 ## Install
 
@@ -40,10 +40,12 @@ The line for `Blowhorn-<version>-mac-universal.dmg` must read `OK`.
    disk image disappears when you eject it, so the app does not use its
    engine there and asks you to move it to Applications.
 
-You need macOS 13 or newer and Google Chrome. Chrome is not bundled: Blowhorn
+You need macOS 13 or newer (Apple silicon or Intel) and Google Chrome 142
+or newer. Chrome is not bundled: Blowhorn
 drives the Chrome profiles you already sign in to, through its Chrome
 extension, which you add to each Chrome profile you post from
 ([Install the Chrome extension](/docs/how-to/set-up/install-the-chrome-extension/)).
+See [System requirements](/docs/reference/requirements/).
 
 ## First muster
 

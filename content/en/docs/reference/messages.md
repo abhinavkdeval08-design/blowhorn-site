@@ -31,7 +31,7 @@ an unknown `BLOWHORN_ENTITLEMENT` value is refused by name rather than
 read as off. Dry runs are never refused: they publish nothing. See
 [Plans and limits](/docs/reference/plans/).
 
-## Chrome and the extension
+## Chrome and the extension {#chrome-and-the-extension}
 
 `another blowhorn run holds the Chrome extension bridge (pid ...)`: two runs want
 the extension at once, and the message names the holding run's pid.

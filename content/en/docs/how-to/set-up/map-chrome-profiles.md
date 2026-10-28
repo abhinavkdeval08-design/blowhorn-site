@@ -118,7 +118,7 @@ treated as permission to post.
 - Chrome's profile list is readable: `blowhorn chrome profiles` lists it.
   Chrome does not have to be running.
 
-## See what Chrome has
+## See what Chrome has {#see-what-chrome-has}
 
 ```bash
 blowhorn chrome profiles
@@ -254,7 +254,7 @@ blowhorn chrome unmap ada 'Profile 7'   # when ada has more than one
 Only your account's row goes. Nothing under Chrome's directory is touched, and
 the Chrome profile keeps its sessions.
 
-## The Chrome extension in that profile
+## The Chrome extension in that profile {#the-chrome-extension-in-that-profile}
 
 A mapping does not install the Chrome extension. Chrome keeps an extension
 per Chrome profile, and the Blowhorn extension drives only the profile it

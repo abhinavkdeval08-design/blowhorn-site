@@ -11,10 +11,8 @@
             <h1 id="hero-title" class="display-xl">
               {{- range $rot.heroes }}<span data-hero-only="{{ .id }}">{{ partial "hero-headline.html" .headline }}</span>{{ end -}}
             </h1>
-            <p class="body-lg hero-sub">
-              {{- range $rot.heroes }}<span data-hero-only="{{ .id }}">{{ .subhead }}</span>{{ end -}}
-            </p>
-            {{- range $rot.heroes }}{{ if .identification }}<p class="body hero-identification" data-hero-only="{{ .id }}">{{ .identification }}</p>{{ end }}{{ end -}}
+            {{- /* data/hero.json tagline: one plain line under every headline. */}}
+            <p class="body-lg hero-sub hero-tagline">{{ $rot.tagline }}</p>
             <div class="hero-actions">
               <a class="button button-primary button-pop" href="{{ "download/" | relURL }}">
                 <svg aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#glyph-download"></use></svg>
@@ -215,7 +213,7 @@
           <div class="section-head section-head-center">
             <p class="label">Download</p>
             <h2 id="download-title" class="display">Own your voice. Command your agents.</h2>
-            <p class="body-lg muted">One disk image for Apple silicon and Intel, plus a Chrome extension. About a minute to set up.</p>
+            <p class="body-lg muted">One disk image for Apple silicon and Intel, plus a browser extension. About a minute to set up.</p>
           </div>
           <p class="hero-actions hero-actions-center">
             <a class="button button-primary button-pop" href="{{ "download/" | relURL }}">

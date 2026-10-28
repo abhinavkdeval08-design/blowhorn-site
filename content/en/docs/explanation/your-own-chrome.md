@@ -20,7 +20,7 @@ renew by signing in again. Scheduled passes drive the same Chrome
 through the same extension; an unattended run never waits for a person
 at a sign-in or a challenge, it stops and says so.
 
-## A Chrome profile of its own
+## A Chrome profile of its own {#a-chrome-profile-of-its-own}
 
 Blowhorn works in a Chrome profile set aside for it, never the one you
 browse in. Its tabs open in that profile's window, in a collapsed group,
@@ -30,9 +30,15 @@ in there once, by you, and stay yours.
 
 Chrome's main profile, the one Chrome made first, stays yours for the
 same reason, and because Chrome 136 and later refuse the debugging
-connection a run can need on Chrome's own data folder. So setup asks for
-a second profile when the main one is all you have. A main profile that
-an earlier setup already mapped keeps working.
+connection a run can need on Chrome's own data folder. So when the main
+one is all you have, setup asks Google Chrome to make Blowhorn a profile
+of its own (`blowhorn chrome create-profile`), and you sign in there
+once. A main profile that an earlier setup already mapped keeps working.
+
+Blowhorn works in Google Chrome whatever your default browser is. If
+Safari or another browser is your default, it stays your default: a
+sign-in link may open there, and every window Blowhorn needs is opened
+in Google Chrome by name.
 
 Slack, Bluesky, and GitHub post through their APIs above the browser,
 because those calls carry a token, not a pretense. Everything else

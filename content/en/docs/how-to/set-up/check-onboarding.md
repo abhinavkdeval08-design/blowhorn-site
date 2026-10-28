@@ -40,6 +40,12 @@ After setup, both walks also check the console a new person sees:
   Home's button opens its own step, not the Profiles table. LinkedIn's row
   there says which Chrome profile to sign in to and offers **Open LinkedIn
   sign-in** and **Check again**, with no form field.
+- **Check again:** on the Chrome profiles step and in **Profiles › chrome
+  profiles** after setup, each press must read **Checking…** while it runs
+  and then leave a result line. With the planted cookie, the walk marks the
+  LinkedIn account disconnected in the local Cloud first: the press must
+  reconnect that same account and say so, and a second press must say
+  **Nothing new found** and leave one LinkedIn account.
 - **Profile detail:** the mapped profile's LinkedIn card shows that same
   guidance (or, with the planted cookie, that LinkedIn is connected) and a
   **Check again** button. It shows no setting name like `LI_PASSWORD`, no

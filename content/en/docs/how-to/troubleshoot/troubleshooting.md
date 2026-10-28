@@ -45,7 +45,7 @@ Start from what you saw. Each symptom names its fix page.
 - **An update sits on one step, or says it stalled.** See [Update
   Blowhorn](/docs/how-to/manage/update-blowhorn/#if-an-update-stalls).
 
-## Chrome and the extension
+## Chrome and the extension {#chrome-and-the-extension}
 
 - **The extension says not connected, or the versions mismatch.** Re-approve
   the connection after an update, or check which install route is on disk with

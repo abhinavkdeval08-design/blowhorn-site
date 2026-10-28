@@ -36,7 +36,7 @@ Chrome profile a Blowhorn profile is mapped to (see
 running, any of them starts Chrome to open that window and leaves it
 running; none drives anything in it.
 
-## What it never opens, and when it never starts Chrome
+## What it never opens, and when it never starts Chrome {#what-it-never-opens-and-when-it-never-starts-chrome}
 
 Blowhorn never opens a real Chrome profile folder directly. The Chrome
 it launches itself runs on Blowhorn's own folders (its automation
@@ -180,7 +180,8 @@ signing in, then confirms the session once.
 
 Whether Google Chrome is installed, whether it is running, and whether
 its debugging switch is on. On macOS the installed path is
-`/Applications/Google Chrome.app`; on Linux the `PATH` names and
+`/Applications/Google Chrome.app`, then `~/Applications/Google Chrome.app`
+(the first one there wins); on Linux the `PATH` names and
 `/opt/google/chrome/chrome`. A missing Chrome stops the run with
 `ChromeNotInstalled` before any driver starts.
 
@@ -197,7 +198,7 @@ The `extension` and `persistent` drivers run on Linux as on macOS; the
 and `/opt/google/chrome/chrome`. Everything else on this page reads
 the same.
 
-## A dedicated attach Chrome (no Allow dialog)
+## A dedicated attach Chrome (no Allow dialog) {#a-dedicated-attach-chrome-no-allow-dialog}
 
 `blowhorn chrome attach-chrome` starts a second Chrome on a tree of
 its own (`~/.blowhorn/attach-chrome`), open to remote debugging, so
@@ -390,7 +391,9 @@ post one notification whose button re-runs setup. Where setup's choice
 lives is per computer, not per account: a desktop belongs to the
 computer it was made on, so it is recorded there and never synced.
 
-Automatic creation needs one Accessibility grant. Without it, the floor
+Automatic creation needs one Accessibility grant, which System Settings
+lists as Blowhorn (Privacy & Security, Accessibility). Blowhorn asks for
+it only when you start setup, never during a run. Without it, the floor
 is one click by you in a Mission Control Blowhorn opens for you. A
 window on a desktop you are not looking at still reads as hidden to
 the page, so a desktop is a place to keep the work, not a way to hide
@@ -545,6 +548,36 @@ with one of them is how you connect it: Blowhorn never asks for the
 password. After you sign in, `blowhorn chrome discover` (the desktop's
 **Check again**) sees the sign-in and records it as the profile's
 account in your Blowhorn account.
+
+## `blowhorn chrome create-profile`
+
+```bash
+blowhorn chrome create-profile
+blowhorn chrome create-profile --json
+```
+
+Gives Blowhorn a Google Chrome profile of its own, for a Chrome that has
+only its main profile. It asks Google Chrome to open a new window in the
+profile directory `Blowhorn`, with the same handoff as `open-profile`
+(`open -na "Google Chrome" --args --profile-directory=Blowhorn
+--new-window chrome://newtab/` on macOS). Chrome is expected to make that
+profile the first time and open the same one every time after, so running
+it again should never make a second profile. Neither that, nor the name
+Chrome gives the new profile, has been confirmed by a recorded check yet:
+Chrome picks the name, often a generic one such as `Person 2`, and the
+desktop then shows the profile as **Blowhorn's profile**. It maps nothing, reads no store and drives
+nothing in the window: you sign in there to the sites Blowhorn should
+use, then `blowhorn chrome discover` (the desktop's **Check again**)
+finds the profile and its accounts. Setup's **Set up Blowhorn's
+profile** runs it.
+
+With `--json` it prints `ok`, `dry_run`, `directory` (`Blowhorn`),
+`already_listed` (whether `Local State` listed the directory before this
+run; `null` when that file could not be read), `url`, `opened`, and
+`detail`, which says why the window did not open. Nothing after the open
+is read back, so it never claims Chrome made the profile. No Google
+Chrome is refused before anything opens, and a window Chrome could not be
+asked to open exits 1.
 
 ## `blowhorn chrome discover`
 
