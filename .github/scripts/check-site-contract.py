@@ -56,7 +56,7 @@ PAGES = {
         "main", "your-accounts", "downloads",
     ],
     "brand/index.html": [
-        "main", "logo", "clear-space", "color", "type", "major", "usage",
+        "main", "logo", "clear-space", "color", "type", "major", "thunderlung", "usage",
     ],
     "agents/index.html": [
         "main", "agents-title", "pick-title",
@@ -289,6 +289,12 @@ PAGES = {
     "welcome/index.html": [
         "main", "download-the-app", "sign-in", "connect-chrome",
     ],
+    "coming-soon/thanks/index.html": [
+        "main", "thanks-title",
+    ],
+    "newsletter/index.html": [
+        "main", "newsletter-title", "signup-form",
+    ],
 }
 # Redirect pages: published path -> the URL its redirect page must point to.
 # GitHub Pages serves no server-side redirects, so each path is a meta refresh
@@ -317,6 +323,7 @@ FILES = [
     "assets/brand/logo/blowhorn-favicon-32.svg",
     "assets/brand/logo/blowhorn-apple-touch-icon-180.png",
     "brand/blowhorn-brand-kit.zip",
+    "brand/blowhorn-logo-kit.zip",
 ]
 
 

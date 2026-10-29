@@ -64,7 +64,7 @@ is refused by name and nothing opens.
 
 ## Confirm troops in guided setup
 
-The first-run setup's **Confirm troops** step does the whole job from what
+The first-muster setup's **Confirm troops** step does the whole job from what
 Chrome already knows. For each Chrome profile it shows the Google account
 and the platform accounts discovery found there, proposes the Blowhorn
 profile each one becomes, and lets you mark each Chrome profile and each
@@ -118,7 +118,7 @@ treated as permission to post.
 - Chrome's profile list is readable: `blowhorn chrome profiles` lists it.
   Chrome does not have to be running.
 
-## See what Chrome has
+## See what Chrome has {#see-what-chrome-has}
 
 ```bash
 blowhorn chrome profiles
@@ -254,7 +254,7 @@ blowhorn chrome unmap ada 'Profile 7'   # when ada has more than one
 Only your account's row goes. Nothing under Chrome's directory is touched, and
 the Chrome profile keeps its sessions.
 
-## The Chrome extension in that profile
+## The Chrome extension in that profile {#the-chrome-extension-in-that-profile}
 
 A mapping does not install the Chrome extension. Chrome keeps an extension
 per Chrome profile, and the Blowhorn extension drives only the profile it

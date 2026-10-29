@@ -75,3 +75,39 @@ test('root serves the /internal/ contents page', async () => {
 });
 test('root without a token is denied', async () =>
   assert.equal(await status(new Request('https://internal.blowhorn.ai/')), 403));
+
+const signupsDb = (rows) => ({
+  prepare: () => ({ all: async () => ({ results: rows }) }),
+});
+const adminReq = (path, headers = {}) => new Request(`https://internal.blowhorn.ai${path}`, { headers });
+const adminEnv = (rows) => ({ ...env, SIGNUPS_DB: signupsDb(rows) });
+const authed = (path, e) => adminReq(path, { 'cf-access-jwt-assertion': sign(good()) });
+const sampleRows = [
+  { email: 'a@b.co', kind: 'waitlist', topic: 'tiktok', remark: 'shorts, please', created_at: '2026-10-27T00:00:00.000Z', unsubscribed_at: null, source_page: '/docs/reference/platforms/tiktok/' },
+  { email: 'c@d.co', kind: 'newsletter', topic: null, remark: '<script>alert(1)</script>', created_at: '2026-10-27T01:00:00.000Z', unsubscribed_at: '2026-10-27T02:00:00.000Z', source_page: '/newsletter/' },
+];
+
+test('signups admin without a token is denied', async () =>
+  assert.equal(await status(adminReq('/internal/signups/'), adminEnv(sampleRows)), 403));
+test('signups admin with a token lists rows and escapes them', async () => {
+  const res = await handle(authed('/internal/signups/'), adminEnv(sampleRows), certsFetch);
+  assert.equal(res.status, 200);
+  const html = await res.text();
+  assert.match(html, /waitlist\/tiktok: 1/);
+  assert.match(html, /newsletter: 1/);
+  assert.match(html, /a@b\.co/);
+  assert.match(html, /Unsubscribed/);
+  assert.doesNotMatch(html, /<script>alert/);
+  assert.match(html, /&lt;script&gt;/);
+  assert.match(html, /\/internal\/signups\/export/);
+});
+test('signups export is CSV with quoted commas', async () => {
+  const res = await handle(authed('/internal/signups/export'), adminEnv(sampleRows), certsFetch);
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get('content-type'), 'text/csv; charset=utf-8');
+  const csv = await res.text();
+  assert.match(csv, /^email,kind,topic,remark,created_at,unsubscribed_at,source_page\n/);
+  assert.match(csv, /"shorts, please"/);
+});
+test('signups admin without a database fails closed', async () =>
+  assert.equal((await handle(authed('/internal/signups/'), env, certsFetch)).status, 503));

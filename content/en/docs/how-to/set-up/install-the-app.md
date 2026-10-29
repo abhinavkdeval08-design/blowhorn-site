@@ -40,12 +40,14 @@ The line for `Blowhorn-mac.dmg` must read `OK`.
    disk image disappears when you eject it, so the app does not use its
    engine there and asks you to move it to Applications.
 
-You need macOS 13 or newer and Google Chrome. Chrome is not bundled: Blowhorn
+You need macOS 13 or newer (Apple silicon or Intel) and Google Chrome 142
+or newer. Chrome is not bundled: Blowhorn
 drives the Chrome profiles you already sign in to, through its Chrome
 extension, which you add to each Chrome profile you post from
 ([Install the Chrome extension](/docs/how-to/set-up/install-the-chrome-extension/)).
+See [System requirements](/docs/reference/requirements/).
 
-## First run
+## First muster
 
 The app opens on its Setup screen until its engine is ready; after that the
 guided setup takes over (see below). Setup checks, in order, the engine
@@ -75,7 +77,7 @@ Connecting the Blowhorn Chrome extension to this computer takes no pop-up:
 - **Guided setup:** the first time you open the app, the guided setup walks
   you through signing in, Getting ready and the rest, one step at a time.
 
-See [Set up Blowhorn the first time](/docs/how-to/set-up/first-run-setup/).
+See [Set up Blowhorn at first muster](/docs/how-to/set-up/first-muster-setup/).
 
 Then check sessions and run a dry-run post. Nothing is published until you
 post without `--dry-run`.

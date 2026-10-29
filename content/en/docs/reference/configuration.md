@@ -53,9 +53,7 @@ environment variables.
 | `defaults.chrome.data_dir` | `BLOWHORN_CHROME_DATA_DIR` | Your real Chrome directory | Where the installed Chrome is read from |
 | `defaults.slack.auth_mode` | `BLOWHORN_SLACK_AUTH` | your captured session first | Which Slack credential may send: session, user-token, bot-token, or a list tried in order |
 | (flag only) | `BLOWHORN_TEE_STDOUT` | off | Flush the stdout copy per write for a supervising wrapper |
-| `defaults.store.backend` | `BLOWHORN_STORE_BACKEND` | `cloud` | `cloud` or `postgres` (the store database through the bastion tunnel, for maintainers). A `postgres` value in the file or in `BLOWHORN_STORE_BACKEND` opens Cloud unless `BLOWHORN_MAINTAINER=1`. Cloud uses the organization you signed in to. It reads and writes profiles, their social accounts and content, reads destinations, records and lists runs, and reads and writes analytics, activity, ledger entries and LinkedIn analytics pages. A changed ledger value is written. A later analytics or activity reading replaces the stored one. Run lists are the organization's for an organization admin and your own otherwise. Destinations are the ones you own, plus the ones assigned to the environment `BLOWHORN_CLOUD_ENVIRONMENT` (or `environment_id` in `cloud.yaml`) names, and only a destination's owner can change it. Analytics and activity lists are the organization's. Anything else is refused by name |
-| `defaults.store.organization` | `BLOWHORN_STORE_ORGANIZATION` | none; the cloud store uses the organization you signed in to, and the Postgres store runs nothing while it is unset | The organization every activity is scoped to |
-| `defaults.store.config` | `BLOWHORN_STORE_CONFIG` | a private file outside the checkout | The private document holding the connection |
+| `defaults.store.organization` | `BLOWHORN_STORE_ORGANIZATION` | none; Blowhorn uses the organization you signed in to | The organization Blowhorn uses when the sign-in did not choose one |
 
 `headed` and `headless` are one choice with two spellings: the higher
 layer wins, so a `--headless` flag beats a `headed` default from the
@@ -65,8 +63,14 @@ survives.
 
 A version-1 file that still says `persistent` reads as `extension` on
 every run; only a validated `config set` of another key moves the file
-to version 2. The ten `store.*` connection options are private: they
-stay out of `config show`.
+to version 2.
+
+Blowhorn reads and writes everything in your Blowhorn account. A
+`defaults.store.backend` or `defaults.store.config` key left in an older
+file, and `BLOWHORN_STORE_BACKEND` in the environment, are ignored
+(`config show --json` lists the two keys as unknown), and `config set`
+refuses a `store.<name>` key. Data an older version kept in a local store is
+not read and is not brought into your account.
 
 ## Risk Profile presets
 

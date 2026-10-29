@@ -22,17 +22,41 @@ in the real Chrome and talking.
 
 Work through the report top to bottom: a missing directory or manifest means
 the install did not finish, so install it again with your administrator. A
-stale manifest means the checkout moved on without it: reinstall the native
-host from the current checkout, then reload the extension on
-`chrome://extensions`.
+stale manifest means the checkout moved on without it. A run repairs that
+itself on demand: it repairs the native host, registers the extension for
+the mapped profile's data directory when nothing is there yet, and
+re-probes hello once. Ahead of a run, ensure it for one mapped profile
+with `blowhorn chrome extension-install --profile <name> --ensure`.
+If the socket is still missing after the ensure, launch or relaunch
+Chrome with that profile (or accept the install offer). While another
+run holds the bridge, no ensure runs: wait for it to finish and recheck.
 
 ## Version mismatch after an update
 
-A Blowhorn upgrade does not reinstall the extension. After an update, take the
+A Blowhorn upgrade does not reinstall the extension. When the extension is
+older than the app accepts, its toolbar popup says it needs an update
+instead of "You're all set". To update it:
+
+1. Click the Blowhorn icon in Chrome's toolbar.
+2. Click **Upgrade**. The extension asks Chrome for the update and
+   restarts itself once Chrome has downloaded it; the popup closes when it
+   does. If a run is at work, the update waits until that run finishes.
+3. If the popup says Chrome checked a moment ago, wait a few minutes and
+   click **Check for update** again.
+4. Run `blowhorn chrome extension-status` again until hello answers.
+
+If the popup says Chrome has no newer version, the Chrome Web Store has
+not published one yet, or the extension was loaded unpacked. For a store
+install, take the
 [store update](/docs/how-to/set-up/install-the-chrome-extension/#from-the-chrome-web-store)
-(never load it unpacked over a store install), or reload the unpacked copy on
-`chrome://extensions`, then run
-`blowhorn chrome extension-status` again until hello answers.
+once it is published (never load it unpacked over a store install). For
+an unpacked copy, run
+`blowhorn chrome extension-install --profile <name> --ensure` and
+relaunch Chrome. The ensure leaves a store install alone, since Chrome's
+updater owns it, and never forces a store update.
+
+The ready popup also has **Check for update**, so you can take an update
+before the app requires it.
 
 ## Bridge busy
 

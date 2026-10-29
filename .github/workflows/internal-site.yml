@@ -6,9 +6,15 @@ name: Internal site
 # Cloudflare Access application that admits only the named emails in
 # internal-worker/access.json. See docs/deploy.md, "Internal site hosting".
 #
-# Started by `make site-internal-deploy` (in this repository or in
-# blowhorn-ai/blowhorn) through workflow_dispatch, or called from another
-# workflow in this repository (workflow_call, secrets: inherit).
+# Triggers:
+#   - workflow_dispatch: `make site-internal-deploy` (in this repository or in
+#     blowhorn-ai/blowhorn), input blowhorn_ref.
+#   - workflow_call (secrets: inherit): internal-site-auto.yml calls this on
+#     pushes to master that touch the site side of the internal build, and on
+#     its 15-minute poll of blowhorn-ai/blowhorn for product-content changes.
+#   - repository_dispatch (event type "deploy-internal-site") from the product
+#     repository, with optional client_payload: {"blowhorn_ref"}.
+# There is no push trigger here; internal-site-auto.yml owns the automatic ones.
 #
 # THIS REPOSITORY IS PUBLIC. Its logs and artifacts are world-readable, so:
 #   - no artifact is uploaded, and nothing from the private checkout is cached;
@@ -37,6 +43,8 @@ on:
         required: false
         type: string
         default: master
+  repository_dispatch:
+    types: [deploy-internal-site]
 
 permissions:
   contents: read
@@ -61,7 +69,7 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       HAS_READ_KEY: ${{ secrets.BLOWHORN_INTERNAL_READ_KEY != '' }}
-      BLOWHORN_REF: ${{ inputs.blowhorn_ref || 'master' }}
+      BLOWHORN_REF: ${{ inputs.blowhorn_ref || github.event.client_payload.blowhorn_ref || 'master' }}
       WRANGLER_SEND_METRICS: 'false'
     steps:
       - name: Check credentials are configured
@@ -101,6 +109,13 @@ jobs:
           sparse-checkout: |
             marketing/strategy
             marketing/capability-comparison
+            marketing/brand
+            marketing/assets.manifest.json
+            internal/engineering
+            internal/design
+            internal/specs
+            internal/plans
+            internal/research
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
@@ -124,9 +139,13 @@ jobs:
           fi
           test -f public-internal/internal/index.html || { echo "::error::The internal build produced no /internal/ index."; exit 1; }
           test -f public-internal/internal/finance/report/index.html || { echo "::error::The internal build produced no finance report."; exit 1; }
+          test -f public-internal/internal/engineering/index.html || { echo "::error::The internal build produced no engineering index."; exit 1; }
           pages="$(find public-internal -name '*.html' | wc -l | tr -d ' ')"
           echo "Built $pages HTML pages."
           rm -rf .internal-src
+
+      - name: Point the internal worker at the signups database
+        run: bash .github/scripts/resolve-d1.sh internal-worker
 
       - name: Deploy to the blowhorn-internal Worker
         run: make site-internal-worker-deploy

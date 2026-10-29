@@ -41,9 +41,13 @@ Then give the profile its accounts: open **chrome profiles** to map the
 Chrome profile it posts from and attach the accounts signed in there, and
 use a platform card for anything else, such as a GitHub token.
 
-A profile you create for someone else can be seen by you and your
-organization's admins until it is shared with them in Blowhorn. The
-form says so when you pick another member.
+A profile you create for someone else is listed for them too, so their own
+Blowhorn shows it once they sign in to your organization. They can read it
+but not change it: editing a profile takes its ownership or the Edit Profile
+permission in your organization. The accounts linked to it are read only by
+its owner and by people who can view your organization's profiles, so the
+person it represents sees the profile without its accounts unless they hold
+that permission.
 
 Your organization's profiles and members are read from your Blowhorn account. When
 either read fails, the screen names the failure where it would have listed
@@ -100,6 +104,14 @@ a terminal:
 
 ```bash
 blowhorn profile delete sam --yes
+```
+
+Name it by its id instead when two profiles in your organization share a
+name, as `blowhorn profile list` prints it. Only the profile with that id is
+deleted:
+
+```bash
+blowhorn profile delete 3f2b8c1e-5a7d-4e2f-9b1c-6d4a2e8f0c17 --yes
 ```
 
 The profile is deleted in your organization and unlinked from its

@@ -67,7 +67,7 @@ dashboard's **Store listing** tab and use **Save draft**; the listing goes to
 Google only when someone submits it for review. `tests/test_store_assets.py`
 checks that every file the table names exists at its exact size.
 
-## Update an installed Chrome extension
+## Update an installed Chrome extension {#update-an-installed-chrome-extension}
 
 A Blowhorn release does not reinstall the Chrome extension in each Chrome profile.
 

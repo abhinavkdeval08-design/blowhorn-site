@@ -60,8 +60,8 @@ regenerate them. Claims on every page come from the product repository's
   Google Analytics 4 (`[services.googleAnalytics]` in `hugo.toml`;
   `layouts/_partials/analytics.html` loads gtag.js on every production page with
   analytics storage enabled and advertising storage denied), the download
-  page's release lookup on api.github.com, and the footer newsletter form, which may post only
-  to the Mailchimp host in `FORM_ACTION_HOSTS`. Never add another analytics or tracking tag, a
+  page's release lookup on api.github.com, and the footer newsletter form, which posts to
+  Blowhorn's own signup service at `api.blowhorn.ai`, an allowed host in `FORM_ACTION_HOSTS`. Never add another analytics or tracking tag, a
   CDN script or stylesheet, or web fonts from elsewhere, and never copy layer5io/docs' head,
   navbar or footer (Docsy's head would add a second, consent-less gtag). A new outside host needs a privacy
   page update first. `.github/scripts/check-third-party.py` fails the build.
@@ -70,11 +70,28 @@ regenerate them. Claims on every page come from the product repository's
   default; dark follows the OS with no JavaScript. Brand SVGs are used as files, never
   recoloured. Platform logos are the owners' own files in `static/assets/platforms/`, unmodified, on white
   tiles (sources in `static/assets/brand/LICENSES.md`).
-- **The brand kit is built, not edited.** `static/brand/blowhorn-brand-kit.zip` and
-  `data/brand_colors.json` come from the product repository's brand build
-  (`scripts/brand/build-brand-kit.py`, output in `marketing/brand/kit/`); copy them over unchanged.
+- **The brand kits are built, not edited.** `static/brand/blowhorn-brand-kit.zip` (the full
+  kit), `static/brand/blowhorn-logo-kit.zip` and `data/brand_colors.json` come from the product
+  repository's brand build (`tools/scripts/brand/build-brand-kit.py`, output in
+  `marketing/brand/kit/`); copy them over unchanged, then set both sizes under `kits:` in
+  `content/en/brand/_index.md` (`make check-brand-kits` fails a stale one).
 - **The product name is Blowhorn.** "Outbox" is the product's old internal name; never put
   it on a public page.
+- **Browser wording depends on the page.** Marketing and value pages (home, `/for`, `/ai`,
+  `/agents`, `/pricing`, `/major`, `/welcome`, `/integrations`, their data files, and compare
+  pages' descriptions of Blowhorn) stay general: "your own browser", "browser profile", "browser
+  extension", never Mac or Google Chrome; a requirement note links to System requirements.
+  Download and install pages (`/download`, `/download/thanks`, `docs/reference/requirements`,
+  `docs/how-to/set-up/`) state the exact requirement: "Requires macOS 13 or newer and Google
+  Chrome 142 or newer" (142 is the engine's `MINIMUM_CHROME_MAJOR`), never "for now". On
+  `/download` each card also repeats its own minimum (`.download-req`; `download.js` keeps it
+  when it refills the Mac card), so a floor change touches the cards, the requirements block
+  and `/download/thanks`. Docs about
+  using the app or CLI name Google Chrome and "Chrome profile", matching the app's labels ("Add to
+  Chrome", "Show my Chrome profiles"). Competitor facts, Chrome Web Store, code, commands and URLs
+  stay as they are. `check_naming.py` fails a "for now" requirement and "browser profile" or
+  "browser extension" in the docs. Docs copy is synced from the product repository's `docs/`:
+  change it there, then sync.
 - **The product repository is private.** Never link its files, issues or pull requests
   from a page; every reader would get a 404.
 - **Every Hugo run cleans its destination.** Each `hugo` invocation in `package.json`

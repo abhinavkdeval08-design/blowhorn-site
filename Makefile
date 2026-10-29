@@ -63,6 +63,8 @@ include .github/build/Makefile.show-help.mk
 #                      Run internal-site.yml (build, Cloudflare Access, Worker
 #                      deploy at internal.blowhorn.ai, verify) and watch it:
 #                      make site-internal-deploy [REF=<blowhorn ref>] [WATCH=0].
+#   site-internal-poll Decide whether internal-site-auto.yml deploys (see
+#                      .github/scripts/internal-poll.sh).
 #   site-internal-access, site-internal-access-check, site-internal-worker-deploy,
 #   site-internal-verify
 #                      The steps of internal-site.yml (see docs/deploy.md).
@@ -98,7 +100,7 @@ BIN_DIR ?= .bin
 # actionlint from PATH when installed; otherwise a pinned copy is downloaded into $(BIN_DIR).
 ACTIONLINT ?= $(shell command -v actionlint 2>/dev/null)
 # Workflows owned by this repo. Template workflows (labeler and friends) are left as-is.
-WORKFLOWS ?= .github/workflows/site.yml .github/workflows/publish-dmg.yml .github/workflows/sync-docs.yml .github/workflows/cloud-auth-smoke.yml .github/workflows/product-ci.yml .github/workflows/internal-site.yml
+WORKFLOWS ?= .github/workflows/site.yml .github/workflows/publish-dmg.yml .github/workflows/sync-docs.yml .github/workflows/cloud-auth-smoke.yml .github/workflows/product-ci.yml .github/workflows/internal-site.yml .github/workflows/internal-site-auto.yml
 # A blowhorn checkout for `make docs-sync` (the sync-docs.yml
 # workflow checks the product repo out at this path).
 SOURCE_DIR ?= product
@@ -208,6 +210,10 @@ site-internal-deploy:
 		gh run watch "$$run_id" -R $(INTERNAL_SITE_REPO) --exit-status; \
 	fi
 
+## Decide whether internal-site-auto.yml deploys: always on push or dispatch; on schedule, only when blowhorn master changed a mounted path in the last 2 hours (needs DMG_SOURCE_TOKEN).
+site-internal-poll:
+	.github/scripts/internal-poll.sh
+
 ## Read-only: confirm CLOUDFLARE_API_TOKEN can read Zero Trust, Access applications and policies, and Workers.
 site-internal-access-check:
 	python3 .github/scripts/internal_access.py check
@@ -295,11 +301,19 @@ check-action-matrix: site-build
 	python3 .github/scripts/check_action_matrix.py $(BUILD_DIR)
 
 ## Build for production once, then validate-html, check-links, check-third-party and check-urls, plus check-schemas (what site.yml runs).
-site-check: check-schemas validate-html check-links check-third-party check-urls check-no-internal check-theme check-platform-docs check-naming check-action-matrix check-download-links
+site-check: check-schemas validate-html check-links check-third-party check-urls check-no-internal check-theme check-platform-docs check-naming check-action-matrix check-download-links check-feeds check-brand-kits
 
 ## Production build, then fail if any built page or script links to /releases/latest/download (an axi release can hold Latest; build download URLs from data/download.json).
 check-download-links: site-build
 	python3 .github/scripts/check_download_links.py $(BUILD_DIR)
+
+## Production build, then fail if the Brand page links a kit zip the build does not publish, or states its size wrong.
+check-brand-kits: site-build
+	python3 .github/scripts/check_brand_kits.py $(BUILD_DIR)
+
+## Production build, then validate the Resources RSS feeds, including the desktop contract feed (issue #253, Part D).
+check-feeds: site-build
+	python3 .github/scripts/check_feeds.py $(BUILD_DIR)
 
 ## Production build, then fail if a page says Layer5 Cloud or Blowhorn Cloud, or names Layer5 outside the footer and the legal pages (users see Blowhorn).
 check-naming: site-build
@@ -429,6 +443,7 @@ clean:
 
 .PHONY: \
 	check-schemas \
+	check-brand-kits \
 	check-theme \
 	check-platform-docs \
 	check-action-matrix \

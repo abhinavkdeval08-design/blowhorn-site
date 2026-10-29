@@ -31,6 +31,15 @@ sign-in** and **Check again**: it has no fields to fill in and never asks
 for a password. An account Blowhorn should sign in to for you with a stored
 username and password is set up from Terminal only (below).
 
+**Check again** reads **Checking…** while Blowhorn reads your Chrome
+profiles, then says what it found: the platforms it found in each Chrome
+profile, which are new since your last check and which are no longer
+signed in (Blowhorn then marks that account disconnected), **Nothing new
+found**, or why it couldn't read Chrome. Setup's Chrome profiles step and **Profiles ›
+chrome profiles** answer the same way. Chrome saves a new sign-in to disk
+about 30 seconds after you sign in, so if you signed in a moment ago and
+see **Nothing new found**, wait a little and check again.
+
 From Terminal, the same two steps:
 
 ```bash

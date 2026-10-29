@@ -29,7 +29,7 @@ One case needs another mode today: the extension's typing does not reach X's
 editor or sign-in form, so X posts and X sign-ins stop before anything is
 typed. Run those with `--chrome-launch persistent`.
 
-## Launch Blowhorn's own Chrome
+## Launch Blowhorn's own Chrome {#launch-blowhorns-own-chrome}
 
 ```bash
 blowhorn post --profile ada --chrome-launch persistent
@@ -53,7 +53,7 @@ the visible posture is what keeps a flow's waits running at pace. A
 `--headless` request becomes this window, and the unattended argv does not
 change.
 
-## Attach to the Chrome you have open
+## Attach to the Chrome you have open {#attach-to-the-chrome-you-have-open}
 
 ```bash
 blowhorn post --profile ada --chrome-launch cdp

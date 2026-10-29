@@ -407,17 +407,39 @@ div.docs-quadrants {
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   color: var(--ink);
+  background-image: none;
 }
 
 .td-sidebar__toggle::before {
   content: "";
   display: block;
-  width: 18px;
+  width: 14px;
   height: 12px;
   margin: auto;
-  border-top: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
-  background: linear-gradient(currentColor, currentColor) center/100% 2px no-repeat;
+  background:
+    linear-gradient(currentColor, currentColor) top / 100% 2px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat,
+    linear-gradient(currentColor, currentColor) bottom / 100% 2px no-repeat;
+}
+
+.td-sidebar__toggle[aria-expanded="true"]::before {
+  content: "";
+  height: 14px;
+  background:
+    linear-gradient(
+      45deg,
+      transparent calc(50% - 1px),
+      currentColor calc(50% - 1px),
+      currentColor calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ),
+    linear-gradient(
+      -45deg,
+      transparent calc(50% - 1px),
+      currentColor calc(50% - 1px),
+      currentColor calc(50% + 1px),
+      transparent calc(50% + 1px)
+    );
 }
 
 .td-breadcrumbs {

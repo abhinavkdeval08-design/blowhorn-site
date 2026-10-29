@@ -6,6 +6,9 @@ aliases: [/docs/how-to/install-the-chrome-extension/]
 ---
 
 
+Requires macOS 13 or newer and Google Chrome 142 or newer, the real
+Google Chrome, not Chromium. See [System requirements](/docs/reference/requirements/).
+
 Blowhorn drives Chrome through its Chrome extension. Chrome keeps an
 extension inside each Chrome profile, and the extension drives only the
 profile it is installed in. Install it in every Chrome profile you post
@@ -37,7 +40,7 @@ Blowhorn's store page in that one profile, and your click there installs
 it only there. A profile you leave out is never given the extension by
 guided setup; if an earlier setup already put it there, setup cannot
 remove it from that one profile - see
-[Leaving a Chrome profile out](/docs/how-to/set-up/first-run-setup/#leaving-a-chrome-profile-out).
+[Leaving a Chrome profile out](/docs/how-to/set-up/first-muster-setup/#leaving-a-chrome-profile-out).
 
 A computer that already has the extension from an earlier setup - put
 there by Chrome's external-extensions file - stays on that route
@@ -115,7 +118,7 @@ mapped. Nothing is lost: the mapping itself is unchanged. The popup
 catches up the next time the app reads the mapping: after you sign in or
 change a mapping.
 
-## Load it unpacked in one Chrome profile
+## Load it unpacked in one Chrome profile {#load-it-unpacked-in-one-chrome-profile}
 
 When only one Chrome profile needs the extension, write the native host and
 follow the printed steps. Through the Blowhorn mapping:
@@ -148,7 +151,7 @@ See the files first, and write nothing:
 blowhorn chrome extension-install --profile kate --dry-run
 ```
 
-## Every Chrome profile on this computer
+## Every Chrome profile on this computer {#every-chrome-profile-on-this-computer}
 
 **Every profile** (the default) writes Chrome's
 `ExtensionInstallForcelist`. Chrome installs the extension the next time

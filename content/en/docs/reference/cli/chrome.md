@@ -1,7 +1,7 @@
 ---
 title: "blowhorn chrome"
 linkTitle: "chrome"
-description: "blowhorn chrome: attach-chrome, confirm, discover, extension-enable, extension-install, extension-mode, extension-status, map, open-profile, profiles, status, suggest, unmap."
+description: "blowhorn chrome: attach-chrome, confirm, create-profile, discover, extension-enable, extension-install, extension-mode, extension-status, map, open-profile, profiles, status, suggest, unmap."
 weight: 103
 ---
 
@@ -13,6 +13,7 @@ The `blowhorn chrome` commands. Each one's `--help` prints the same text.
 | --- | --- |
 | [`chrome attach-chrome`](#blowhorn-chrome-attach-chrome) | Start or report a dedicated Chrome that is open to remote debugging with no Allow dialog, so `--chrome-launch cdp` can attach to a real Chrome unattended. |
 | [`chrome confirm`](#blowhorn-chrome-confirm) | Apply the confirm screen's confirmed choices. |
+| [`chrome create-profile`](#blowhorn-chrome-create-profile) | Give Blowhorn a Google Chrome profile of its own, for a Chrome that has only its main profile. |
 | [`chrome discover`](#blowhorn-chrome-discover) | Report, for every Chrome profile, the platform accounts discovery can see there -- the read behind onboarding's confirm screen. |
 | [`chrome extension-enable`](#blowhorn-chrome-extension-enable) | Open the Blowhorn extension's Chrome Web Store page in each Chrome profile you name, so you can turn the extension on there with one click. |
 | [`chrome extension-install`](#blowhorn-chrome-extension-install) | Write the native-messaging host manifest Chrome launches for the Blowhorn Chrome extension, and print where the unpacked extension lives so you can load it. |
@@ -98,6 +99,32 @@ cat assignments.json | blowhorn chrome confirm --payload-stdin --dry-run --json
 
 Output: json with `--json`, text otherwise.
 
+## blowhorn chrome create-profile
+
+Give Blowhorn a Google Chrome profile of its own, for a Chrome that has only its main profile. Asks Chrome to open a new window in the profile directory `Blowhorn`. Chrome is expected to create that profile the first time and open it again every time after, so running this twice should never make a second one; Chrome picks the new profile's name. Sign in there to LinkedIn, X and the other sites Blowhorn should use, then `blowhorn chrome discover` finds the profile and its accounts. Reads Local State only to say whether the profile was already listed; writes nothing, maps nothing, and drives nothing in the window. If no Chrome is running, Chrome starts to open the window and is left running. Your own profiles, windows and tabs are left as they are.
+
+```text
+blowhorn chrome create-profile [OPTIONS]
+```
+
+| Flag | Type | Default | Description |
+| --- | --- | --- | --- |
+| `--json` | boolean | `false` | Emit the report as JSON with a stable shape, for a script or the desktop app |
+| `--platform` | string |  | Accepted and ignored by `blowhorn chrome`: this command never acts on a platform, so `--platform` has no effect here -- including a value inherited from `BLOWHORN_PLATFORM` or defaults.platform in .blowhorn.yaml |
+| `--pace` | string |  | Accepted by `blowhorn chrome create-profile` because `--pace` is a global flag, but this command does no paced work -- it sleeps between nothing -- so the value changes nothing about how it runs and appears only in the Pace column of the -v summary. Resolved as CLI flag, then `BLOWHORN_PACE`, then defaults.pace in .blowhorn.yaml (normal when none is set); an unrecognized value is rejected before anything runs |
+| `--risk-profile` | string |  | Accepted by `blowhorn chrome create-profile` because `--risk-profile` is a global flag, but this command does no gated work -- no Risk Profile hold, cap or pace applies to it -- so the value changes nothing about how it runs. A value after the command word wins over one before it; an unrecognized value is rejected before anything runs |
+
+Also takes the [shared flags](/docs/reference/cli/shared-flags/): `--config`, `--log-dir`, `--profile`, `--exclude`, `--headless`, `--chrome-launch`, `--headed`, `--dry-run`, `--verbose`.
+
+Examples:
+
+```bash
+blowhorn chrome create-profile
+blowhorn chrome create-profile --json
+```
+
+Output: json with `--json`, text otherwise.
+
 ## blowhorn chrome discover
 
 Report, for every Chrome profile, the platform accounts discovery can see there -- the read behind onboarding's confirm screen. For each profile: its directory, display name and signed-in Google account (from `Local State`, as `chrome profiles` reads them), the Blowhorn profile it is mapped to, the platform rows discovery found, a proposed Blowhorn profile slug, whether that slug is free, and how the Google email resolves against the organization's Blowhorn users.
@@ -165,7 +192,7 @@ Write the native-messaging host manifest Chrome launches for the Blowhorn Chrome
 
 `--profile` &lt;name&gt; names the Blowhorn profile whose mapped Chrome profile should get the extension (resolved through `blowhorn chrome map` on this machine); `--chrome-profile` `<directory>` names the Chrome profile directory itself, as `blowhorn chrome profiles` prints it, and can be given more than once. Either one writes the native host as above, checks the directory is in Chrome's Local State, and prints the steps to load the extension in that profile alone: Chrome has no file this command can write that installs an extension in one profile only, since the policy and the external-extensions file both reach every profile. A profile with no mapping, a directory Chrome does not have, and either flag with `--all-profiles` are one sentence and nothing is written; a store that cannot be reached is the named cause and exit 3. A `--profile` inherited from `BLOWHORN_PROFILE` or defaults.profile does not count.
 
-`--all-profiles` also asks Chrome to install that extension in every Chrome profile on this machine. It is every Chrome profile, not `--profile` all. The default route writes ExtensionInstallForcelist: silent, every profile, Chrome shows Managed by your organization, and macOS may ask for an administrator password once. On macOS that policy is your own user's, never the computer's, so other macOS users' Chrome is left alone. On Linux the policy file (/etc/opt/chrome/policies/managed/blowhorn.json) and the external file (/usr/share/google-chrome/extensions/&lt;id&gt;.json) need root, Blowhorn never asks for it, and a write this user cannot make is refused with the file, its exact content and the sudo command that writes that one file. Never run this command under sudo: the host and launcher would land under root's home, which your Chrome never reads, so a run under sudo is refused by name. `--external` writes Chrome's external-extensions file instead, so Chrome offers the install in each profile, one click there, and does not show that banner. `--external` without `--all-profiles` is refused and writes nothing. Switching route removes the other route's file for this extension id. Both routes name the extension id from that same key and the Chrome Web Store update url; Chrome can fetch the extension only once that id is published. A policy file that exists and cannot be read is one sentence and nothing is written. Per-profile lines say what Chrome was asked to do, never that a profile's copy was confirmed. Those lines cover the configured Chrome data directory. The policy route applies the extension to every Chrome profile on this machine. `--json` appends one trailing object (manifest, launcher, extension_dir, removed), for a script or the desktop app. With `--all-profiles` that object also carries route, extension_id, profiles, profiles_error and profiles_scope; with `--profile` or `--chrome-profile` it carries targets.
+`--all-profiles` also asks Chrome to install that extension in every Chrome profile on this machine. It is every Chrome profile, not `--profile` all. The default route writes ExtensionInstallForcelist: silent, every profile, Chrome shows Managed by your organization, and macOS may ask for an administrator password once. On macOS that policy is your own user's, never the computer's, so other macOS users' Chrome is left alone. On Linux the policy file (/etc/opt/chrome/policies/managed/blowhorn.json) and the external file (/usr/share/google-chrome/extensions/&lt;id&gt;.json) need root, Blowhorn never asks for it, and a write this user cannot make is refused with the file, its exact content and the sudo command that writes that one file. Never run this command under sudo: the host and launcher would land under root's home, which your Chrome never reads, so a run under sudo is refused by name. `--external` writes Chrome's external-extensions file instead, so Chrome offers the install in each profile, one click there, and does not show that banner. `--external` without `--all-profiles` is refused and writes nothing. Switching route removes the other route's file for this extension id. Both routes name the extension id from that same key and the Chrome Web Store update url; Chrome can fetch the extension only once that id is published. A policy file that exists and cannot be read is one sentence and nothing is written. Per-profile lines say what Chrome was asked to do, never that a profile's copy was confirmed. Those lines cover the configured Chrome data directory. The policy route applies the extension to every Chrome profile on this machine. `--json` appends one trailing object (manifest, launcher, extension_dir, removed), for a script or the desktop app. With `--all-profiles` that object also carries route, extension_id, profiles, profiles_error and profiles_scope; with `--profile` or `--chrome-profile` it carries targets. `--ensure`, with exactly one `--profile` or `--chrome-profile`, ensures the extension for that profile the way a run does on demand: it repairs the native host when missing or stale, registers the extension for that profile's data directory when nothing is there yet, and re-probes hello once. A profile already carrying a Chrome Web Store install is left alone, and a store install too old for this Blowhorn is reported with Chrome's own update step, never forced. `--ensure` refuses `--all-profiles` and `--external`, writes nothing with `--dry-run`, and never starts, restarts, or kills Chrome.
 
 ```text
 blowhorn chrome extension-install [OPTIONS]
@@ -175,6 +202,7 @@ blowhorn chrome extension-install [OPTIONS]
 | --- | --- | --- | --- |
 | `--all-profiles` | boolean | `false` | Also ask Chrome to install the Chrome extension in every Chrome profile on this machine. The default is the policy route (silent, every profile, Managed by your organization). This is every Chrome profile, not `--profile` all. |
 | `--external` | boolean | `false` | With `--all-profiles`, write Chrome's external-extensions file instead of the policy, so Chrome offers the install in each profile and does not show Managed by your organization. Refused without `--all-profiles`; nothing is written. |
+| `--ensure` | boolean | `false` | Ensure the extension for one named Chrome profile, the way a run does when it finds the extension missing, stale, or outdated: repair the native host, register the extension for that profile's data directory when nothing is there yet, and re-probe hello once. Needs exactly one `--profile` or `--chrome-profile`, and refuses `--all-profiles` and `--external`. A profile already carrying a Chrome Web Store install is left alone: Chrome's updater owns it, and this never forces a store update. Writes nothing with `--dry-run`. Never starts, restarts, or kills Chrome. |
 | `--chrome-profile` | string, repeatable |  | A Chrome profile directory, exactly as `blowhorn chrome profiles` prints it (`Profile 12`): write the host and print the steps to load the extension in that profile alone. Repeatable. Refused with `--all-profiles` |
 | `--json` | boolean | `false` | Emit the report as JSON with a stable shape, for a script or the desktop app |
 | `--platform` | string |  | Accepted and ignored by `blowhorn chrome`: this command never acts on a platform, so `--platform` has no effect here -- including a value inherited from `BLOWHORN_PLATFORM` or defaults.platform in .blowhorn.yaml |
@@ -195,6 +223,8 @@ blowhorn chrome extension-install --all-profiles --external
 blowhorn chrome extension-install --all-profiles --json
 blowhorn chrome extension-install --profile kate
 blowhorn chrome extension-install --chrome-profile 'Profile 12'
+blowhorn chrome extension-install --profile kate --ensure
+blowhorn chrome extension-install --profile kate --ensure --dry-run
 ```
 
 Output: json with `--json`, text otherwise.

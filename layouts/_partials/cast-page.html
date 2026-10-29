@@ -46,6 +46,10 @@
           </ul>
         </section>
 
+        {{- if eq .kind "solution" }}
+        {{- partial "social-proof.html" (dict "slot" "rotating") }}
+        {{- end }}
+
         {{- with $item.compare }}
         <section class="agent-section" aria-labelledby="compare-title">
           <div class="section-head"><h2 id="compare-title" class="h2">Compare product by product</h2></div>

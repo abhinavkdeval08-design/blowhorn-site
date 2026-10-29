@@ -1,0 +1,19 @@
+{{- /* One article (or tip) in a collection grid. data-* attributes feed
+       the client-side search and tag filter in resources.js. */ -}}
+{{- $tags := .Params.tags | default slice }}
+<article class="article-card" data-card data-tags="{{ delimit $tags " " }}" data-search="{{ lower (printf "%s %s %s" .Title .Params.summary (delimit $tags " ")) }}">
+  <p class="article-card-kicker">
+    {{ if in $tags "tips" }}Tip{{ else }}Article{{ end }}
+    <span aria-hidden="true">·</span>
+    <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+  </p>
+  <h3 class="article-card-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+  <p class="article-card-summary">{{ .Params.summary }}</p>
+  {{- with .GetTerms "tags" }}
+  <div class="tag-chips-row" role="group" aria-label="Tags">
+    <ul class="tag-chips">
+      {{ range . }}<li><a class="tag-chip" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>{{ end }}
+    </ul>
+  </div>
+  {{- end }}
+</article>

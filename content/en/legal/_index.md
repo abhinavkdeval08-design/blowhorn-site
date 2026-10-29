@@ -20,7 +20,7 @@ glance:
     link: /legal/privacy/#in-chrome-through-the-blowhorn-extension
     linkText: What the extension reads
   - title: No analytics in the app
-    text: The app carries no analytics or crash-reporting library. The one thing it sends about itself is failure reports, described on the privacy page. This website uses Google Analytics to count visits only if you accept its cookie notice, and those cookies are the only ones the site sets. You can change your choice under Cookie preferences. Its other outside request is the release lookup on GitHub. The newsletter form sends your email address to Mailchimp only when you submit it. The privacy page describes all three.
+    text: The app carries no analytics or crash-reporting library. The one thing it sends about itself is failure reports, described on the privacy page. This website uses Google Analytics to count visits only if you accept its cookie notice, and those cookies are the only ones the site sets. You can change your choice under Cookie preferences. Its other outside request is the release lookup on GitHub. The newsletter form sends your email address to Blowhorn's own signup service only when you submit it. The privacy page describes all three.
     link: /legal/privacy/#this-website
     linkText: What this website does
   - title: One account for your queue, analytics and credentials

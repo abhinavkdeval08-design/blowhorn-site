@@ -32,7 +32,7 @@ it macOS asks once whether to open an app downloaded from the internet. Choose
 Launch `Blowhorn.app`. It runs the engine it carries and never looks for a
 checkout of this repository. If that engine can't start, it opens on
 **Setup**. Otherwise the guided setup opens
-first: finish it ([Set up Blowhorn the first time](/docs/how-to/set-up/first-run-setup/)),
+first: finish it ([Set up Blowhorn at first muster](/docs/how-to/set-up/first-muster-setup/)),
 then choose **run setup again** at the bottom of Settings. Setup shows four
 checks, each either `ok` or offering the action that fixes it.
 
@@ -43,9 +43,9 @@ Work down the activities:
    [Fix Blowhorn when its engine won't start](/docs/how-to/troubleshoot/engine-wont-start/).
 2. **helper tools** - its Python ships in the app, so this activity has
    nothing to install.
-3. **organization connection** - the connection to your account. If it is not configured yet, click
-   its **import** action and follow
-   Connect to your account.
+3. **organization connection** - the connection to your account. When it warns, it
+   shows why (for example `Not signed in to Blowhorn. Sign in to continue.`) and a **test connection**
+   button; sign in from the app, then click **test connection** to check again.
 4. **this computer on watch** - nothing to do here: once the activities above are ok
    the app registers the service itself, and this activity only reports it. You do
    not need it to finish this tutorial.

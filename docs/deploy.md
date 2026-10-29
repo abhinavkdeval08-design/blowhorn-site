@@ -52,7 +52,7 @@ The newest run on `master` should show both jobs green. The deployment is live
 at the Pages URL within a minute of the `deploy` job finishing:
 
 - <https://blowhorn.ai/> once DNS points at GitHub Pages (below).
-- <https://layer5io.github.io/blowhorn-site/> is the project URL. Because the
+- <https://blowhorn-ai.github.io/blowhorn-site/> is the project URL. Because the
   custom domain is already set on Pages, GitHub redirects this URL to
   `https://blowhorn.ai/`, so nothing is reachable there until the DNS records
   below are in place. The artifact itself deploys fine either way.
@@ -98,7 +98,7 @@ Form A, a flattened CNAME (Cloudflare resolves it to GitHub's addresses itself):
 
 | Type | Name | Target | Proxy |
 |---|---|---|---|
-| CNAME | `@` | `layer5io.github.io` | DNS only |
+| CNAME | `@` | `blowhorn-ai.github.io` | DNS only |
 
 Form B, GitHub Pages' fixed addresses:
 
@@ -142,13 +142,13 @@ it stalls, the usual cause is the Cloudflare proxy being on for the record.
 
 | Type | Name | Target | Proxy |
 |---|---|---|---|
-| CNAME | `www` | `layer5io.github.io` | DNS only |
+| CNAME | `www` | `blowhorn-ai.github.io` | DNS only |
 
 With `blowhorn.ai` as the Pages custom domain and this record in place, GitHub
 answers `www.blowhorn.ai` with a redirect to `https://blowhorn.ai/`.
 
 ```bash
-dig +short CNAME www.blowhorn.ai   # expect: layer5io.github.io.
+dig +short CNAME www.blowhorn.ai   # expect: blowhorn-ai.github.io.
 curl -sI https://www.blowhorn.ai   # expect 301 to https://blowhorn.ai/
 ```
 
@@ -160,7 +160,7 @@ Every page and asset reference is root-relative (`/css/site.<hash>.css`,
 path, nested ones included. A build with a different base URL
 (`make site-build BASE_URL=...` or `make build-preview`) prefixes every
 reference with that URL's path. The project URL
-`layer5io.github.io/blowhorn-site/` redirects to blowhorn.ai, so nothing is
+`blowhorn-ai.github.io/blowhorn-site/` redirects to blowhorn.ai, so nothing is
 served under that path in production.
 
 The public URLs are a contract, checked by `make site-check`:
@@ -182,6 +182,8 @@ The public URLs are a contract, checked by `make site-check`:
   there), whose URL is `params.cloud_url` in `hugo.toml` alone. None of these
   is listed in `sitemap.xml` or `llms.txt`.
 - `/assets/brand/...` (from `static/assets/brand/`), `/favicon.ico`, `/CNAME`.
+- The two brand kits on `/brand/`: `/brand/blowhorn-brand-kit.zip` (the full kit,
+  the URL the kit has always had) and `/brand/blowhorn-logo-kit.zip`.
 - Generated: `/sitemap.xml`, `/robots.txt` (which names the sitemap),
   `/llms.txt`, `/llms-full.txt` and `/index.md`.
 
@@ -295,6 +297,14 @@ chrome-devtools-axi screenshot /path/to/evidence/home-390-dark.png --full-page
 chrome-devtools-axi eval 'document.documentElement.scrollWidth > document.documentElement.clientWidth'   # must be false
 ```
 
+Two capture gotchas. Headless Chrome will not shrink a window below 500 px, so
+`resize 390 844` silently shoots at 500: use
+`emulate --viewport "390x844x2,mobile"` for phone widths and check
+`innerWidth`. The ambient background is a `position: fixed` layer, so a
+`--full-page` shot taller than the viewport shows a hard seam where the layer
+ends; set the viewport height to `document.documentElement.scrollHeight`
+before shooting instead.
+
 ## Internal section (Hugo segments and module mounts)
 
 `/internal/` is the internal Blowhorn site. Its source never enters this
@@ -349,9 +359,61 @@ adds a module import, `github.com/blowhorn-ai/blowhorn`, with its own mounts:
     source = "marketing/capability-comparison/compare-segments.csv"
     target = "assets/internal/compare-segments.csv"
   [[module.imports.mounts]]
+    source = "marketing/brand/hugo/assets"
+    target = "content/internal/assets"
+  [[module.imports.mounts]]
+    source = "marketing/assets.manifest.json"
+    target = "static/internal/marketing-assets/assets.manifest.json"
+  [[module.imports.mounts]]
+    source = "marketing/brand/cast"
+    target = "static/internal/marketing-assets/brand/cast"
+    files = ["**/*-640.webp"]
+  [[module.imports.mounts]]
     source = "internal/engineering/hugo/engineering"
     target = "content/internal/engineering"
+  [[module.imports.mounts]]
+    source = "internal/design/hugo/design"
+    target = "content/internal/design"
+  [[module.imports.mounts]]
+    source = "internal/design"
+    target = "content/internal/design"
+    excludeFiles = ["hugo/**", "README.md"]
+  [[module.imports.mounts]]
+    source = "internal/specs/hugo/specs"
+    target = "content/internal/specs"
+  [[module.imports.mounts]]
+    source = "internal/specs"
+    target = "content/internal/specs"
+    excludeFiles = ["hugo/**", "README.md"]
+  [[module.imports.mounts]]
+    source = "internal/plans/hugo/plans"
+    target = "content/internal/plans"
+  [[module.imports.mounts]]
+    source = "internal/plans"
+    target = "content/internal/plans"
+    excludeFiles = ["hugo/**", "README.md"]
+  [[module.imports.mounts]]
+    source = "internal/research/hugo/research"
+    target = "content/internal/research"
+  [[module.imports.mounts]]
+    source = "internal/research"
+    target = "content/internal/research"
+    excludeFiles = ["hugo/**", "README.md"]
 ```
+
+Four sections render the blowhorn repository's own document folders as
+they are: `internal/design`, `internal/specs`, `internal/plans` and
+`internal/research` mount directly into `/internal/<area>/`, so the plans,
+designs, specs and research that live only in the repository are on the
+internal site without moving or copying a file. Each area's `hugo/<area>/`
+folder carries only the section scaffold (`_index.md`: title, weight,
+description); the raw mount excludes that folder and the area's root
+`README.md`, which is the folder's GitHub index, not a site page. The
+Each document carries only `title` (its own first heading) and
+`layout: internal` as front matter, added in place in the repository;
+nothing else about the documents changes. Relative links between
+documents keep their repository shape and resolve in the repository, not
+in the site.
 
 `make site-internal-build` points the import at the clone with
 `HUGO_MODULE_REPLACEMENTS="github.com/blowhorn-ai/blowhorn -> <abs BLOWHORN_DIR>"`,
@@ -398,11 +460,12 @@ is each page's `weight`. The public build never renders any of it.
 
 ### Where the internal build runs
 
-blowhorn's `.github/workflows/internal-site.yml` checks out both
-repositories side by side, runs `make site-internal-build` from the blowhorn
-clone and uploads `public-internal/` as a private workflow artifact. There
-is no private host. It never runs in this repository's Actions, whose
-artifacts and logs are public.
+The internal build and Worker deploy run in this repository's Actions
+(`.github/workflows/internal-site.yml`), started by hand, by
+`internal-site-auto.yml`, or by `repository_dispatch`. The private product
+checkout is sparse, never uploaded, and removed before the job ends; build
+and wrangler output stay suppressed because this repository is public. There
+is no private host and no artifact of `public-internal/`.
 
 ### Footguns
 
@@ -439,12 +502,50 @@ tree on every build. Locally, `make site-internal` still redirects `/` to
 
 ### Shipping an update
 
-From a blowhorn-ai/blowhorn clone (or here): `make site-internal-deploy`
-(`REF=<branch|tag|sha>` to build something other than master, `WATCH=0` to
-not wait). It runs `.github/workflows/internal-site.yml` by
-`workflow_dispatch`; other workflows in this repository can call the same file
-with `workflow_call` and `secrets: inherit`. Ship after a change to the
-internal documents (`marketing/strategy/**`, the comparison CSVs) merges.
+`.github/workflows/internal-site.yml` builds and deploys. It redeploys on its
+own after a change to anything the internal build is made from:
+
+- **Site side (this repository).** `.github/workflows/internal-site-auto.yml`
+  calls it on every push to `master` that touches `config/internal/**`,
+  `internal-worker/**`, `static-internal/**`, `layouts/**`, `assets/**`,
+  `.github/scripts/internal*`, either internal workflow, the `Makefile`, or
+  the toolchain (`package.json`, `package-lock.json`, `.nvmrc`, `go.mod`,
+  `go.sum`, `hugo.toml`, `postcss.config.js`).
+- **Product side (blowhorn-ai/blowhorn), polled.** Every 15 minutes the same
+  workflow runs `make site-internal-poll`, which asks the GitHub API, with
+  `DMG_SOURCE_TOKEN`, whether blowhorn `master` has a commit in the last 30
+  minutes under a mounted path (`marketing/strategy/**`,
+  `marketing/capability-comparison/**`, `marketing/brand/**` including the
+  asset catalog, `marketing/assets.manifest.json`, or
+  `internal/{engineering,design,specs,plans,research}/**`). If so it deploys
+  that `master` SHA. The run fails, rather than skipping, when
+  `DMG_SOURCE_TOKEN` is missing or cannot read the repository. Polling keeps
+  the work on this public repository's free minutes; the private repository
+  spends none. A change is redeployed on each poll for about 30 minutes, which
+  rides out one delayed or dropped scheduled run without eight repeats.
+- **Product side, pushed.** A client with a token that can dispatch on this
+  repository sends `repository_dispatch` with event type
+  `deploy-internal-site` and optional
+  `client_payload: {"blowhorn_ref": "<sha-or-master>"}`:
+
+  ```sh
+  gh api repos/blowhorn-ai/blowhorn-site/dispatches \
+    -f event_type=deploy-internal-site -f 'client_payload[blowhorn_ref]=master'
+  ```
+
+  blowhorn's `.github/workflows/internal-site-dispatch.yml` does this on a
+  merge under the mounted paths, with the repository secret
+  `SITE_DISPATCH_TOKEN` (a token with Contents: write on
+  blowhorn-ai/blowhorn-site, which `repository_dispatch` requires). Without
+  that hook, the poll still picks the change up within about 15-45 minutes.
+- **By hand.** From a blowhorn-ai/blowhorn clone (or here):
+  `make site-internal-deploy` (`REF=<branch|tag|sha>` to build something other
+  than master, `WATCH=0` to not wait) runs the workflow by
+  `workflow_dispatch`. Actions > Internal site (auto) > Run workflow runs the
+  auto path by hand.
+
+Deploys queue on the workflow's `internal-site` concurrency group, so an
+automatic deploy waits for a running one instead of cancelling it.
 
 The workflow, in order (each step is a make target):
 
@@ -456,7 +557,10 @@ The workflow, in order (each step is a make target):
    managed default-deny pair. This runs before any private content reaches
    the runner.
 4. Checks out blowhorn-ai/blowhorn (sparse: `marketing/strategy`,
-   `marketing/capability-comparison`) with the read-only deploy key.
+   `marketing/capability-comparison`, `marketing/brand`,
+   `marketing/assets.manifest.json`, `internal/engineering`,
+   `internal/design`, `internal/specs`, `internal/plans`,
+   `internal/research`) with the read-only deploy key.
 5. `site-internal-build` with `BASE_URL=https://internal.blowhorn.ai/`, output
    suppressed.
 6. `site-internal-worker-deploy`: `wrangler deploy` with a filtered summary,
@@ -486,11 +590,17 @@ checkout after building. Keep it that way in any change to the workflow or
   added read-only to blowhorn-ai/blowhorn. It can read that one repository and
   cannot write to it or reach any other. Rotate it by adding a new deploy key
   and replacing the secret; revoke it by deleting the deploy key.
+- `DMG_SOURCE_TOKEN` (repository secret, shared with `publish-dmg.yml`,
+  `sync-docs.yml` and `product-ci.yml`): read access to blowhorn-ai/blowhorn.
+  `internal-site-auto.yml` passes it only to the scheduled poll, which sends
+  it only to the GitHub API.
+- `SITE_DISPATCH_TOKEN` (secret on blowhorn-ai/blowhorn, not here): lets the
+  product repository send `deploy-internal-site`.
 
 ### Changing who can read it
 
 Edit `allowed_emails` in `internal-worker/access.json` in a pull request (so
-the change is reviewed), merge, and run `make site-internal-deploy`. The
+the change is reviewed) and merge; the push to `master` redeploys. The
 workflow updates the Access policy and the Worker's list together. Do not edit
 the policy in the Cloudflare dashboard: the next deploy resets it, and a
 mismatch fails verification.

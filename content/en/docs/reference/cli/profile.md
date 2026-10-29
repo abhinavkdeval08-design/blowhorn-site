@@ -15,17 +15,17 @@ The `blowhorn profile` commands. Each one's `--help` prints the same text.
 | [`profile auth`](#blowhorn-profile-auth) | Refresh authentication/session state for one or more platforms. |
 | [`profile create`](#blowhorn-profile-create) | Create a profile in your organization on Blowhorn. |
 | [`profile current`](#blowhorn-profile-current) | Show the active profile after resolving CLI, env, and config defaults. |
-| [`profile delete`](#blowhorn-profile-delete) | Delete a profile in your organization: its row is soft-deleted and its accounts are |
+| [`profile delete`](#blowhorn-profile-delete) | Delete a profile in your organization, named by its name or its id: Blowhorn asks |
 | [`profile get`](#blowhorn-profile-get) | Print one profile as your Blowhorn account holds it: its id, description and the |
 | [`profile list`](#blowhorn-profile-list) | List the profiles your organization holds in your Blowhorn account: each profile's name, description, and the person it represents (none for a brand). |
-| [`profile set`](#blowhorn-profile-set) | Store KEY=VALUE pairs in a profile's platform credentials. |
+| [`profile set`](#blowhorn-profile-set) | Store KEY=VALUE pairs on a profile: its platform credentials and its run settings. |
 | [`profile status`](#blowhorn-profile-status) | Report what each profile in your organization is set up for: the platforms it holds |
 | [`profile switch`](#blowhorn-profile-switch) | Set a profile as the default profile in global config. |
 | [`profile update`](#blowhorn-profile-update) | Replace the fields a person sets on one profile. |
 
 ## blowhorn profile accounts
 
-List, map or unmap a profile's social accounts. An account is a Blowhorn connection on one platform; a profile acts through the accounts mapped to it, one per platform, whoever owns them, so a person may keep several profiles and a brand profile reaches the accounts mapped to it. `--map` replaces the profile's account on that platform; `--unmap` leaves the connection itself intact. `--page` records the account's own page on the account already mapped for that platform, which is where the profile's handle is read from: Chrome profile discovery finds a sign-in, never a LinkedIn /in/ name. Needs store.backend=cloud.
+List, map or unmap a profile's social accounts. An account is a Blowhorn connection on one platform; a profile acts through the accounts mapped to it, one per platform, whoever owns them, so a person may keep several profiles and a brand profile reaches the accounts mapped to it. `--map` replaces the profile's account on that platform; `--unmap` leaves the connection itself intact. `--page` records the account's own page on the account already mapped for that platform, which is where the profile's handle is read from: Chrome profile discovery finds a sign-in, never a LinkedIn /in/ name.
 
 ```text
 blowhorn profile accounts [OPTIONS] name
@@ -113,7 +113,7 @@ Output: json with `--json`, text otherwise.
 
 ## blowhorn profile create
 
-Create a profile in your organization on Blowhorn. It reads a JSON document on stdin (`--payload-stdin`) holding the fields a person sets: name (required), description and userId. userId is the organization member the profile represents, as `blowhorn org members` lists them; leave it out for a brand. Blowhorn adds the organization, and you own the profile. The name must be handle-shaped (lowercase letters, digits, `-` or `_`) and not one another profile uses. Any other key is refused, every refusal comes before anything is sent, and `--dry-run` makes the same checks and sends nothing. No folder is created and no email is looked up. Needs store.backend=cloud.
+Create a profile in your organization on Blowhorn. It reads a JSON document on stdin (`--payload-stdin`) holding the fields a person sets: name (required), description and userId. userId is the organization member the profile represents, as `blowhorn org members` lists them; leave it out for a brand. Blowhorn adds the organization, and you own the profile. The name must be handle-shaped (lowercase letters, digits, `-` or `_`) and not one another profile uses. Any other key is refused, every refusal comes before anything is sent, and `--dry-run` makes the same checks and sends nothing. No folder is created and no email is looked up.
 
 ```text
 blowhorn profile create [OPTIONS]
@@ -165,7 +165,7 @@ Output: text.
 
 ## blowhorn profile delete
 
-Delete a profile in your organization: its row is soft-deleted and its accounts are unlinked, and the accounts themselves are kept. Nothing on this computer is moved or removed. A name your organization does not list is refused. Needs the store: unreachable is exit 3 and nothing is deleted. Requires `--yes`; `--dry-run` asks nothing and deletes nothing.
+Delete a profile in your organization, named by its name or its id: Blowhorn asks your Blowhorn account to delete it, its accounts are unlinked, and the accounts themselves are kept. Nothing on this computer is moved or removed. A profile your organization does not list is refused. Needs the store: unreachable is exit 3 and nothing is deleted. Requires `--yes`; `--dry-run` asks nothing and deletes nothing.
 
 ```text
 blowhorn profile delete [OPTIONS] name
@@ -173,7 +173,7 @@ blowhorn profile delete [OPTIONS] name
 
 | Argument | Required | Description |
 | --- | --- | --- |
-| `name` | yes | Profile name |
+| `name` | yes | The profile's name, or its id as profile list prints it |
 
 | Flag | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -190,6 +190,7 @@ Examples:
 ```bash
 blowhorn profile delete sam --dry-run
 blowhorn profile delete sam --yes --json
+blowhorn profile delete 3f2b1c4d-8a9e-4c6b-9d1e-2a3b4c5d6e7f --yes
 ```
 
 Output: json with `--json`, text otherwise.
@@ -252,9 +253,9 @@ Output: json with `--json`, text otherwise.
 
 ## blowhorn profile set
 
-Store KEY=VALUE pairs in a profile's platform credentials. A platform key (LI_\*, X_\*, RDDT_\*, HN_\*, SLACK_\*, BLUESKY_\*, GH_\*, YT_\*, IG_\*, FB_\*, TIKTOK_\*, slack_workspaces and the &lt;WORKSPACE&gt;_SLACK_\* session keys) is stored in that platform's credential in the store, where runs read it; a blank value clears a key. Any other key is refused, and every refusal comes before anything is written. Nothing is written to a file. The output names the keys that changed and never echoes a value. Replacing a credential an API check judges (`GH_TOKEN`, the Bluesky handle or app password, a Slack token or captured session) sets that platform back to not checked in profile status until the next check, because each such check records which credential it judged. A browser platform's check is about its saved session and stays.
+Store KEY=VALUE pairs on a profile: its platform credentials and its run settings. A platform key (LI_\*, X_\*, RDDT_\*, HN_\*, SLACK_\*, BLUESKY_\*, GH_\*, YT_\*, IG_\*, FB_\*, TIKTOK_\*, slack_workspaces and the &lt;WORKSPACE&gt;_SLACK_\* session keys) is stored in that platform's credential in the store, where runs read it. A run setting (Risk Profile, Risk Profile By Platform, Daily Caps, Quiet Hours, Quiet Hours Time Zone) is stored in the profile's settings in your Blowhorn account, and a value a run could not read is refused. A blank value clears a key. Any other key is refused, and every refusal comes before anything is sent. Nothing is written to a file. The output names the keys that changed and never echoes a value. Replacing a credential an API check judges (`GH_TOKEN`, the Bluesky handle or app password, a Slack token or captured session) sets that platform back to not checked in profile status until the next check, because each such check records which credential it judged. A browser platform's check is about its saved session and stays.
 
-`--create` writes a new profile's row in the store's profiles, bound to the Blowhorn user EMAIL resolves to, before any credential is stored; EMAIL is required and is read only by `--create`. When the store cannot be reached the create is refused with exit 3 and nothing is written. An email no Blowhorn user holds, or one that several hold, is refused by name; `--subject` &lt;uuid&gt; names the user directly on those two branches, is refused when it names no live user, and is refused when EMAIL resolves to someone else. A profile is never created without a Blowhorn user: there is no `--force`. The same email already bound to another profile, or a name held by another user's profile, is refused rather than renamed. On your Blowhorn account, profile create is the way to create one.
+A profile is created with profile create, and who it represents changes with profile update.
 
 ```text
 blowhorn profile set [OPTIONS] name [assignments...]
@@ -267,8 +268,6 @@ blowhorn profile set [OPTIONS] name [assignments...]
 
 | Flag | Type | Default | Description |
 | --- | --- | --- | --- |
-| `--create` | boolean | `false` | Create a new profile: resolve EMAIL to its Blowhorn user and write its row in the store's profiles before any credential is stored; needs the store |
-| `--subject` | string |  | The Blowhorn user id (a uuid) the profile is bound to, for an EMAIL no user holds or several hold; refused when it names no live user, or when EMAIL resolves to someone else |
 | `--json` | boolean | `false` | Emit machine-readable JSON output |
 | `--platform` | string |  | Platform scope for `blowhorn profile`. One of: bluesky, linkedin, reddit, slack, x, all (`all` means every platform listed here) |
 | `--pace` | string |  | Accepted by `blowhorn profile set` because `--pace` is a global flag, but this command does no paced work -- it sleeps between nothing -- so the value changes nothing about how it runs and appears only in the Pace column of the -v summary. Resolved as CLI flag, then `BLOWHORN_PACE`, then defaults.pace in .blowhorn.yaml (normal when none is set); an unrecognized value is rejected before anything runs |
@@ -280,8 +279,7 @@ Examples:
 
 ```bash
 blowhorn profile set kate X_USERNAME=katesuttons X_PASSWORD=yourpassword
-blowhorn profile set sam EMAIL=sam@example.com --create
-blowhorn profile set sam EMAIL=sam@example.com --create --subject 3f2b1c4d-8a9e-4c6b-9d1e-2a3b4c5d6e7f
+blowhorn profile set kate "Risk Profile=cautious" "Quiet Hours=22:00-07:00"
 blowhorn profile set kate GH_TOKEN=ghp_yourtoken --json
 blowhorn profile set alex slack_workspaces=mesheryio.slack.com,acme.slack.com
 ```
@@ -356,7 +354,7 @@ Output: text.
 
 ## blowhorn profile update
 
-Replace the fields a person sets on one profile. The profile is named by its name or its id, and the fields come from the JSON document on stdin (`--payload-stdin`): name (required), description and userId. The document is the whole of them: a description left out is cleared, and a userId left out makes the profile a brand that represents nobody. The profile's run settings (Risk Profile, caps, quiet hours) are read just before the write and sent back as they are, and its owner is unchanged. The same refusals as `profile create` apply, a rename onto another profile's name included; `--dry-run` sends nothing. Needs store.backend=cloud.
+Replace the fields a person sets on one profile. The profile is named by its name or its id, and the fields come from the JSON document on stdin (`--payload-stdin`): name (required), description and userId. The document is the whole of them: a description left out is cleared, and a userId left out makes the profile a brand that represents nobody. The profile's run settings (Risk Profile, caps, quiet hours) are read just before the write and sent back as they are, and its owner is unchanged. The same refusals as `profile create` apply, a rename onto another profile's name included; `--dry-run` sends nothing.
 
 ```text
 blowhorn profile update [OPTIONS] name

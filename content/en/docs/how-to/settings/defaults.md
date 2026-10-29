@@ -81,12 +81,11 @@ To read one option and learn which document holds it:
 
 ```bash
 blowhorn config get defaults.profile
-blowhorn config get store.password        # set / not set, never the value
 ```
 
-Your account connection is configured the same way, but its `store.*` keys live
-in a private file, never in `.blowhorn.yaml`. During early access your
-Blowhorn administrator sets them up.
+Blowhorn reaches your account through `blowhorn auth login`, not through an
+option. The one store option is `defaults.store.organization`, which picks the
+organization Blowhorn uses when the sign-in did not choose one.
 
 ## Choose where output is written
 
