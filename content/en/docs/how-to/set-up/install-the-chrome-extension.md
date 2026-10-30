@@ -6,10 +6,10 @@ aliases: [/docs/how-to/install-the-chrome-extension/]
 ---
 
 
-Requires macOS 13 or newer and Google Chrome 142 or newer, the real
-Google Chrome, not Chromium. See [System requirements](/docs/reference/requirements/).
+Requires macOS 13 or newer and Google Chrome 142 or newer. See
+[System requirements](/docs/reference/requirements/).
 
-Blowhorn drives Chrome through its Chrome extension. Chrome keeps an
+Blowhorn drives Google Chrome through its Chrome extension. Chrome keeps an
 extension inside each Chrome profile, and the extension drives only the
 profile it is installed in. Install it in every Chrome profile you post
 from.
@@ -118,7 +118,7 @@ mapped. Nothing is lost: the mapping itself is unchanged. The popup
 catches up the next time the app reads the mapping: after you sign in or
 change a mapping.
 
-## Load it unpacked in one Chrome profile {#load-it-unpacked-in-one-chrome-profile}
+## Load it unpacked in one Chrome profile
 
 When only one Chrome profile needs the extension, write the native host and
 follow the printed steps. Through the Blowhorn mapping:
@@ -151,7 +151,7 @@ See the files first, and write nothing:
 blowhorn chrome extension-install --profile kate --dry-run
 ```
 
-## Every Chrome profile on this computer {#every-chrome-profile-on-this-computer}
+## Every Chrome profile on this computer
 
 **Every profile** (the default) writes Chrome's
 `ExtensionInstallForcelist`. Chrome installs the extension the next time
@@ -201,7 +201,7 @@ profile's copy was confirmed.
 
 ## From the desktop app
 
-Settings has one **chrome extension** card. The segmented control is the
+Settings has one **chrome extension** card, on its **Setup** page. The segmented control is the
 route: **every profile** or **ask in each profile**. The button stays
 **install chrome extension** either way. After the command, the card lists
 one row per Chrome profile with the same words the terminal prints.

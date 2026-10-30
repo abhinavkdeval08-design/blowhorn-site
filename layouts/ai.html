@@ -35,7 +35,7 @@
             {{ partial "code-card.html" (dict "code" .code "title" .title "lang" (.lang | default "bash") "prompt" .prompt "copy" (ne .copy false)) }}
             {{- end }}
           </div>
-          {{- with $p.code_note }}<p class="caption muted ai-note">{{ . }}</p>{{ end }}
+          {{- with $p.code_note }}<p class="caption muted ai-note">{{ . | markdownify }}</p>{{ end }}
         </section>
         {{- end }}
 
@@ -52,6 +52,10 @@
             {{- end }}
           </ul>
         </section>
+        {{- end }}
+
+        {{- if not .IsPage }}
+        {{ partial "tells-callout.html" (merge site.Data.tells.callouts.agents (dict "id" "ai" "placement" "ai")) }}
         {{- end }}
 
         {{- with $p.cards }}

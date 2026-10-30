@@ -6,7 +6,7 @@ aliases: [/docs/how-to/uninstall/]
 ---
 
 
-Remove Blowhorn from your computer: the background service, the Chrome native host,
+Remove Blowhorn from your computer: the background service, the Google Chrome native host,
 the launchers, the desktop app and the checkout's build products. The sign-in
 on this computer goes with the app. Your other data stays unless you ask for it
 to go. The account on the shared store is never touched.
@@ -56,8 +56,8 @@ present`, `not unregistered` or `failed`:
 3. **The every-profile install entries.** The external-extensions file and
    Blowhorn's own entry in the managed policy, removed with the same
    administrator prompt that wrote them; other keys in that file stay.
-4. **The launchers.** `~/.local/bin/blowhorn` and `~/.local/bin/blowhorn-axi`,
-   when they carry the installer's marker. A file there that `tools/install.sh` did
+4. **The launchers.** `~/.local/bin/blowhorn`, `~/.local/bin/blowhorn-axi`
+   and the app's `~/.local/bin/blowhorn-mcp`, when they carry the installer's marker. A file there that `tools/install.sh` did
    not write is kept and says so.
    Pass `--bin-dir` if you installed elsewhere. The marked block the
    installer or the app added to your shell startup file (`.zshrc`,
@@ -103,7 +103,7 @@ this computer, and no flag removes them.
 
 ## Uninstall from the app
 
-In Settings, **uninstall Blowhorn…** opens a confirm dialog and quits the
+In Settings, on the **Background & updates** page, **uninstall Blowhorn…** opens a confirm dialog and quits the
 app; a helper the app leaves behind then runs the same command above,
 once the app is gone (the command refuses while the app is running, so
 the helper waits for it to quit first). It runs the engine the app
@@ -138,8 +138,12 @@ the account's token list. It does not delete the account.
 
 ## Dragging the app to the Trash
 
-Dragging `Blowhorn.app` to the Trash starts the removal; running the
-command once more finishes it:
+Prefer **uninstall Blowhorn…** in Settings, or `blowhorn uninstall`: both run
+while the app still exists, which is the only time it can take its own entries
+out of System Settings > General > Login Items & Extensions.
+
+To remove Blowhorn by dragging it instead, run the command once more before you
+empty the Trash:
 
 1. Drag the app to the Trash, as you would any Mac app.
 2. In a terminal, run `blowhorn` once (any arguments, or none).
@@ -151,12 +155,25 @@ difference from running `blowhorn uninstall` yourself with the app still
 installed, which keeps your data: only use the Trash when you mean to
 remove everything. Opening the trashed app instead offers the same finish.
 
-If you empty the Trash before running the command, the engine is gone with
-the app. The launcher then removes the files it can still reach (itself,
-the shell startup block, the background service and attach-Chrome agent
-files, the Chrome native host entry) and names what it could not: the
-sign-in in your Keychain and the account token's revocation, which only
-the full command can do.
+### If you already emptied the Trash
+
+The engine is gone with the app, so the full removal cannot run. Two steps
+still clean up:
+
+1. In a terminal, run `blowhorn` once. The launcher removes the files it can
+   still reach: itself, the shell startup block, the background service and
+   attach-Chrome agent files, the Chrome native host entry, and the app's own
+   folder, `~/Library/Application Support/Blowhorn` (its preferences, so a
+   later install does not inherit open at login). It names what it could not
+   remove: the sign-in in your Keychain and the account token's revocation.
+2. Clear the Login Items the app left, which only the app can unregister.
+   Either install Blowhorn again and open it once - its first launch removes
+   entries left by the deleted copy before it registers its own - then
+   uninstall it from Settings, or remove **Blowhorn** under System Settings >
+   General > Login Items & Extensions yourself.
+
+Installing again and running `blowhorn uninstall` also removes the Keychain
+sign-in and revokes the account token.
 
 ## Without a checkout
 

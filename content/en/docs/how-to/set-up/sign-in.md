@@ -67,8 +67,8 @@ Keychain asks once whether `python` may use the saved sign-in. Choose
 
 ## From the app
 
-Open `blowhorn://signin`, the link the Blowhorn Chrome extension's **Sign in**
-offers. The app opens [Blowhorn](https://cloud.blowhorn.ai) in your browser; sign in there, or create
+Open `blowhorn://signin`, the link offered by **Sign in** in the Blowhorn extension in
+Google Chrome. The app opens [Blowhorn](https://cloud.blowhorn.ai) in your browser; sign in there, or create
 an account, then choose **Allow**. `blowhorn://signup` starts the same sign-in for a new account
 (see [Create a Blowhorn account](/docs/how-to/set-up/create-an-account/)). The sign-in sends its
 answer to the command line on this computer (`127.0.0.1`), and the app comes
@@ -86,6 +86,10 @@ Blowhorn plan yet, open [Blowhorn](https://cloud.blowhorn.ai) yourself, or choos
 **Your account and plan** in the app's account menu, to start the beta there.
 
 ## Sign out
+
+In the app, open the account menu at the bottom of the rail and choose **Sign
+out**. The app takes you to the sign-in screen, where **Sign in with your
+browser** signs you back in, as the same account or another. From Terminal:
 
 ```bash
 blowhorn auth logout

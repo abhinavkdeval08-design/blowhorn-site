@@ -78,6 +78,8 @@ include .github/build/Makefile.show-help.mk
 #   dmg-resolve, dmg-download, dmg-package, dmg-verify, dmg-release,
 #   dmg-pin-download, dmg-sync-docs
 #                      The steps of publish-dmg.yml (see docs/distribution.md).
+#   npm-fetch, npm-verify, npm-publish, npm-confirm
+#                      The steps of publish-blowhorn-axi.yml (see docs/distribution.md).
 #   docs-sync          Sync the user docs from a blowhorn checkout
 #                      into content/en/docs/: make docs-sync REF=<tag|branch|sha>
 #                      (see docs/deploy.md).
@@ -100,7 +102,7 @@ BIN_DIR ?= .bin
 # actionlint from PATH when installed; otherwise a pinned copy is downloaded into $(BIN_DIR).
 ACTIONLINT ?= $(shell command -v actionlint 2>/dev/null)
 # Workflows owned by this repo. Template workflows (labeler and friends) are left as-is.
-WORKFLOWS ?= .github/workflows/site.yml .github/workflows/publish-dmg.yml .github/workflows/sync-docs.yml .github/workflows/cloud-auth-smoke.yml .github/workflows/product-ci.yml .github/workflows/internal-site.yml .github/workflows/internal-site-auto.yml
+WORKFLOWS ?= .github/workflows/site.yml .github/workflows/publish-dmg.yml .github/workflows/sync-docs.yml .github/workflows/cloud-auth-smoke.yml .github/workflows/product-ci.yml .github/workflows/internal-site.yml .github/workflows/internal-site-auto.yml .github/workflows/publish-blowhorn-axi.yml
 # A blowhorn checkout for `make docs-sync` (the sync-docs.yml
 # workflow checks the product repo out at this path).
 SOURCE_DIR ?= product
@@ -269,7 +271,7 @@ check-third-party: site-build
 check-urls: site-build
 	python3 .github/scripts/check-site-contract.py $(BUILD_DIR)
 
-## Validate every data file that has a JSON Schema in schemas/ (data/hero.json, data/machines.json, data/home_ai.json, data/roles.json, data/use_cases.json, data/solutions.json, data/themes.json, data/integrations.json, data/hero_demo.json, data/actions.json, data/action_examples.json).
+## Validate every data file that has a JSON Schema in schemas/ (data/hero.json, data/machines.json, data/home_ai.json, data/roles.json, data/use_cases.json, data/solutions.json, data/themes.json, data/integrations.json, data/hero_demo.json, data/actions.json, data/action_examples.json, data/tells.json).
 ## Role, use-case and solution schemas $ref shared line/text/card types; ajv -r loads that file.
 ## check_action_examples.py also requires every supported YAML action to have an example.
 ## check_action_matrix.py --source checks action groups, matrix exceptions and platform order.
@@ -285,6 +287,7 @@ check-schemas:
 	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/hero_demo.schema.json -d data/hero_demo.json
 	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/actions.schema.json -d data/actions.json
 	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/action_examples.schema.json -d data/action_examples.json
+	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/tells.schema.json -d data/tells.json
 	python3 .github/scripts/check_action_examples.py
 	python3 .github/scripts/check_action_matrix.py --source
 
@@ -301,7 +304,7 @@ check-action-matrix: site-build
 	python3 .github/scripts/check_action_matrix.py $(BUILD_DIR)
 
 ## Build for production once, then validate-html, check-links, check-third-party and check-urls, plus check-schemas (what site.yml runs).
-site-check: check-schemas validate-html check-links check-third-party check-urls check-no-internal check-theme check-platform-docs check-naming check-action-matrix check-download-links check-feeds check-brand-kits
+site-check: check-schemas validate-html check-links check-third-party check-urls check-no-internal check-theme check-platform-docs check-naming check-action-matrix check-download-links check-feeds check-brand-kits check-tells
 
 ## Production build, then fail if any built page or script links to /releases/latest/download (an axi release can hold Latest; build download URLs from data/download.json).
 check-download-links: site-build
@@ -314,6 +317,10 @@ check-brand-kits: site-build
 ## Production build, then validate the Resources RSS feeds, including the desktop contract feed (issue #253, Part D).
 check-feeds: site-build
 	python3 .github/scripts/check_feeds.py $(BUILD_DIR)
+
+## Production build, then fail if a Blowhorn Tells placement (data/tells.json) left its page or a Tells link lost its UTM tags.
+check-tells: site-build
+	python3 .github/scripts/check_tells.py $(BUILD_DIR)
 
 ## Production build, then fail if a page says Layer5 Cloud or Blowhorn Cloud, or names Layer5 outside the footer and the legal pages (users see Blowhorn).
 check-naming: site-build
@@ -435,6 +442,26 @@ dmg-pin-download:
 dmg-sync-docs:
 	.github/scripts/publish-dmg/sync-docs.sh
 
+# publish-blowhorn-axi.yml steps. Each reads its inputs from the environment, as
+# the workflow sets them; see the script headers in .github/scripts/publish-npm/.
+# They need only bash, curl, gh, node and npm (no Go, Hugo or site dependencies).
+
+## publish-blowhorn-axi step 1: fetch PACKAGE-VERSION.tgz from TARBALL_URL (HTTPS) or release RELEASE_TAG; TARBALL into GITHUB_ENV.
+npm-fetch:
+	.github/scripts/publish-npm/fetch.sh
+
+## publish-blowhorn-axi step 2: check TARBALL's sha256 (SHA256), name, version and repository.url; refuse an already-published version.
+npm-verify:
+	.github/scripts/publish-npm/verify.sh
+
+## publish-blowhorn-axi step 3: npm publish TARBALL with --provenance under DIST_TAG (default latest), over OIDC.
+npm-publish:
+	.github/scripts/publish-npm/publish.sh
+
+## publish-blowhorn-axi step 4: poll npm for PACKAGE@VERSION for about 5 minutes, then warn (never fails).
+npm-confirm:
+	.github/scripts/publish-npm/confirm.sh
+
 ## Empty the build cache, reinstall dependencies, and run the site locally.
 clean:
 	npm run clean
@@ -444,6 +471,10 @@ clean:
 .PHONY: \
 	check-schemas \
 	check-brand-kits \
+	check-naming \
+	check-download-links \
+	check-feeds \
+	check-tells \
 	check-theme \
 	check-platform-docs \
 	check-action-matrix \
@@ -490,6 +521,10 @@ clean:
 	dmg-release \
 	dmg-pin-download \
 	dmg-sync-docs \
+	npm-fetch \
+	npm-verify \
+	npm-publish \
+	npm-confirm \
 	docs-cli-reference \
 	docs-sync \
 	docs-sync-base \

@@ -33,7 +33,7 @@ Launch `Blowhorn.app`. It runs the engine it carries and never looks for a
 checkout of this repository. If that engine can't start, it opens on
 **Setup**. Otherwise the guided setup opens
 first: finish it ([Set up Blowhorn at first muster](/docs/how-to/set-up/first-muster-setup/)),
-then choose **run setup again** at the bottom of Settings. Setup shows four
+then choose **run setup again** on Settings' **Setup** page. Setup shows four
 checks, each either `ok` or offering the action that fixes it.
 
 Work down the activities:
@@ -55,7 +55,7 @@ connection**), so an activity that cannot answer will tell you rather than hang.
 
 ## 3. Turn on dry-run before anything else {#section-3-turn-on-dry-run-before-anything-else}
 
-Still on the Setup screen, find the **preview only by default** switch below the
+Still on the Setup screen, find the **dry fire by default** switch below the
 four activities and turn it **on**.
 
 This is the important step of this tutorial. With it on, runs you start from
