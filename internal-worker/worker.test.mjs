@@ -136,3 +136,21 @@ test('signups export is CSV with quoted commas', async () => {
 });
 test('signups admin without a database fails closed', async () =>
   assert.equal((await handle(authed('/internal/signups/'), env, certsFetch)).status, 503));
+test('signups export keeps formula-looking cells as plain text', async () => {
+  const rows = [
+    { email: '=1+1@x.co', kind: 'waitlist', topic: 'tiktok', remark: '=HYPERLINK("http://evil.example/","Click")', created_at: '2026-10-27T00:00:00.000Z', unsubscribed_at: null, source_page: '@SUM(1+1)' },
+    { email: 'b@c.co', kind: 'newsletter', topic: null, remark: '+1+1', created_at: '2026-10-27T01:00:00.000Z', unsubscribed_at: null, source_page: '-2+3' },
+  ];
+  const res = await handle(authed('/internal/signups/export'), adminEnv(rows), certsFetch);
+  const csv = await res.text();
+  assert.match(csv, /^'=1\+1@x\.co,/m);
+  assert.match(csv, /"'=HYPERLINK\(""http:\/\/evil\.example\/"",""Click""\)"/);
+  assert.match(csv, /,'@SUM\(1\+1\)\n/);
+  assert.match(csv, /,'\+1\+1,/);
+  assert.match(csv, /,'-2\+3\n/);
+});
+test('signups export leaves normal cells alone and quotes a bare CR', async () => {
+  const rows = [{ email: 'a@b.co', kind: 'waitlist', topic: 'tiktok', remark: 'line1\rline2', created_at: '2026-10-27T00:00:00.000Z', unsubscribed_at: null, source_page: '/docs/' }];
+  const csv = await (await handle(authed('/internal/signups/export'), adminEnv(rows), certsFetch)).text();
+  assert.match(csv, /^a@b\.co,waitlist,tiktok,"line1\rline2",2026-10-27T00:00:00\.000Z,,\/docs\/\n/m);
+});

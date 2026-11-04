@@ -172,9 +172,13 @@ function escHtml(s) {
     .replace(/"/g, '&quot;');
 }
 
+// A cell that starts with = + - @ (or a tab or CR) can run as a formula when
+// the CSV is opened in a spreadsheet, and signup fields come from visitors.
+// A leading ' keeps such a cell as plain text.
 function csvCell(v) {
-  const s = String(v ?? '');
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  let s = String(v ?? '');
+  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+  return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
 const ADMIN_HEADERS = {
