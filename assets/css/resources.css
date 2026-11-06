@@ -24,20 +24,12 @@
   gap: 8px;
   height: 100%;
   padding: 20px;
-  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-soft);
 }
 
 a.resource-type-card {
   color: var(--ink);
   text-decoration: none;
-}
-
-a.resource-type-card:hover {
-  border-color: var(--line-strong);
-  box-shadow: var(--shadow-pop);
 }
 
 a.resource-type-card:focus-visible {
@@ -196,10 +188,7 @@ a.tag-chip {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-soft);
 }
 
 .video-card[hidden] {
@@ -247,7 +236,6 @@ a.tag-chip {
   border-radius: 50%;
   background: var(--teal);
   color: var(--on-teal);
-  box-shadow: var(--shadow-pop);
   font-size: 18px;
   padding-left: 4px;
 }
@@ -378,7 +366,7 @@ a.tag-chip {
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  box-shadow: var(--shadow-pop);
+  box-shadow: var(--glass-shadow);
 }
 
 .video-dialog::backdrop {
@@ -421,9 +409,7 @@ a.tag-chip {
 /* Articles: text-forward cards in a single readable column. */
 .articles-list { display: grid; gap: 16px; margin-top: 24px; }
 .article-card {
-  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: var(--surface);
   padding: 20px 22px;
 }
 .article-card-kicker {

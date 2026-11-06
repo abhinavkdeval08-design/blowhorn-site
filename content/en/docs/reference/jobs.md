@@ -9,7 +9,7 @@ What a schedule activity holds, when it runs, and what keeps it from
 running. This page describes; the steps live in the how-to guides
 linked under Related.
 
-A pass runs every ten minutes and claims the activities that are due. Several
+The service runs a pass when an activity falls due, and at least once a minute, and claims the activities that are due. Several
 computers sharing one store share the queue: a running activity carries a lease,
 and an activity whose lease lapsed is reclaimable by the next pass.
 
@@ -37,7 +37,9 @@ and last error are kept. Raising `Max Retries` alone does not (see
 removes an activity by number. `blowhorn schedule validate` checks every activity
 against the schema. `blowhorn schedule bootstrap` previews or writes a
 starter set. `blowhorn schedule trigger-now` forces one activity to run
-immediately instead of waiting for the pass.
+immediately instead of waiting for the pass. A Risk Profile hold, including
+while a profile is warming up, keeps that run from starting until you confirm
+or pass `--ignore-risk`. A limit the platform publishes still applies.
 
 ## Recurrence
 
@@ -76,7 +78,7 @@ inherits the profile's preset, exactly as before. A hold or a run
 report names the source as `schedule` when the activity's own setting
 decided it. `blowhorn schedule list` shows each activity's own setting,
 the preset it effectively runs and where that preset came from. The
-app's activity editor and drawer show the same column as **rules of
+app's activity editor and the **Rules** row of the item's details dialog show the same column as **rules of
 engagement**, with `cautious` as Safety on, `standard` as Weapons tight
 and `brisk` as Weapons free; the stored value does not change.
 
@@ -90,8 +92,9 @@ action (count, window, the platform's page and the day it was read), and
 that would go past one is cut to it, and the tick prints
 `Activity N: the brisk setting would allow … so this stops at …`. An
 activity whose published window is already full is held as
-`held by X's published limit (…)`, a `trigger-now` included: it skips the
-Posture checks, never the platform's own limit. The limits themselves
+`held by X's published limit (…)`, a `trigger-now` included. `--ignore-risk`
+passes the other Posture checks for that one run and still stops at the
+platform's own limit. The limits themselves
 are listed under
 [A limit the platform publishes is the one hard stop](/docs/how-to/settings/choose-your-rules-of-engagement/#a-limit-the-platform-publishes-is-the-one-hard-stop).
 

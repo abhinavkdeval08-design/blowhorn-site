@@ -1,6 +1,6 @@
 ---
 title: "Connect an AI assistant over MCP"
-description: "Point Claude, ChatGPT, Codex, Cursor, VS Code, Windsurf, Gemini CLI, Zed, Cline, or Goose at the Blowhorn MCP server and let an assistant drive Blowhorn from your computer."
+description: "Point Claude, ChatGPT, Codex, Cursor, VS Code, Windsurf, Gemini CLI, Zed, Cline, Goose, Muse, or Grok at the Blowhorn MCP server and let an assistant drive Blowhorn from your computer."
 weight: 70
 ---
 
@@ -83,11 +83,13 @@ Check the command on its own before you point a client at it:
 The first prints the Blowhorn version. The second prints the tool
 list as JSON. Neither starts serving.
 
-### Coming soon: start it with npx
+### Start it with npx
 
-The `blowhorn-mcp` npm package is coming soon. It is not published
-yet, so this route does not work today. Once it is, swap the command in
-any entry on this page for `npx` with the arguments `-y blowhorn-mcp`:
+The [`blowhorn-mcp`](https://www.npmjs.com/package/blowhorn-mcp) npm
+package is published, and listed in the official MCP Registry as
+`io.github.blowhorn-ai/blowhorn`. With Node.js 20 or later, swap the
+command in any entry on this page for `npx` with the arguments
+`-y blowhorn-mcp`:
 
 ```json
 {
@@ -101,7 +103,7 @@ any entry on this page for `npx` with the arguments `-y blowhorn-mcp`:
 ```
 
 On a client's command line, the same swap is `-- npx -y blowhorn-mcp`.
-It will still need the Blowhorn app installed and opened once.
+It still needs the Blowhorn app installed and opened once.
 
 ### Fallback: the app's own Python
 
@@ -458,6 +460,149 @@ goose session --with-extension "$HOME/.local/bin/blowhorn-mcp"
 
 [Vendor docs](https://github.com/block/goose/blob/main/documentation/docs/guides/config-files.md).
 
+### Muse
+
+A Muse bot can run on your Mac, alongside Blowhorn and
+Google Chrome. That is the setup that gives it every tool: the
+profiles it acts for and the Chrome it acts through are on the
+same computer as the bot, which is all this server ever asks.
+
+Add the server to the bot the way you add any MCP server: the
+`blowhorn-mcp` command (or `npx -y blowhorn-mcp`) as a stdio
+server, with no arguments. In a config file that is the same entry
+every client on this page uses:
+
+```json
+{
+  "mcpServers": {
+    "blowhorn": {
+      "command": "/Users/<you>/.local/bin/blowhorn-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+You can also just tell the bot to add it: "Add the Blowhorn MCP
+server, command `~/.local/bin/blowhorn-mcp`", and restart the bot
+so it picks the server up. Check it by asking the bot which
+Blowhorn tools it has.
+
+Then prompt the bot in plain words. It reads first, and every
+write comes back as a dry run before anything goes out, so ask
+for the outcome and read the rehearsal:
+
+> List my Blowhorn profiles and tell me which ones are signed in.
+
+> Show me what is in my queue for today.
+
+> Dry-run accepting my pending LinkedIn connection requests, and
+> show me who it would accept. Then wait for my go.
+
+Say go, and the bot runs the same call confirmed. Under approval
+mode an agent cannot approve its own queued work, so confirmed
+work can still wait for you in the app (see [Dry run first](#dry-run-first)).
+
+A Muse bot that is not running on your Mac can still read
+through the interim hosted gateway. Connect it as a custom MCP
+connector with the server URL `https://mcp.blowhorn.ai/mcp` and an
+API token for your Blowhorn account, sent as a Bearer token. The
+gateway is read-only: four tools, `listContentItems`,
+`getContentItem`, `getEvents` and `getConnections`. It has no
+OAuth sign-in, so a client that cannot send a token cannot use
+it.
+
+### Grok
+
+Grok Build, xAI's agent that runs in a terminal, can run the local
+server on the same computer as Blowhorn:
+
+```bash
+grok mcp add blowhorn -- $HOME/.local/bin/blowhorn-mcp
+```
+
+Or add it to `~/.grok/config.toml`:
+
+```toml
+[mcp_servers.blowhorn]
+command = "/Users/<you>/.local/bin/blowhorn-mcp"
+args = []
+```
+
+Grok Build also reads `~/.claude.json`, `.cursor/mcp.json` and
+project `.mcp.json` files, so an entry you already added for another
+client may already be picked up. Check it with `grok mcp list`, or
+`/mcps` inside a session. Grok names a server's tools
+`<server>__<tool>`, so the `post` tool appears as `blowhorn__post`.
+[Vendor docs](https://docs.x.ai/build/features/mcp-servers).
+
+Grok Build can also read through the interim hosted gateway:
+
+```bash
+grok mcp add --transport http blowhorn-cloud https://mcp.blowhorn.ai/mcp --header "Authorization: Bearer <token>"
+```
+
+Put an API token for your Blowhorn account in place of `<token>`.
+The gateway is read-only, with the four tools `listContentItems`,
+`getContentItem`, `getEvents` and `getConnections`.
+
+Grok on the web cannot connect yet. Its custom connectors
+(grok.com/connectors, New Connector, then Custom) take a public
+HTTPS MCP server with an OAuth sign-in, and the interim gateway
+takes a bearer token only. It waits on the hosted Blowhorn MCP
+server, which brings its own sign-in. The local server is a process
+on your own computer, and Grok on the web cannot start one.
+[Vendor docs](https://docs.x.ai/grok/connectors). Grok Bot can
+connect today, read-only: see [Grok Bot](#grok-bot).
+
+### Grok Bot
+
+Blowhorn is not in Grok Bot's connector catalog yet. Until it is,
+add Blowhorn to your bot as a custom connection to the interim
+hosted gateway. Grok Bot runs on its own computer in the cloud, so
+it cannot start the local server on your Mac, but it can reach a
+public HTTPS server and send a bearer token with every request.
+
+The gateway is read-only. It has four tools, `listContentItems`,
+`getContentItem`, `getEvents` and `getConnections`, so your bot can
+read your queue, a post, your activity and your connections. It
+cannot post, schedule or change anything. For those, use a client
+on the Mac where Blowhorn runs, such as [Claude Code](#claude-code)
+or [Grok Build](#grok).
+
+You need an API token for your Blowhorn account.
+
+1. In a chat with your bot, ask it to add the server. Say "custom",
+   so the bot does not look for a catalog connector instead:
+
+   > Add a custom MCP server named blowhorn at
+   > https://mcp.blowhorn.ai/mcp. It needs the header
+   > Authorization: Bearer followed by my Blowhorn API token.
+
+2. The bot shows the name and the URL and asks you to confirm.
+   Check that the URL is exactly `https://mcp.blowhorn.ai/mcp`, then
+   confirm.
+3. When the bot asks for the token, give it. The bot stores it as
+   the `Authorization` header on the server entry, never in the URL.
+   The gateway has no OAuth sign-in, so no sign-in card appears.
+   The token passes through your chat with the bot, so use one you
+   can revoke, and revoke it when you stop using the connection (see
+   [Revoke a leaked token](#revoke-a-leaked-token)).
+4. Check it in your next message. Ask:
+
+   > Which Blowhorn tools do you have? Then list my Blowhorn
+   > connections.
+
+   The bot should name the four tools above and answer from
+   `getConnections`. Nothing it can call changes anything.
+
+If the bot reports `401 Unauthorized` when it connects, the header
+is missing or malformed: the gateway wants exactly
+`Authorization: Bearer <token>`. If it connects but a tool call
+fails with a `401` from your Blowhorn account, the token has expired
+or been revoked: get a new token and ask the bot to update the
+header on the `blowhorn` server.
+
 ## Authentication
 
 There is no OAuth step for this server and no token to create. The
@@ -478,8 +623,34 @@ The server serves stdio only. Asking it for HTTP refuses at startup:
 ~/.local/bin/blowhorn-mcp --transport http
 ```
 
-A hosted Blowhorn MCP server, with its own sign-in, is coming. This
-page covers the local server only.
+A hosted Blowhorn MCP server, with its own sign-in, is coming.
+Until it lands, the interim hosted gateway in the Muse, Grok and
+Grok Bot sections above serves a few read-only tools to clients that can
+send a token. The rest of this page covers the local server.
+
+### Revoke a leaked token
+
+The local server uses the token that sign-in saved on this computer.
+If that token, or any other API token for your Blowhorn account, leaks, revoke it
+at once. Having the token is enough; no sign-in is needed:
+
+```bash
+read -rs TOKEN   # paste the token, then press Enter
+printf '{"token": "%s"}' "$TOKEN" | curl -sS -X POST https://cloud.blowhorn.ai/revoke \
+  -H 'Content-Type: application/json' --data-binary @- -w 'HTTP %{http_code}\n'
+```
+
+A 200 response means the token no longer works, if it existed. A 200
+does not confirm the token existed. A 503 response means nothing was
+revoked, so run the call again.
+
+While you are still signed in with a token you trust, you can delete
+the token by ID instead. List your tokens with
+`GET https://cloud.blowhorn.ai/api/identity/tokens`, then send
+`DELETE https://cloud.blowhorn.ai/api/identity/tokens?tokenId=<id>`
+with `Authorization: Bearer <token>`.
+
+Then sign in again with `blowhorn auth login` to get a fresh token.
 
 ## Example prompts and workflows
 
@@ -529,7 +700,9 @@ other write. `profile status` and `chrome discover` count as writes
 too, because each records the sign-ins it reads as the profile's
 accounts in your Blowhorn account.
 
-## Safety
+<a id="safety"></a>
+
+## Dry run first
 
 Writes need confirmation, and dry run is the default. A tool that
 only reads runs as asked. A tool that changes anything runs with
@@ -587,11 +760,13 @@ How these rules fit together is in
 
 ### Hidden tools
 
-Five tools are hidden by default, because each removes or replaces
-your Blowhorn install or signs you out: `uninstall`,
-`service_uninstall`, `auth_logout`, `desktop_build` and
-`desktop_install`. Your assistant cannot see or call them. To serve
-one, name it in the server's arguments with `--allow-hidden-tool`
+Seven tools are hidden by default, because each removes or replaces
+your Blowhorn install, removes a background service or LaunchAgent, or
+signs you out: `uninstall`, `service_uninstall`, `service_adopt`,
+`auth_logout`, `desktop_build`, `desktop_install` and
+`chrome_attach_chrome_uninstall_agent`. Your assistant cannot see or
+call them. To serve one, name it in the server's arguments with
+`--allow-hidden-tool`
 (repeat it for more), or list names, comma-separated, in
 `BLOWHORN_MCP_ALLOW_HIDDEN_TOOLS` in the client's `env`. For example,
 to let an assistant uninstall the background service:

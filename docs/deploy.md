@@ -181,7 +181,9 @@ The public URLs are a contract, checked by `make site-check`:
   Blowhorn (no early-access form: anyone without a plan starts the beta
   there), whose URL is `params.cloud_url` in `hugo.toml` alone. None of these
   is listed in `sitemap.xml` or `llms.txt`.
-- `/assets/brand/...` (from `static/assets/brand/`), `/favicon.ico`, `/CNAME`.
+- `/assets/brand/...` (from `static/assets/brand/`), `/assets/brand/cards.css`
+  (the card variants, published from `assets/css/cards.css` for tells.blowhorn.ai;
+  [DESIGN.md](../DESIGN.md), Cards), `/favicon.ico`, `/CNAME`.
 - The two brand kits on `/brand/`: `/brand/blowhorn-brand-kit.zip` (the full kit,
   the URL the kit has always had) and `/brand/blowhorn-logo-kit.zip`.
 - Generated: `/sitemap.xml`, `/robots.txt` (which names the sitemap),
@@ -202,6 +204,10 @@ make setup         # once: npm install
 make check         # production build, html-validate, link, third-party and contract checks, check-script tests, actionlint: what CI runs
 make site          # http://localhost:1313 with live reload
 ```
+
+## API reference
+
+The reference page for the product's operations (`/docs/reference/api/`) is built but not enabled; see [api-reference.md](api-reference.md). `make check-api-reference` runs in `site-check` and does nothing while `params.apiReference.spec` is empty.
 
 ## Product docs sync
 
@@ -316,7 +322,7 @@ repository, and only the internal environment mounts it.
 | Target | What it does | Output |
 | --- | --- | --- |
 | `make site-build` | Public build (`hugo`, production environment, `renderSegments = ["public"]`), what CI deploys | `public/`, no `/internal/` |
-| `make site-internal-build` | Internal build (`hugo --environment internal`, `renderSegments = ["internal"]`) with the blowhorn clone mounted; renders only `/internal/`, with its own header, footer and navigation, and no search index; the output's root page redirects to `/internal/` | `public-internal/`, only `/internal/` |
+| `make site-internal-build` | Internal build (`hugo --environment internal`, `renderSegments = ["internal"]`) with the blowhorn clone mounted; renders only `/internal/`, with its own header, footer and navigation, and Docsy offline search over those internal pages only; the output's root page redirects to `/internal/` | `public-internal/`: `/internal/` pages, and `offline-search-index.json` at the output root |
 | `make site` / `make site-internal` | Live-reload servers for the two builds (the internal one renders in memory) | http://localhost:1313 |
 
 The internal targets need a blowhorn clone at `BLOWHORN_DIR`
@@ -365,8 +371,8 @@ adds a module import, `github.com/blowhorn-ai/blowhorn`, with its own mounts:
     source = "marketing/assets.manifest.json"
     target = "static/internal/marketing-assets/assets.manifest.json"
   [[module.imports.mounts]]
-    source = "marketing/brand/cast"
-    target = "static/internal/marketing-assets/brand/cast"
+    source = "marketing/cast"
+    target = "static/internal/marketing-assets/cast"
     files = ["**/*-640.webp"]
   [[module.imports.mounts]]
     source = "internal/engineering/hugo/engineering"
@@ -446,16 +452,25 @@ need a token for the private repository.
 The internal section's committed `content/en/internal/_index.md` is
 `build: {list: never}` itself and cascades `build: {list: local}` and
 `type: docs` to every internal page. Internal pages stay out of the
-site-wide collections (menus, the search index, llms.txt, the sitemap),
+site-wide collections (menus, llms.txt, the sitemap and related lists),
 even in the internal build, but stay in their parents' `.Pages`, so they
 render in the docs shell (`layouts/docs/baseof.html` with
 `layouts/docs/internal.html`) with the docs sidebar, breadcrumb, table of
 contents and prev/next built from the `/internal/` section tree. Page order
-is each page's `weight`. The public build never renders any of it.
+is each page's `weight`. Docsy's offline index reads `.Site.AllPages`, which
+those `list` settings leave empty of internal pages, so the internal build
+does not use it. It publishes its own index,
+`public-internal/offline-search-index.json`, by walking the `/internal/`
+section (`.Pages` recursively,
+`assets/json/offline-search-index-internal.json`). That file is generated
+only in the internal environment. The public build keeps Docsy's index and
+never lists an `/internal/` page, title or passage. The public build never
+renders any internal page.
 
 `make check-no-internal` (part of `make site-check`, and a step in
 `site.yml`) fails when `public/internal` exists, a public page links to
-`/internal/` or names an internal file, or git tracks anything under
+`/internal/` or names an internal file, the public offline search index is
+missing or contains `/internal/`, or git tracks anything under
 `content/en/internal/` other than `_index.md`.
 
 ### Where the internal build runs
@@ -486,19 +501,105 @@ is no private host and no artifact of `public-internal/`.
 The internal build is served by the `blowhorn-internal` Cloudflare Worker
 (`internal-worker/`) at https://internal.blowhorn.ai/, behind a Cloudflare
 Access application. Nobody reaches a page, asset or file there without
-signing in to Access as one of the named emails in
-`internal-worker/access.json`.
+signing in to Access as someone the allow list admits: anyone at an allowed
+email domain (layer5.io), a named team member, or an extra address from the
+`INTERNAL_ACCESS_EXTRA_EMAILS` secret. See "Who can read it" below. The one
+exception is a request from a trusted network in `bypass_ip_ranges`, which
+reaches the site without signing in; see "Trusted networks" below.
 
 | Layer | What it enforces |
 | --- | --- |
-| Access application (self-hosted, the whole hostname) | Login required; one reusable `allow` policy whose only rules are the named emails in `access.json`. Anything not allowed is denied. |
-| Worker (`internal-worker/src/worker.js`, `run_worker_first`) | Every request, assets included, must carry an Access token signed by the team's keys, for this application's audience, unexpired, for an email on the same list. Otherwise 403. A missing or misconfigured Access application fails closed. |
+| Access application (self-hosted, the whole hostname) | Login required; one reusable `allow` policy whose only rules are the email domains, named emails and extras, and the login methods in `allowed_idps`. When `bypass_ip_ranges` is not empty, one reusable `bypass` policy whose only rules are those IP ranges comes first (precedence 1, the allow policy 2). Anything not allowed is denied. |
+| Worker (`internal-worker/src/worker.js`, `run_worker_first`) | Every request, assets included, must carry an Access token signed by the team's keys, for this application's audience, unexpired, for an email the Worker admits: a named address, or an address whose domain is exactly one of `ALLOWED_EMAIL_DOMAINS` (no subdomain or look-alike match). The only exception is a request whose `CF-Connecting-IP` (set by Cloudflare's edge, not the client) is inside `ALLOWED_IP_RANGES`, the same `bypass_ip_ranges`. Otherwise 403. A missing or misconfigured Access application, or an empty allow list, fails closed. |
 | `wrangler.json` | Custom domain only: `workers_dev` and `preview_urls` are off, so no other hostname serves the Worker. `verify-worker` confirms it after each deploy. |
 
 The root (`/`) serves the `/internal/` page, whose table of contents
 (`layouts/_partials/internal-contents.html`) is generated from the content
 tree on every build. Locally, `make site-internal` still redirects `/` to
 `/internal/`.
+
+### Who can read it
+
+The allow list has three sources, all read by `.github/scripts/internal_access.py`
+so the Access policy and the Worker's allow list always match:
+
+- **Email domains.** `allowed_email_domains` in `internal-worker/access.json`
+  (today `layer5.io`) admits every address at that domain. The match is exact:
+  `sub.layer5.io` and `layer5.io.example.com` are not admitted.
+- **Named emails in the repository.** `allowed_emails` in the same file. This
+  repository is public, so list only the team's own addresses, each at an
+  allowed domain (a test in `.github/scripts/test_internal_access.py` checks it).
+- **Extra people, from a secret.** The `INTERNAL_ACCESS_EXTRA_EMAILS` repository
+  secret holds addresses outside the domains, one per line or comma-separated.
+  Set it from a file, never on the command line or in the repository:
+
+  ```sh
+  gh secret set INTERNAL_ACCESS_EXTRA_EMAILS -R blowhorn-ai/blowhorn-site < extras.txt
+  ```
+
+  The secret's name is in `extra_emails_env`. The deploy fails unless it is set,
+  so an unconfigured secret can never silently drop teammates. Under Actions each
+  address is masked before any output, and the scripts print only counts. A
+  malformed entry fails the run by count, without echoing it.
+
+A change to the secret takes effect on the next deploy. To apply it now, run
+`make site-internal-deploy` by hand.
+
+### Trusted networks
+
+`bypass_ip_ranges` in `internal-worker/access.json` lists the networks that
+reach the site without signing in, as CIDRs with no host bits set (a single
+address is `/32` for IPv4 or `/128` for IPv6). Client operating systems often
+rotate temporary IPv6 addresses inside the same `/64` (privacy extensions),
+so a home network should be listed as that `/64` rather than one `/128`.
+It is the one place to edit them. From it:
+
+- `internal_access.py ensure` creates or updates the reusable `bypass` policy
+  named `bypass_policy_name`, whose only rules are those IP ranges, and
+  attaches it to the application before the allow policy. Access issues no
+  token for a bypassed request.
+- `internal-deploy.sh` passes the same list to the Worker as
+  `ALLOWED_IP_RANGES`, so the Worker serves those networks without a token.
+
+The verification fails unless the application has exactly the bypass policy
+then the allow policy, and the bypass policy holds exactly the configured
+ranges and nothing else (no Everyone, no email rule). Empty the list, or
+remove the key, to drop the bypass: the next deploy detaches the policy.
+Addresses in this file are public, so add only networks you are happy to
+name. `make site-internal-verify` probes from a GitHub runner, which is not a
+trusted network, so it still expects the Access login.
+
+To change the list, edit `bypass_ip_ranges` in a pull request and merge; the
+push to `master` redeploys (see "Shipping an update").
+
+### Login methods
+
+`allowed_idps` lists the login methods on the Access login page, by Cloudflare
+identity provider type. Automatic redirect to one method is off, so the page
+shows every method allowed. Each type must match exactly one login method on
+the account. `internal_access.py` resolves the types to ids at run time, and
+the deploy fails, naming the type, when there are none or more than one.
+
+- **One-time PIN** (`onetimepin`): Access emails a code to the address signing
+  in. This is how the allowed addresses sign in today. If it is missing from
+  Zero Trust > Settings > Authentication > Login methods, add it there.
+- **Google** (`google`): add it before listing it, because the deploy fails on
+  an `allowed_idps` type with no login method behind it.
+  1. In Google Cloud Console, create an OAuth 2.0 client ID of type Web
+     application. Set the authorized redirect URI to
+     `https://<team>.cloudflareaccess.com/cdn-cgi/access/callback` and the
+     authorized JavaScript origin to `https://<team>.cloudflareaccess.com`
+     (`<team>` is the Zero Trust team name).
+  2. Set the OAuth consent screen to user type External, publishing status In
+     production, with only the `openid`, `email` and `profile` scopes.
+  3. Add it in Zero Trust > Settings > Authentication > Login methods > Add new
+     > Google, with the client ID and secret. Or send `POST
+     /accounts/{account_id}/access/identity_providers` with `type` `google` and
+     `config` holding `client_id` and `client_secret`.
+  4. In a pull request, add `"google"` to `allowed_idps` in `access.json`, then
+     merge. The client secret stays in Cloudflare, never in the repository.
+
+Any Cloudflare identity provider type can be listed the same way.
 
 ### Shipping an update
 
@@ -516,8 +617,8 @@ own after a change to anything the internal build is made from:
   `DMG_SOURCE_TOKEN`, whether blowhorn `master` has a commit in the last 30
   minutes under a mounted path (`marketing/strategy/**`,
   `marketing/capability-comparison/**`, `marketing/brand/**` including the
-  asset catalog, `marketing/assets.manifest.json`, or
-  `internal/{engineering,design,specs,plans,research}/**`). If so it deploys
+  asset catalog, `marketing/cast/**`, `marketing/assets.manifest.json`, or
+  `internal/{engineering,design,specs,plans,research,features}/**`). If so it deploys
   that `master` SHA. The run fails, rather than skipping, when
   `DMG_SOURCE_TOKEN` is missing or cannot read the repository. Polling keeps
   the work on this public repository's free minutes; the private repository
@@ -549,18 +650,20 @@ automatic deploy waits for a running one instead of cancelling it.
 
 The workflow, in order (each step is a make target):
 
-1. Fails unless `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` and the
-   `BLOWHORN_INTERNAL_READ_KEY` environment secret are set.
-2. `site-internal-access-check`: read-only probe of the token's permissions.
-3. `site-internal-access`: creates or updates the Access policy and
-   application, reads them back, and fails unless they are exactly the
-   managed default-deny pair. This runs before any private content reaches
-   the runner.
+1. Fails unless `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`,
+   `INTERNAL_ACCESS_EXTRA_EMAILS` and the `BLOWHORN_INTERNAL_READ_KEY`
+   environment secret are set.
+2. `site-internal-access-check`: read-only probe of the token's permissions,
+   including the login methods.
+3. `site-internal-access`: creates or updates the Access policy, application
+   and login methods, reads them back, and fails unless they are exactly the
+   managed default-deny pair with the configured domains, emails and login
+   methods. This runs before any private content reaches the runner.
 4. Checks out blowhorn-ai/blowhorn (sparse: `marketing/strategy`,
-   `marketing/capability-comparison`, `marketing/brand`,
+   `marketing/capability-comparison`, `marketing/brand`, `marketing/cast`,
    `marketing/assets.manifest.json`, `internal/engineering`,
    `internal/design`, `internal/specs`, `internal/plans`,
-   `internal/research`) with the read-only deploy key.
+   `internal/research`, `internal/features`) with the read-only deploy key.
 5. `site-internal-build` with `BASE_URL=https://internal.blowhorn.ai/`, output
    suppressed.
 6. `site-internal-worker-deploy`: `wrangler deploy` with a filtered summary,
@@ -568,6 +671,24 @@ The workflow, in order (each step is a make target):
 7. `site-internal-verify`: unauthenticated probes of `/`, a deep link, an
    asset and a guessed URL must all redirect to the Access login. A 2xx
    deletes the Worker and fails the run.
+
+### Dynamic pages (signups, fleet stats)
+
+Two pages are rendered by the Worker per request from D1, after the same
+Access check as every static page, so their data changes without a build:
+
+- `/internal/signups/` and `/internal/signups/export`: the `SIGNUPS_DB`
+  binding (`blowhorn-signups`), written by the public signup worker.
+- `/engineering/fleet/` (moved from `/internal/fleet/`, which now 301s here), plus `data.json`, `workload.csv` and `disk.csv` beside
+  it (each takes `?days=N`, default 7, at most 90): the `FLEET_DB` binding
+  (`blowhorn-fleet-stats`). A zero-token cron on Bastion writes teammate
+  workload every hour and machine disk free every 6 hours into its
+  `snapshots` table (`kind`, `collected_at`, JSON `body`). The teammate workload table defaults to Done 24h descending (highest first, numeric); clicking a column header still sorts, and that choice is kept across refreshes. The collector, its
+  schedule and its least-privilege D1 token live in koopverse/firstmate
+  `fleet/fleet-stats/` (koopverse/firstmate#72).
+
+`.github/scripts/resolve-d1.sh` swaps every placeholder `database_id` in
+`wrangler.json` for the real one, creating a database that does not exist yet.
 
 ### This repository is public
 
@@ -583,8 +704,12 @@ checkout after building. Keep it that way in any change to the workflow or
 - `CLOUDFLARE_API_TOKEN` (repository secret) needs: Account > Workers
   Scripts > Edit; Account > Account Settings > Read; Zone (blowhorn.ai) >
   Workers Routes > Edit; Account > Access: Apps and Policies > Edit;
-  Account > Access: Organizations, Identity Providers, and Groups > Read.
+  Account > Access: Organizations, Identity Providers, and Groups > Read
+  (the last also reads the login methods that `allowed_idps` names).
 - `CLOUDFLARE_ACCOUNT_ID` (repository secret).
+- `INTERNAL_ACCESS_EXTRA_EMAILS` (repository secret): the extra addresses
+  allowed to sign in, one per line or comma-separated. Set with `gh secret set`
+  from a file; see "Who can read it". The deploy fails without it.
 - `BLOWHORN_INTERNAL_READ_KEY` (secret of the `internal-site` environment,
   which deploys from master only): the private half of an SSH deploy key
   added read-only to blowhorn-ai/blowhorn. It can read that one repository and
@@ -599,8 +724,10 @@ checkout after building. Keep it that way in any change to the workflow or
 
 ### Changing who can read it
 
-Edit `allowed_emails` in `internal-worker/access.json` in a pull request (so
-the change is reviewed) and merge; the push to `master` redeploys. The
-workflow updates the Access policy and the Worker's list together. Do not edit
-the policy in the Cloudflare dashboard: the next deploy resets it, and a
-mismatch fails verification.
+Edit `allowed_email_domains`, `allowed_emails` or `allowed_idps` in
+`internal-worker/access.json` in a pull request (so the change is reviewed)
+and merge; the push to `master` redeploys. The workflow updates the Access
+policy, the login methods and the Worker's allow list together. Extra people
+change through the `INTERNAL_ACCESS_EXTRA_EMAILS` secret, not the repository.
+Do not edit the policy or login methods in the Cloudflare dashboard: the next
+deploy resets them, and a mismatch fails verification.

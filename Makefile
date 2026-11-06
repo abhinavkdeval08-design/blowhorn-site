@@ -42,9 +42,11 @@ include .github/build/Makefile.show-help.mk
 #   check-urls         Production build, then fail on a lost public URL or anchor.
 #   site-check         Production build once, then validate-html, check-links,
 #                      check-third-party, check-urls, check-no-internal,
-#                      check-theme, check-platform-docs, check-naming
-#                      check-action-matrix and check-download-links (site.yml).
-#   check-no-internal  Fail if the production build contains /internal/.
+#                      check-theme, check-platform-docs, check-naming,
+#                      check-action-matrix, check-platform-pages and
+#                      check-download-links (site.yml).
+#   check-no-internal  Fail if the production build contains /internal/,
+#                      or its offline search index is missing or contains /internal/.
 #   check-platform-docs Production build, then fail if a supported platform
 #                      lacks a docs page, a page skips the shared actions
 #                      table, or a docs page carries a hand-written action list.
@@ -52,6 +54,16 @@ include .github/build/Makefile.show-help.mk
 #                      (/integrations/actions/) or the docs all-actions table
 #                      drifts from data/actions.json plus data/platforms/, or
 #                      links to a dead page or anchor.
+#   check-platform-pages Production build, then fail if a platform page drifts
+#                      from data/platform_pages.json, leaks into the sitemap,
+#                      llms.txt or search, or its script stops working.
+#   check-api-reference Production build, then (once params.apiReference.spec is set)
+#                      fail if the API reference page drifts from its spec, loses
+#                      its "Not an HTTP API" notice or names the private repository.
+#   api-reference-export
+#                      Write the public API spec from a local OpenAPI file:
+#                      make api-reference-export API_SPEC_SRC=path/to/openapi.yaml
+#                      (docs/api-reference.md).
 #   site-internal-build
 #                      Internal build (hugo --environment internal, mounting
 #                      BLOWHORN_DIR, default ../blowhorn) into public-internal/.
@@ -112,6 +124,9 @@ BLOWHORN_DIR ?= ../blowhorn
 BLOWHORN_ABS = $(abspath $(BLOWHORN_DIR))
 BLOWHORN_MODULE := github.com/blowhorn-ai/blowhorn
 DOCS_DIR ?= content/en/docs
+# Where `make api-reference-export` writes the public API spec (the value of
+# params.apiReference.spec in hugo.toml once the reference page is enabled).
+API_SPEC_OUT ?= api/openapi.public.json
 # Branch the sync-docs.yml workflow pushes and opens its pull request from.
 SYNC_BRANCH ?= docs-sync
 # The internal site's hosting workflow (site-internal-deploy) and its blowhorn ref.
@@ -220,7 +235,7 @@ site-internal-poll:
 site-internal-access-check:
 	python3 .github/scripts/internal_access.py check
 
-## Create or update the Cloudflare Access application and allow policy (internal-worker/access.json), then verify they are default-deny.
+## Create or update the Cloudflare Access application, allow policy and trusted-network bypass policy (internal-worker/access.json), then verify they are default-deny.
 site-internal-access:
 	python3 .github/scripts/internal_access.py ensure
 
@@ -271,7 +286,7 @@ check-third-party: site-build
 check-urls: site-build
 	python3 .github/scripts/check-site-contract.py $(BUILD_DIR)
 
-## Validate every data file that has a JSON Schema in schemas/ (data/hero.json, data/machines.json, data/home_ai.json, data/roles.json, data/use_cases.json, data/solutions.json, data/themes.json, data/integrations.json, data/hero_demo.json, data/actions.json, data/action_examples.json, data/tells.json, data/docs_events.json).
+## Validate every data file that has a JSON Schema in schemas/ (data/hero.json, data/machines.json, data/home_ai.json, data/roles.json, data/use_cases.json, data/solutions.json, data/themes.json, data/integrations.json, data/hero_demo.json, data/actions.json, data/action_examples.json, data/tells.json, data/docs_events.json, data/activity_feed.sample.json, internal-worker/access.json).
 ## Role, use-case and solution schemas $ref shared line/text/card types; ajv -r loads that file.
 ## data/docs_events.json $refs the docs event payload types in schemas/defs/docs-event.schema.json (ajv -r).
 ## check_action_examples.py also requires every supported YAML action to have an example.
@@ -286,12 +301,18 @@ check-schemas:
 	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/themes.schema.json -d data/themes.json
 	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/integrations.schema.json -d data/integrations.json
 	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/hero_demo.schema.json -d data/hero_demo.json
+	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/activity_feed.schema.json -d data/activity_feed.sample.json
 	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/actions.schema.json -d data/actions.json
 	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/action_examples.schema.json -d data/action_examples.json
 	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/tells.schema.json -d data/tells.json
 	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/docs_events.schema.json -r schemas/defs/docs-event.schema.json -d data/docs_events.json
+	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/internal_access.schema.json -d internal-worker/access.json
+	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/bookmarklet.schema.json -d data/bookmarklet.json
+	npx --yes ajv-cli@$(AJV_CLI_VERSION) validate --strict=false -s schemas/platform_page.schema.json -d data/platform_pages.json
 	python3 .github/scripts/check_action_examples.py
+	python3 .github/scripts/check_bookmarklet.py
 	python3 .github/scripts/check_action_matrix.py --source
+	python3 .github/scripts/check_platform_pages.py --source
 
 ## Production build, then fail if / is not the home-page theme (themes.json default plus _index.md front matter), the Reveille preview lost today's look, or a theme-specific content file appeared outside content/en/home-reveille.md.
 check-theme: site-build
@@ -305,8 +326,12 @@ check-platform-docs: site-build
 check-action-matrix: site-build
 	python3 .github/scripts/check_action_matrix.py $(BUILD_DIR)
 
+## Production build, then fail if a platform page (/preview/platforms/<id>/) drifts from data/platform_pages.json, loses noindex, appears in the sitemap, llms.txt or search, is linked from another page, its call to action stops installing the extension, or its script stops swapping the activity type, playing the local stage's scenes once, paging the setups by hand or honouring reduced motion (docs/platform-pages.md).
+check-platform-pages: site-build
+	python3 .github/scripts/check_platform_pages.py $(BUILD_DIR)
+
 ## Build for production once, then validate-html, check-links, check-third-party and check-urls, plus check-schemas (what site.yml runs).
-site-check: check-schemas validate-html check-links check-third-party check-urls check-no-internal check-theme check-platform-docs check-naming check-action-matrix check-download-links check-feeds check-brand-kits check-tells check-tips
+site-check: check-schemas validate-html check-links check-third-party check-urls check-no-internal check-theme check-platform-docs check-naming check-action-matrix check-platform-pages check-download-links check-feeds check-brand-kits check-tells check-tips check-api-reference
 
 ## Production build, then fail if any built page or script links to /releases/latest/download (an axi release can hold Latest; build download URLs from data/download.json).
 check-download-links: site-build
@@ -328,11 +353,20 @@ check-tips:
 check-tells: site-build
 	python3 .github/scripts/check_tells.py $(BUILD_DIR)
 
+## Production build, then, once params.apiReference.spec is set, fail if the API reference page drifts from its spec, drops the "Not an HTTP API" notice or mentions the private repository. Passes (and checks nothing) while the param is empty.
+check-api-reference: site-build
+	python3 .github/scripts/check_api_reference.py $(BUILD_DIR)
+
+## Write the public API spec the reference page renders from a LOCAL OpenAPI file: make api-reference-export API_SPEC_SRC=path/to/openapi.yaml [API_SPEC_OUT=api/openapi.public.json]. Fetching the product schema is not wired here (docs/api-reference.md).
+api-reference-export:
+	@test -n "$(API_SPEC_SRC)" || { echo "Error: pass API_SPEC_SRC=path/to/openapi.yaml (a local file; nothing is fetched)."; exit 1; }
+	python3 .github/scripts/openapi_export.py "$(API_SPEC_SRC)" "$(API_SPEC_OUT)"
+
 ## Production build, then fail if a page says Layer5 Cloud or Blowhorn Cloud, or names Layer5 outside the footer and the legal pages (users see Blowhorn).
 check-naming: site-build
 	python3 .github/scripts/check_naming.py $(BUILD_DIR)
 
-## Build for production, then fail if the /internal/ section leaked into it.
+## Build for production, then fail if /internal/ leaked into it, including the offline search index.
 check-no-internal: site-build
 	.github/scripts/check-no-internal.sh $(BUILD_DIR)
 
@@ -482,9 +516,12 @@ clean:
 	check-feeds \
 	check-tips \
 	check-tells \
+	check-api-reference \
+	api-reference-export \
 	check-theme \
 	check-platform-docs \
 	check-action-matrix \
+	check-platform-pages \
 	setup \
 	build \
 	build-preview \

@@ -46,7 +46,7 @@ Work down the activities:
 3. **organization connection** - the connection to your account. When it warns, it
    shows why (for example `Not signed in to Blowhorn. Sign in to continue.`) and a **test connection**
    button; sign in from the app, then click **test connection** to check again.
-4. **this computer on watch** - nothing to do here: once the activities above are ok
+4. **this computer on duty** - nothing to do here: once the activities above are ok
    the app registers the service itself, and this activity only reports it. You do
    not need it to finish this tutorial.
 
@@ -67,7 +67,7 @@ Now click **open console**.
 ## 4. Look at the queue {#section-4-look-at-the-queue}
 
 The console's "posts" screen reads the same content queue the CLI does - it
-runs `blowhorn content list --json` once and its "ready" tab shows the activities that
+runs `blowhorn content list --json` once and its Ready tab shows the activities that
 are due, each with who would post it (the same selection
 `blowhorn post --check-queue` prints).
 
@@ -84,7 +84,7 @@ content in the console's rail - and **scheduled to post** lists what waits for
 a later `Promote On`.
 
 Installing the app is what installed the background service, and quitting the
-app does **not** stop it - the switch **keep this computer on watch after
+app does **not** stop it - the switch **keep this computer on duty after
 quit**, on by default, is the one thing that decides that. With it off,
 quitting stops the service (asking you first if a pass is in flight), and the
 next launch starts it again. See

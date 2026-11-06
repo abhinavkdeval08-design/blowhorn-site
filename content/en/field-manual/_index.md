@@ -10,6 +10,13 @@ lastmod: 2026-10-28
 sitemap:
   changefreq: monthly
   priority: 0.5
+
+plate:
+  file: fm-home-open.webp
+  alt: "Open Field Manual with a woodcut of a hill and fallen soldiers"
+  caption: "Standing orders. Every claim has a source."
+  w: 1280
+  h: 720
 ---
 
 ## A word from the Major
@@ -46,4 +53,4 @@ None of that makes a behavior allowed. The rules govern what an account does, no
 
 Curious what sites can see about your browser? Run the free check at [Blowhorn Tells](https://tells.blowhorn.ai/). It shows what a page can read, not what a platform will decide.
 
-Blowhorn posts to LinkedIn, X, Reddit, Hacker News, Bluesky, Slack and GitHub, on macOS 13 or newer ([Platforms](/docs/reference/platforms/)). The pages on Facebook, YouTube, Instagram, TikTok, Threads and Mastodon are general education only: Blowhorn doesn't post to them.
+Blowhorn posts to LinkedIn, X, Reddit, Hacker News, Bluesky, Slack and GitHub, on your computer ([Platforms](/docs/reference/platforms/), [System requirements](/docs/reference/requirements/)). The pages on Facebook, YouTube, Instagram, TikTok, Threads and Mastodon are general education only: Blowhorn doesn't post to them.

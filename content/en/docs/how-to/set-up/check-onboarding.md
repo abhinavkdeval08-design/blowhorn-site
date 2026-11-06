@@ -25,7 +25,7 @@ publishing it.
 It runs four walks. The happy path and `linkedin-session` are the same walk,
 but `linkedin-session` first plants a cookie named `li_at` in the throwaway
 Chrome profile. Only the cookie's name matters, as with the planted Slack
-login. With the cookie, Confirm and then Check again have to record exactly
+login. With the cookie, Confirm and then Discover have to record exactly
 one LinkedIn account in the local Cloud: connected, with no credential,
 and mapped to the new profile. `blowhorn profile accounts` has to list it
 too. Without the cookie, no LinkedIn account may be recorded. In both walks,
@@ -40,15 +40,14 @@ After setup, both walks also check the console a new person sees:
   Home's button opens its own step, not the Profiles table. LinkedIn's row
   there says which Chrome profile to sign in to and offers **Open LinkedIn
   sign-in** and **Check again**, with no form field.
-- **Check again:** on the Chrome profiles step and in **Profiles › chrome
-  profiles** after setup, each press must read **Checking…** while it runs
+- **Discover:** on Confirm troops and in a profile's **Browser** tab after setup, each press must read **Checking…** while it runs
   and then leave a result line. With the planted cookie, the walk marks the
   LinkedIn account disconnected in the local Cloud first: the press must
   reconnect that same account and say so, and a second press must say
   **Nothing new found** and leave one LinkedIn account.
-- **Profile detail:** the mapped profile's LinkedIn card shows that same
-  guidance (or, with the planted cookie, that LinkedIn is connected) and a
-  **Check again** button. It shows no setting name like `LI_PASSWORD`, no
+- **Browser tab:** the mapped profile's LinkedIn row shows that same guidance (or, with
+  the planted cookie, that LinkedIn is found), with **Set up** and **Open in Chrome**.
+  **Discover** sits at the top of the list. It shows no setting name like `LI_PASSWORD`, no
   password field, no **advanced** section (by its label or its slot) and no raw `LI_`, `X_` or `RDDT_`
   field: LinkedIn's sign-in is the person's own Chrome session.
   `blowhorn chrome open-profile <profile> --sign-in linkedin --dry-run` must pick the
@@ -59,8 +58,8 @@ After setup, both walks also check the console a new person sees:
 - **Next run:** saving a daily Accept LinkedIn invitations from that picker
   stores one enabled routine in the local Cloud, and **Activity > Routines**
   lists it with its next run at the time the step typed. Home names no next run. The rail's status line
-  never shows a "next check" countdown: on watch it names that same next run, and
-  otherwise it keeps its own reason and promises no next run.
+  never shows a countdown: it says what this computer is doing, and otherwise it
+  keeps its own reason.
 
 `empty-profile` covers
 a new organization with no planted logins. `sign-up` presses Create account,
@@ -133,9 +132,9 @@ longer need them. Pass `ONBOARDING_E2E_ARTIFACTS` to put the screenshots and
 the log in a directory you choose; `run.json` is then written only if that
 directory is inside `data/cache/e2e/` or `BLOWHORN_LIVE_EVIDENCE_DIR`.
 
-A desktop release runs this check after the app is built and before it
-packages the DMG. The verify phase runs it again with `--app` pointed at
-the app inside the mounted DMG. A broken onboarding stops the release there.
+A desktop release runs this check once, after it makes the DMG, with
+`--app` pointed at the app inside the mounted DMG. A broken onboarding
+stops the release there, before anything is published.
 The same script is what `make onboarding-e2e` runs.
 
 A program the check starts opens the sign-in URL. Your default browser
@@ -154,7 +153,9 @@ email in the wizard is what finds the person in the local Cloud. The happy
 path ends by checking that `blowhorn chrome profiles --json` still reports
 identity `ok` for the Chrome profile it mapped. A `drift` there means the
 mapping no longer matches what Chrome shows, and every later run of that
-profile would be refused. If branded Chrome cannot load the unpacked extension,
-the check uses a cached Chrome for Testing build. The check also sets
+profile would be refused. The check runs only in the installed Google Chrome
+and loads the unpacked extension into it over the debugging pipe. If Google
+Chrome is missing, or will not load the extension, the check stops and says so.
+It never downloads or falls back to another browser. The check also sets
 `BLOWHORN_KEYCHAIN=0`, so the engine keeps the fixture token in the
 throwaway home and does not write the login keychain.

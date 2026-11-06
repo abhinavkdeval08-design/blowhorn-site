@@ -9,6 +9,7 @@ This file is the project's committed home for project-intrinsic agent knowledge:
 - Git worktree management: use Treehouse - https://github.com/kunchenguid/treehouse - for every Git worktree. Do not hand-roll git worktree commands or use another worktree tool unless Treehouse cannot do the job, and then say why.
 - Design source of truth: Blowhorn Figma project - https://www.figma.com/design/mM9B4Zv9ON3pIyh3IvB4Il/Blowhorn - check the design there before changing layout, copy, or brand. For this site, DESIGN.md still governs layout and copy changes.
 - UX audits: load the `ux-audit` skill (`.agents/skills/ux-audit/`) before reviewing or merging a change to `layouts/`, `assets/css/site.css` or a page's data file, and for any page or layout audit.
+- Brand review: load the `brand-identity-review` skill (`.agents/skills/brand-identity-review/`) once at final review for changes to brand pages, marketing copy, logos, mascots or visual tokens; skip unrelated changes.
 - Writing: never use an em dash. Use a hyphen instead, and replace any em dash found in this repo with a hyphen.
 
 ## Website, documentation, and feature updates
@@ -46,6 +47,7 @@ Examples live in `data/action_examples.json` ([docs/action-examples.md](docs/act
 Platform docs pages render actions through `{{< supported-actions "id" >}}` (`layouts/_partials/supported-actions.html`); `make check-platform-docs` fails a missing page, a skipped table, or a hand-written action list.
 The central action matrix (`/integrations/actions/`, `layouts/action-matrix.html`) and the docs all-actions table (`{{< all-actions >}}`, `layouts/_partials/action-table.html`) both render from `layouts/_partials/action-matrix.html`: rows are `data/actions.json` (grouped by its `groups`), columns are `data/integrations.json` platforms, page copy is `data/integrations.json` `matrix`. Status is shown by exception: no "Supported" label or check anywhere; a supported cell is a neutral dot, a coming-soon platform gets one clock on its logo. `make check-action-matrix` fails drift or a dead `#action-<id>` link.
 The Signal hero demo is `data/hero_demo.json`.
+Platform product pages (`/preview/platforms/<id>/`, noindex, X first) render `data/platform_pages.json` (a shared contract plus one record per platform; actions, limits and the local stage's amplify and follow lines from the platform YAML and `data/action_examples.json`; every other fact quotes a public page, checked verbatim) through `layouts/platform-page.html`. The one primary call to action installs the browser extension (the download page's Web Store link), with no note under it; reviewer text is an annotation (coral, mono, marked), never a caption; the local-action stage is local only and has no composer or form. `make check-platform-pages` builds the page and runs its script ([docs/platform-pages.md](docs/platform-pages.md)).
 Every link to Blowhorn Tells (the free "Am I a Bot?" check) is built by
 `layouts/_partials/tells-link.html` from `data/tells.json`, with UTM tags and a
 placement; never hard-code a Tells URL in a template. `make check-tells` fails a
@@ -120,6 +122,15 @@ regenerate them. Claims on every page come from the product repository's
   stale file from an earlier build can never linger in `public/` or `public-internal/`
   and pass for current output. Hugo has no config-level default for this; the flag
   rides on the command line, so keep it on any new invocation.
+
+## API reference
+
+The public API reference (layout `rest-apis`, `layouts/_partials/rest-apis/`) renders only a spec exported by
+`.github/scripts/openapi_export.py` and named by `params.apiReference.spec`; it is off while that is empty.
+Only operations whose `x-internal` lists `public` ship, it never shows a server URL (the product has no HTTP
+listener), and its page must be a site-only `_index.md` so the docs sync keeps it. Read
+[docs/api-reference.md](docs/api-reference.md) before touching it. The fixture under `tests/openapi/` is
+synthetic: never copy it into `content/` or `data/`.
 
 ## CI runs through make
 

@@ -77,6 +77,36 @@ or Spotlight opens. macOS checks that copy, not the one you just installed.
 To see which version you have, select Blowhorn in Applications and choose
 **File** > **Get Info**.
 
+## If an update left an old copy behind
+
+An in-app update keeps the previous version as a hidden copy in
+Applications, named `.Blowhorn-backup-<id>.app`, until the new version
+starts. Every copy carries Blowhorn's identity, so anything that opens
+Blowhorn without naming a path, a `blowhorn` command included, can open an
+old or broken copy instead and get this dialog.
+
+Blowhorn removes these copies itself each time it starts. When it can't,
+usually because another account on this computer owns the copy, it shows
+the copy's path once, with a **copy command** button. To remove one by
+hand:
+
+1. List the hidden copies:
+
+   ```bash
+   ls -a /Applications ~/Applications | grep -E '^\.Blowhorn-(backup|update)-'
+   ```
+
+2. Tell macOS to forget each one, then delete it. Replace the path with
+   the one you found, whether it is `.Blowhorn-backup-` or
+   `.Blowhorn-update-`. `sudo` asks for an administrator password:
+
+   ```bash
+   /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u '/Applications/.Blowhorn-backup-<id>.app'
+   sudo rm -rf '/Applications/.Blowhorn-backup-<id>.app'
+   ```
+
+Never delete `/Applications/Blowhorn.app` itself this way.
+
 ## Related
 
 - [Troubleshooting](/docs/how-to/troubleshoot/troubleshooting/) - start from the symptom.

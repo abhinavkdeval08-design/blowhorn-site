@@ -8,6 +8,10 @@ weight: 226
 Blowhorn works on X in your own signed-in Google Chrome, through the Blowhorn extension. Sign in to X there once, by hand. The credential Blowhorn checks is `X_USERNAME`, kept in your account.
 
 Posts from an activity; a message past 274 characters goes out as a thread.
+If a post asks for media and the upload into the compose form fails, the
+post is not sent: nothing is clicked, the row stays pending, and the
+next run can retry it with its media. A media download failure behaves
+the same way.
 Replies go through a post activity that targets the conversation. Amplifies
 by retweet or quote. Follows accounts with `blowhorn follow`. Analytics
 appends a follower and following trend activity per run.
@@ -18,6 +22,24 @@ own published follow limit; the 15 is Blowhorn's spacing. X also
 publishes 50 original posts and 200 replies a day for an account without
 a checkmark, and no setting in Blowhorn goes past any of the three
 ([the one hard stop](/docs/how-to/settings/choose-your-rules-of-engagement/#a-limit-the-platform-publishes-is-the-one-hard-stop)).
+
+<!-- BEGIN generated limits: release/scripts/capabilities_docs/build.py; do not edit -->
+
+## Limits
+
+The limits Blowhorn knows for X.
+
+| Limit | Value |
+|---|---|
+| Post | 274 (x-weighted) |
+| Reply | 274 (x-weighted) |
+| Image | 5000000 bytes |
+| Video | 512000000 bytes |
+| Outreach per day | 400 |
+| Posts per day | 50 |
+| Comments per day | 200 |
+
+<!-- END generated limits -->
 
 ## Supported actions
 

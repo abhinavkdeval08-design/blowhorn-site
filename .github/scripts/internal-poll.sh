@@ -17,12 +17,14 @@ paths=(
   marketing/strategy
   marketing/capability-comparison
   marketing/brand
+  marketing/cast
   marketing/assets.manifest.json
   internal/engineering
   internal/design
   internal/specs
   internal/plans
   internal/research
+  internal/features
 )
 
 emit() { printf 'should_deploy=%s\nblowhorn_ref=%s\n' "$1" "$2" >> "$out"; }

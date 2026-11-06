@@ -74,7 +74,7 @@ member you pick under **Which person is this?**, or nobody for a brand.
 When the Chrome profile's Google email belongs to exactly one member, that
 member is picked for you; there is no email to type. If Blowhorn
 can't list your organization's members, the card says so and offers only
-**Nobody, a brand** until you choose **Check again**; if it can't list your
+**Nobody, a brand** until you choose **Discover**; if it can't list your
 profiles, the step says so above the cards, so check again before you
 create one rather than make a second profile for the same person. An
 existing profile is named by its id. A `chrome confirm` document that still
@@ -183,10 +183,10 @@ Mapping also pairs the profile. The command opens the Blowhorn extension's
 pairing page in that Chrome profile and prints:
 
 ```
-opened the pairing page in chrome profile 'Profile 2'; once it says paired, runs for profile ada are checked against that chrome profile
+opened the pairing page in chrome profile 'Profile 2'; once paired it offers the Blowhorn side panel, and then runs for profile ada are checked against that chrome profile
 ```
 
-Wait for the page to say the profile is paired. From then on a run for `ada`
+Once the profile is paired the page offers to open the Blowhorn side panel in that window. From then on a run for `ada`
 refuses before it does anything if Chrome is on another profile. When the page
 could not be opened, the command says why and what to run once Chrome is open
 on that profile. See [Pairing](/docs/reference/chrome/#pairing).

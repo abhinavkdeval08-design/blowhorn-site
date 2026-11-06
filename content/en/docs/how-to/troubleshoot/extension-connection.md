@@ -25,11 +25,17 @@ the install did not finish, so install it again with your administrator. A
 stale manifest means the checkout moved on without it. A run repairs that
 itself on demand: it repairs the native host, registers the extension for
 the mapped profile's data directory when nothing is there yet, and
-re-probes hello once. Ahead of a run, ensure it for one mapped profile
+re-probes hello once. A scheduled run goes further: if a native host
+process left by an earlier upgrade is still answering in that profile's
+place, it ends that process by its own process id first, which is
+usually enough on its own. Ahead of a run, ensure it for one mapped profile
 with `blowhorn chrome extension-install --profile <name> --ensure`.
-If the socket is still missing after the ensure, launch or relaunch
-Chrome with that profile (or accept the install offer). While another
-run holds the bridge, no ensure runs: wait for it to finish and recheck.
+If the socket is still missing after the ensure and Chrome is running,
+relaunch Chrome with that profile (or accept the install offer). When
+Chrome is closed, the run opens it on that profile itself and says so
+(see [Opening Chrome when it is closed](/docs/reference/chrome/#opening-chrome-when-it-is-closed)).
+While another run holds the bridge, no ensure runs: wait for it to finish
+and recheck.
 
 ## Version mismatch after an update
 
@@ -87,7 +93,7 @@ another blowhorn run holds the Chrome extension bridge (pid 1234)
 
 One mapped profile runs in one process at a time. Another run is acting as
 that profile: wait for it, or stop it -- the message names its pid. Your activities stay queued, and a scheduled
-job tries again next tick. A run that has hung stops sending its
+job tries again on its next run. A run that has hung stops sending its
 heartbeat, and after 30 seconds without one the bridge is released on
 its own, so a wedged run cannot hold the bridge indefinitely.
 
