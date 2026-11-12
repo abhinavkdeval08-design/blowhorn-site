@@ -84,6 +84,12 @@ function clientIp(request) {
   return 'unknown';
 }
 
+const SECURITY_HEADERS = {
+  'x-content-type-options': 'nosniff',
+  'x-frame-options': 'DENY',
+  'referrer-policy': 'strict-origin-when-cross-origin',
+};
+
 function corsHeaders(request) {
   const origin = request.headers.get('origin');
   if (origin === SITE_ORIGIN) return { 'access-control-allow-origin': SITE_ORIGIN, vary: 'Origin' };
@@ -93,22 +99,55 @@ function corsHeaders(request) {
 function jsonResponse(request, status, body) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...corsHeaders(request) },
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store',
+      ...SECURITY_HEADERS,
+      ...corsHeaders(request),
+    },
   });
 }
 
-function pageResponse(request, status, title, body) {
+export function safeHtml(content) {
+  return { html: String(content ?? '') };
+}
+
+export function pageResponse(request, status, title, body) {
+  const safeTitle = escHtml(title);
+  const safeBody = (typeof body === 'object' && body !== null && 'html' in body)
+    ? body.html
+    : escHtml(body);
   return new Response(
-    `<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="utf-8"><title>${title}</title></head>\n<body>\n<main>\n<h1>${title}</h1>\n<p>${body}</p>\n</main>\n</body>\n</html>\n`,
+    `<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="utf-8"><title>${safeTitle}</title></head>\n<body>\n<main>\n<h1>${safeTitle}</h1>\n<p>${safeBody}</p>\n</main>\n</body>\n</html>\n`,
     {
       status,
-      headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...corsHeaders(request) },
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'no-store',
+        ...SECURITY_HEADERS,
+        ...corsHeaders(request),
+      },
     },
   );
 }
 
-function safeBackLink(sourcePage) {
-  if (typeof sourcePage === 'string' && sourcePage.startsWith('/') && !sourcePage.startsWith('//')) {
+export function escHtml(s) {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+export function safeBackLink(sourcePage) {
+  if (
+    typeof sourcePage === 'string'
+    && sourcePage.startsWith('/')
+    && !sourcePage.startsWith('//')
+    && !sourcePage.startsWith('/\\')
+    && !/[\s"'<>\\]/.test(sourcePage)
+  ) {
     return `${SITE_ORIGIN}${sourcePage}`;
   }
   return SITE_ORIGIN;
@@ -147,11 +186,13 @@ function isFormPost(request) {
 
 function fail(request, status, message, sourcePage) {
   if (isFormPost(request)) {
+    const link = escHtml(safeBackLink(sourcePage));
+    const safeMsg = escHtml(message);
     return pageResponse(
       request,
       status,
       'Something went wrong',
-      `${message} <a href="${safeBackLink(sourcePage)}">Go back</a> and try again.`,
+      safeHtml(`${safeMsg} <a href="${link}">Go back</a> and try again.`),
     );
   }
   return jsonResponse(request, status, { ok: false, error: message });
@@ -182,6 +223,7 @@ export function createHandler(db) {
           'access-control-allow-methods': 'POST, GET, OPTIONS',
           'access-control-allow-headers': 'Content-Type',
           vary: 'Origin',
+          ...SECURITY_HEADERS,
         },
       });
     }
@@ -190,7 +232,10 @@ export function createHandler(db) {
     const isUnsubscribeGet = request.method === 'GET' && url.pathname === '/api/unsubscribe';
     const isUnsubscribePost = request.method === 'POST' && url.pathname === '/api/unsubscribe';
     if (!isWaitlist && !isSubscribe && !isUnsubscribeGet && !isUnsubscribePost) {
-      return new Response('Not found\n', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } });
+      return new Response('Not found\n', {
+        status: 404,
+        headers: { 'content-type': 'text/plain; charset=utf-8', ...SECURITY_HEADERS },
+      });
     }
 
     // Per-IP rate limit, Tells shape (30 req/min), backed by D1.
@@ -244,7 +289,7 @@ export function createHandler(db) {
         request,
         200,
         'Confirm unsubscribe',
-        `Click below to confirm unsubscribing from Blowhorn updates.<br><br>\n<form method="POST" action="/api/unsubscribe">\n<input type="hidden" name="token" value="${token}">\n<button type="submit">Confirm unsubscribe</button>\n</form>`,
+        safeHtml(`Click below to confirm unsubscribing from Blowhorn updates.<br><br>\n<form method="POST" action="/api/unsubscribe">\n<input type="hidden" name="token" value="${token}">\n<button type="submit">Confirm unsubscribe</button>\n</form>`),
       );
     }
 
