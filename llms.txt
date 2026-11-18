@@ -3,7 +3,7 @@
 > Blowhorn is a social media console that takes one message and broadcasts, reposts and amplifies it across every profile and platform your community runs, on autopilot. Runs on your computer.
 
 ## Pages
-- [Blowhorn: one message, many ears](https://blowhorn.ai/index.md): Scripted where it counts. AI where it helps. Every post, reply and amplify runs exactly as written. Drafts, agents and assistants plug in through MCP and a scriptable CLI.
+- [Blowhorn: one message, many ears](https://blowhorn.ai/index.md): Blowhorn is a social media console. Write one post, and it posts, reposts, and amplifies it across your LinkedIn, X, Reddit, Hacker News, Bluesky, GitHub, and Slack profiles, from your own browser, as you.
 - [Brand](https://blowhorn.ai/brand/index.md): The Blowhorn logo, wordmark, colors, type, Major Blowhorn and Old Thunderlung, with the rules for using them and two kits to download.
 - [Meet Major Blowhorn](https://blowhorn.ai/major/index.md): The life, legend and loud opinions of Major Blowhorn, Blowhorn's drill sergeant rooster, and his horn, Old Thunderlung. Dispatches from the barracks, updated as his story unfolds.
 - [Pricing](https://blowhorn.ai/pricing/index.md): Start free. Solo is $19 a month, Pro is $39 a month for 10 profiles, Team is $35 a seat a month. Pay yearly and get two months free.
@@ -120,6 +120,7 @@
 - [API reference](https://blowhorn.ai/docs/reference/api/index.md): The operations Blowhorn defines, with their request fields and responses.
 - [Explanation](https://blowhorn.ai/docs/explanation/index.md): Understand why: context and trade-offs, no procedures.
 
+- [Content item contract](https://blowhorn.ai/docs/reference/content-item-contract/index.md): What a content item carries: row number, fingerprint, rules of engagement, and thread identity.
 - [Choose your rules of engagement](https://blowhorn.ai/docs/how-to/settings/choose-your-rules-of-engagement/index.md): Your pace. Your risk. Your call. What Safety on, Weapons tight and Weapons free change in your day, and which one to pick.
 - [Connect an assistant and send your first post](https://blowhorn.ai/docs/tutorials/first-mcp-connection/index.md): Add the Blowhorn MCP server to Claude Desktop, read your profiles and queue, and queue a post that waits for your approval.
 - [Install the app](https://blowhorn.ai/docs/how-to/set-up/install-the-app/index.md): Download the signed Mac app from blowhorn.ai and verify it.
@@ -146,7 +147,7 @@
 - [Post to Reddit and Bluesky](https://blowhorn.ai/docs/how-to/publish/post-to-reddit-and-bluesky/index.md): Queue Reddit posts and Bluesky posts, threads, and reposts.
 - [blowhorn config](https://blowhorn.ai/docs/reference/cli/config/index.md): blowhorn config: get, path, set, show.
 - [blowhorn content](https://blowhorn.ai/docs/reference/cli/content/index.md): blowhorn content: approve, delete, get, list, posts, upsert.
-- [blowhorn desktop](https://blowhorn.ai/docs/reference/cli/desktop/index.md): blowhorn desktop: build, install, start, status.
+- [blowhorn desktop](https://blowhorn.ai/docs/reference/cli/desktop/index.md): blowhorn desktop: activity-kinds, build, install, start, status.
 - [blowhorn find](https://blowhorn.ai/docs/reference/cli/find/index.md): Search Bluesky and GitHub for posts, issues, and pull requests matching a query, with optional date, author, and relevancy filters.
 - [blowhorn follow](https://blowhorn.ai/docs/reference/cli/follow/index.md): Follow accounts on X, Bluesky, or GitHub.
 - [Post to Hacker News](https://blowhorn.ai/docs/how-to/publish/post-to-hacker-news/index.md): Submit links and text posts, comment, and stay within the daily cap.
@@ -188,7 +189,7 @@
 - [Change your defaults](https://blowhorn.ai/docs/how-to/settings/defaults/index.md): Set pace, excluded profiles, dry-run default, notifications and logs, in the app or the config file.
 - [Change how the app looks](https://blowhorn.ai/docs/how-to/settings/appearance/index.md): Pick the app's theme, make the side rail and the + button solid or tinted glass, choose whether the desktop shows through, and see how times follow your Mac's clock.
 - [Choose how Blowhorn reaches Chrome](https://blowhorn.ai/docs/how-to/settings/launch-mode/index.md): Stay on the extension default, or attach to your Chrome or launch Blowhorn's own. Advanced.
-- [Choose where Blowhorn works in Chrome](https://blowhorn.ai/docs/how-to/settings/where-blowhorn-works/index.md): Keep Blowhorn's tab beside yours, or give it a window of its own mostly behind yours, in the app or from the command line.
+- [Choose where Blowhorn works in Chrome](https://blowhorn.ai/docs/how-to/settings/where-blowhorn-works/index.md): Keep Blowhorn's tab beside yours, split beside your tab, or give it a window of its own mostly behind yours, in the app or from the command line.
 - [Watch, pause or take over a run in Chrome](https://blowhorn.ai/docs/how-to/manage/watch-and-take-over-a-run/index.md): Open the Blowhorn side panel to see what Blowhorn is doing in Chrome, pause or stop it, and take over for a sign-in or a check.
 - [Troubleshooting](https://blowhorn.ai/docs/how-to/troubleshoot/troubleshooting/index.md): Start from the symptom: find the fix for what Blowhorn just told you.
 - [Turn anonymous usage data on or off](https://blowhorn.ai/docs/how-to/settings/share-usage-data/index.md): Choose whether your Blowhorn account shares anonymous usage data for product improvement, in the app or from the command line.
@@ -249,7 +250,14 @@
 - [Articles](https://blowhorn.ai/resources/articles/index.md): Product intelligence, tips and field notes from the Blowhorn team: how to read your results, schedule well and stay inside every platform's rules.
 - [Videos](https://blowhorn.ai/resources/videos/index.md): Blowhorn videos - short films and walkthroughs on what Blowhorn does and how to get the most from it, organised by category.
 - [Getting started](https://blowhorn.ai/resources/videos/getting-started/index.md): Start here - what Blowhorn is, how it works, and the films that introduce it.
+- [Comparisons](https://blowhorn.ai/resources/videos/comparisons/index.md): Short films on how Blowhorn differs from a named tool, one competitor at a time.
+- [Features](https://blowhorn.ai/resources/videos/features/index.md): Short films on what Blowhorn can do, from actions beyond the API to a remote team working as one army.
 
+- [Amazon blocked Meta's Muse. Here is how it knew.](https://blowhorn.ai/resources/articles/how-amazon-detects-muse/index.md): Twelve days after Meta launched Muse, Amazon cut it off. Amazon never said how it spots the agent, but the evidence …
+- [Beyond the API](https://blowhorn.ai/resources/videos/features/beyond-the-api/index.md): Platform APIs keep some actions for approved partners. Blowhorn works the way you do, so it isn't limited to what those APIs expose.
+- [Not a bot. It's you.](https://blowhorn.ai/resources/videos/getting-started/not-a-bot/index.md): Platforms are done with bots. Blowhorn isn't one: it's you, on your own computers, under your own profiles, with your people beside you and you in command.
+- [Remote team, one army](https://blowhorn.ai/resources/videos/features/remote-team/index.md): Every teammate runs Blowhorn on their own computer, signed in as themselves. You see the whole fleet and every result in one place.
+- [Blowhorn vs Buffer](https://blowhorn.ai/resources/videos/comparisons/blowhorn-vs-buffer/index.md): Buffer holds your token and publishes from its cloud. Blowhorn runs as you, on your own computer, under your own profile.
 - [Failed posts are data: reading failure reasons and fixing the cause](https://blowhorn.ai/resources/articles/failed-posts-are-data/index.md): A failed post is a report, not just a red mark. The reason on the activity names the cause, and the fix follows from the …
 - [Pace is a feature: typing delay, concurrency and approval gates](https://blowhorn.ai/resources/articles/pace-is-a-feature/index.md): Speed feels like efficiency until a platform reads it as automation. Typing delay, concurrency and approval gates are …
 - [The open web is closing. Show up where your audience is.](https://blowhorn.ai/resources/articles/the-open-web-is-closing/index.md): AI answers now reuse Reddit's posts without sending the click, and Reddit is answering with logins and its app. Here is …
@@ -317,6 +325,7 @@
 ## Tags
 - [Tags](https://blowhorn.ai/tags/)
 - [Agents](https://blowhorn.ai/tags/agents/)
+- [Compare](https://blowhorn.ai/tags/compare/)
 - [Desktop-App](https://blowhorn.ai/tags/desktop-app/)
 - [In-Product-Intelligence](https://blowhorn.ai/tags/in-product-intelligence/)
 - [Overview](https://blowhorn.ai/tags/overview/)

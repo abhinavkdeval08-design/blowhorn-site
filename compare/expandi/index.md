@@ -52,4 +52,4 @@ Outbound volume fills a pipeline. Discussion builds a reputation. Platforms are 
 
 **Does Expandi amplify my posts?** Not the way Blowhorn does. Expandi has no pod network and sells no engagement, but its Post Engagement campaigns target people who liked or commented on a post. Blowhorn's sound wave sends one message out through every profile in your account, as themselves.
 
-[Download Blowhorn for Mac](https://blowhorn.ai/download/)
+[Download](https://blowhorn.ai/download/)

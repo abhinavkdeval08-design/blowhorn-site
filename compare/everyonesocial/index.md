@@ -42,4 +42,4 @@ EveryoneSocial and Blowhorn agree on the big thing: people are the signal. The d
 
 **Can Blowhorn replace an advocacy program?** Not a thousand-seat program with compliance needs. For a team whose launch lives or dies in the first hour on LinkedIn, X, Reddit and Hacker News, Blowhorn is the lighter tool.
 
-[Download Blowhorn for Mac](https://blowhorn.ai/download/)
+[Download](https://blowhorn.ai/download/)

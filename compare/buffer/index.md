@@ -46,4 +46,4 @@ Buffer is honest software and it sells no engagement either, so this one is abou
 
 **Does Blowhorn post while every computer is switched off?** No. As long as one computer set up for the profile is awake, the schedule runs. With every computer switched off, nothing goes out. That is the honest trade for posting as you, from your own browser.
 
-[Download Blowhorn for Mac](https://blowhorn.ai/download/)
+[Download](https://blowhorn.ai/download/)

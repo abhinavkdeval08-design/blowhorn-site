@@ -40,4 +40,4 @@ A steady feed is good hygiene. The posts that move a technical audience are the 
 
 **Is SocialBee better than Blowhorn?** For an evergreen small-business feed, yes. For technical launches with real people amplifying, we think Blowhorn fits better.
 
-[Download Blowhorn for Mac](https://blowhorn.ai/download/)
+[Download](https://blowhorn.ai/download/)

@@ -42,4 +42,4 @@ On LinkedIn, the comments that count are the ones that start a conversation. Lin
 
 **Is Taplio risky for my LinkedIn account?** Taplio's core loop of writing, scheduling and analytics is standard fare, and Taplio asks users to keep its Pro automation conservative. But LinkedIn tightened limits on automated comments in March 2026, and several reviewers report warnings on aggressive automation. Blowhorn moves at a human pace and is built to keep your profile within each platform's limits.
 
-[Download Blowhorn for Mac](https://blowhorn.ai/download/)
+[Download](https://blowhorn.ai/download/)

@@ -41,4 +41,4 @@ Lists and enrichment are about finding people. Blowhorn is about being worth ans
 
 **Is PhantomBuster better than Blowhorn?** For data extraction, enrichment and outreach at scale, yes. For acting as yourself from your own browser and amplifying through real people, we think Blowhorn is the better fit.
 
-[Download Blowhorn for Mac](https://blowhorn.ai/download/)
+[Download](https://blowhorn.ai/download/)

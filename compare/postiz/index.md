@@ -43,4 +43,4 @@ Postiz and Blowhorn agree more than they disagree: neither sells engagement. Our
 
 **Does Blowhorn have an MCP server?** Yes. A local MCP server ships with the desktop app (blowhorn-mcp, one tool per command, with the risky ones hidden until you opt in). Every write is a dry run until the assistant confirms it, and an agent can never approve its own content. Postiz is ahead on hosted MCP today; Blowhorn's hosted server is coming soon.
 
-[Download Blowhorn for Mac](https://blowhorn.ai/download/)
+[Download](https://blowhorn.ai/download/)

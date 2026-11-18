@@ -42,4 +42,4 @@ Advocacy suites are right that people outperform brand accounts. Blowhorn takes 
 
 **Is Sociabble still called Sociabble?** It is now the Poppulo Experience Platform: same platform, new name, per their site. Your login and data are unchanged.
 
-[Download Blowhorn for Mac](https://blowhorn.ai/download/)
+[Download](https://blowhorn.ai/download/)

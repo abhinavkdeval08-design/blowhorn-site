@@ -52,4 +52,4 @@ A drip sequence is a script for many strangers. Blowhorn spends its effort on po
 
 **Does Dripify amplify my posts?** Not the way Blowhorn does. Dripify has no pods, no post boosting and no content scheduling in its documented features. Liking a post can be a step inside a sequence, but that is not amplification of your posts by your people.
 
-[Download Blowhorn for Mac](https://blowhorn.ai/download/)
+[Download](https://blowhorn.ai/download/)
