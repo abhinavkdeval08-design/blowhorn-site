@@ -1,0 +1,15 @@
+{{- /* The marketing catalog art for a tag: one cast character per tag, from
+  static/assets/brand/cast/. Context: the tag slug (.Data.Term). Returns a
+  dict with "src" (path under static/) and "alt" (the approved description
+  from the roles data). Tags without a character get the General. */ -}}
+{{- $art := dict
+  "agents" (dict "src" "assets/brand/cast/sleeper-cell-base.webp" "alt" "Sleeper Cell, a black-faced sheep in a watch cap, teal monocle and coral scarf, crouched behind a padlock shield with a radar cloaker")
+  "desktop-app" (dict "src" "assets/brand/cast/mouse-marine-base.webp" "alt" "Mouse Marine, a mallard in a green beret holding a cursor spear, riding a gold trackball on a small tank")
+  "in-product-intelligence" (dict "src" "assets/brand/cast/robo-recruit-base.webp" "alt" "Robo-Recruit, five tin-can robot chickens in grey helmets with wind-up keys, each holding a teal and gold bullhorn")
+  "reading-results" (dict "src" "assets/brand/cast/trench-trooper-periscope.webp" "alt" "Trench Trooper, a muddy pig in a helmet, watching through a gold periscope from behind sandbags, tab bayonet at the ready")
+  "scheduling" (dict "src" "assets/brand/cast/drill-instructor-base.webp" "alt" "Drill Instructor, a stocky turkey in a campaign hat with a whistle, holding the weekly schedule on a clipboard")
+  "tips" (dict "src" "assets/brand/cast/recruit-chick-base.webp" "alt" "Recruit Chick, a yellow chick in a green helmet firing hearts from a slingshot, with blue thumbs-up and comment icons flying")
+-}}
+{{- $default := dict "src" "assets/brand/cast/general-base.webp" "alt" "The General, an old gray billy goat with a white beard and a coral cap band, holding a bugle to his ear and leaning on his cane" -}}
+{{- $found := index $art (. | default "") -}}
+{{- return ($found | default $default) -}}

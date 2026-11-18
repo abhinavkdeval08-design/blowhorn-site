@@ -12,8 +12,10 @@
 #                  our feeds and recency sorting need it).
 #   layout       - always "video".
 #   videoType    - "local" for a file the site hosts itself. "youtube"
-#                  is reserved: the first embedded video ships with a
-#                  privacy-page update, per the site's third-party rule.
+#                  for a YouTube film: set youtubeId to the id, or to
+#                  TODO_YOUTUBE_ID until upload. A placeholder does not
+#                  contact YouTube. Posters must be files this site hosts,
+#                  never a YouTube thumbnail.
 #   duration     - "m:ss", shown on the card.
 #   categories   - the display name of the category folder the file
 #                  lives in. The folder is the category; keep them equal.

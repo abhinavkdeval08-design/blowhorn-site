@@ -1,15 +1,19 @@
 {
   "$schema": "../schemas/hero.schema.json",
-  "default": "scripted-ai-ready",
+  "default": "copy-paste",
   "tagline": "Social media management for you and your AI agents.",
   "rotation": {
     "mode": "utc-day",
     "ids": [
-      "plug-in-ai", "scripted-ai-ready", "same-rules", "ai-optional", "human-or-ai",
-      "r2-sound-wave", "r2-advocacy", "r2-whisper", "r2-ovation", "r2-password",
-      "r2-scarecrows", "r2-manners", "r2-backup", "r2-every-computer", "r2-army-marches",
-      "r2-halt", "r2-juggling", "r2-agency-name", "r2-remote-team", "r2-no-meter",
-      "r2-per-breath", "r2-crickets", "r2-ai-orders"
+      "copy-paste", "password-cookie-2fa", "nine-likes",
+      "r2-password", "r2-ovation", "r2-sound-wave",
+      "r2-advocacy", "r2-per-breath", "r2-no-meter",
+      "r2-backup", "r2-every-computer", "r2-halt",
+      "r2-whisper", "r2-scarecrows", "r2-crickets",
+      "r2-manners", "r2-juggling", "r2-agency-name",
+      "r2-remote-team", "r2-army-marches",
+      "plug-in-ai", "scripted-ai-ready", "ai-optional",
+      "same-rules", "human-or-ai", "r2-ai-orders"
     ]
   },
   "media": {
@@ -42,7 +46,7 @@
       "subhead": "Every post, reply and amplify runs exactly as written. Drafts, agents and assistants plug in through MCP and a scriptable CLI.",
       "cta": { "label": "Meet the AI side", "href": "/ai" },
       "differentiators": [8, 10],
-      "note": "AI hybrid messaging, default and fallback (Yi, 2026-10-20 8:01 PM). The hybrid as a rule: deterministic actions, AI by choice, and the agent surfaces named."
+      "note": "AI hybrid messaging (Yi, 2026-10-20 8:01 PM). The hybrid as a rule: deterministic actions, AI by choice, and the agent surfaces named. In the production rotation; was the default and fallback until 2026-11-18."
     },
     {
       "id": "same-rules",
@@ -73,7 +77,7 @@
       "headline": "Not a bot. You, at full volume.",
       "subhead": "Blowhorn does the typing and clicking in your own browser, signed in as you, on computers you own. No Blowhorn server ever logs in as you.",
       "differentiators": [8, 9],
-      "note": "Default and fallback. Leads with the claim every competitor group lacks: a real browser, really you."
+      "note": "Earlier default, now outside the production rotation. Leads with the claim every competitor group lacks: a real browser, really you. Reachable via ?hero=not-a-bot and the Easter egg hotkey."
     },
     {
       "id": "real-you",
@@ -109,7 +113,7 @@
       "subhead": "Blowhorn is a social media console. Write one post, and it posts, reposts, and amplifies it across your LinkedIn, X, Reddit, Hacker News, Bluesky, GitHub, and Slack profiles, from your own browser, as you.",
       "identification": "If this is you: you are the founder, the DevRel team, and the social team, and launch day is currently seven tabs and a prayer.",
       "differentiators": [13],
-      "note": "Issue #254, tab chaos. Not in the production rotation; reachable via ?hero=copy-paste and the Easter egg hotkey."
+      "note": "Issue #254, tab chaos. Default and fallback (Lee, 2026-11-18): strongest for a layman marketer, a concrete pain in plain words and a clear outcome. Also reachable via ?hero=copy-paste and the Easter egg hotkey."
     },
     {
       "id": "seven-tabs",
@@ -133,7 +137,7 @@
       "subhead": "Blowhorn is a social media console that acts as you, in your browser. Your LinkedIn, X, Reddit and Hacker News sessions stay on your computer. Your account keeps the queue in sync. Your computers do the posting.",
       "identification": "If this is you: you have stared at a vendor login screen and thought, absolutely not, that account is the company.",
       "differentiators": [8, 9],
-      "note": "Issue #254, custody. Not in the production rotation; reachable via ?hero=password-cookie-2fa and the Easter egg hotkey."
+      "note": "Issue #254, custody. Second in the production rotation (Lee, 2026-11-18): sharpest privacy angle, sessions stay on your computer. Also reachable via ?hero=password-cookie-2fa and the Easter egg hotkey."
     },
     {
       "id": "not-a-vendor",
@@ -157,7 +161,7 @@
       "subhead": "Post once, and Blowhorn amplifies it from every profile you run, in the first hour, when early replies tend to matter most, so it does not sit flat while you are still pasting it elsewhere.",
       "identification": "If this is you: you have shipped something real and then begged in Slack with \"can everyone like this?\"",
       "differentiators": [2, 13],
-      "note": "Issue #254, flat launch. Not in the production rotation; reachable via ?hero=nine-likes and the Easter egg hotkey."
+      "note": "Issue #254, flat launch. Third in the production rotation (Lee, 2026-11-18): first-hour amplification without pinging the team. Also reachable via ?hero=nine-likes and the Easter egg hotkey."
     },
     {
       "id": "no-begging",

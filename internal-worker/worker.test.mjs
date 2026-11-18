@@ -177,6 +177,15 @@ test('signups export is CSV with quoted commas', async () => {
 });
 test('signups admin without a database fails closed', async () =>
   assert.equal((await handle(authed('/internal/signups/'), env, certsFetch)).status, 503));
+test('signups admin without trailing slash redirects to /internal/signups/ with 301, preserving query params', async () => {
+  const res = await handle(authed('/internal/signups?sort=desc&page=2'), adminEnv(sampleRows), certsFetch);
+  assert.equal(res.status, 301);
+  const loc = new URL(res.headers.get('location'));
+  assert.equal(loc.pathname, '/internal/signups/');
+  assert.equal(loc.search, '?sort=desc&page=2');
+});
+test('signups admin without trailing slash requires authentication', async () =>
+  assert.equal(await status(adminReq('/internal/signups'), adminEnv(sampleRows)), 403));
 
 // Fleet stats page: snapshots the Bastion cron writes to FLEET_DB.
 const diskSnap = {

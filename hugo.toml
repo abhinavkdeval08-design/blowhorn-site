@@ -189,7 +189,7 @@ renderSegments = ["public"]
   # The redirect and onboarding pages at the site root stay out of llms.txt,
   # as they stay out of sitemap.xml. /preview/ holds unreleased platform pages
   # (docs/platform-pages.md): noindex, out of the sitemap, search and llms.txt.
-  exclude = ["/download/thanks/", "/home-oil/", "/home-reveille/", "/install/", "/signup/", "/login/", "/welcome/", "/early-access/", "/preview/**"]
+  exclude = ["/download/thanks/", "/home-reveille/", "/install/", "/signup/", "/login/", "/welcome/", "/early-access/", "/preview/**"]
 
 # Hugo module configuration, as layer5io/docs.
 [module]

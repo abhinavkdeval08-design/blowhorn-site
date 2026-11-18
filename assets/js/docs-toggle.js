@@ -73,4 +73,44 @@
       });
     });
   });
+
+  // Table of contents scroll awareness:
+  // When at the top of the page (y = 0), the "Top of page" link remains hidden
+  // even on hover. Once scrolled down, .is-scrolled is added to .docs-toc so
+  // the link appears on hover.
+  ready(function () {
+    var toc = document.querySelector('.docs-toc');
+    var topLink = document.querySelector('.td-toc-title__link');
+    if (!toc) {
+      return;
+    }
+    var threshold = 100;
+    var ticking = false;
+    function updateScroll() {
+      var scrolled = window.pageYOffset > threshold;
+      toc.classList.toggle('is-scrolled', scrolled);
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    }, { passive: true });
+    updateScroll();
+
+    if (topLink) {
+      topLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        var reduce = false;
+        try {
+          reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (err) {}
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+      });
+    }
+  });
 })();

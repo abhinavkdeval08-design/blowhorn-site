@@ -79,7 +79,7 @@
   border-top: var(--stroke-hairline) solid var(--line);
 }
 .matrix-group-name {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 16px;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -112,6 +112,10 @@
 .matrix-cell a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; background: var(--surface-tint); }
 .matrix-row.is-hot > *,
 .matrix-row > .is-hot-col { background-color: var(--surface-raised); }
+.matrix-row:target > *,
+.matrix-group:target .matrix-group-row th { background-color: var(--surface-raised); }
+.matrix-row:target,
+.matrix-group:target .matrix-group-row { scroll-margin-top: var(--space-8); }
 .matrix-row.is-hot > .matrix-action { background-color: var(--surface-raised); }
 .matrix-row:last-child > * { padding-bottom: var(--space-2); }
 .matrix-group:last-of-type .matrix-row:last-child > * { padding-bottom: var(--space-4); }

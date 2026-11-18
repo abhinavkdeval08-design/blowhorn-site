@@ -103,12 +103,34 @@ renderSegments = ["internal"]
     [[module.imports.mounts]]
       source = "marketing/assets.manifest.json"
       target = "static/internal/marketing-assets/assets.manifest.json"
-    # Cast thumbnails for the catalog: the 640-wide webp files only, never the
-    # full-size originals or the 1280 webp.
+    # Thumbnails for the catalog: the image files the catalog links, from
+    # every folder the manifest lists. Only images: audio, fonts, archives
+    # and documents stay out of the build. The full-size file is the
+    # thumbnail for every kind but cast, which keeps its 640-wide file as
+    # the small version; the catalog links each thumbnail to its full-size
+    # file, so the larger view is the same file. Each list names the
+    # top-level files as well as the nested ones: a **/*.png pattern does
+    # not match a file at the mount's own root.
     [[module.imports.mounts]]
-      source = "marketing/cast"
-      target = "static/internal/marketing-assets/cast"
-      files = ["**/*-640.webp"]
+      source = "marketing"
+      target = "static/internal/marketing-assets"
+      files = ["*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.svg",
+               "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.webp", "**/*.svg"]
+    [[module.imports.mounts]]
+      source = "desktop/assets"
+      target = "static/internal/marketing-assets/desktop/assets"
+      files = ["*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.svg",
+               "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.webp", "**/*.svg"]
+    [[module.imports.mounts]]
+      source = "desktop/src/renderer/assets"
+      target = "static/internal/marketing-assets/desktop/src/renderer/assets"
+      files = ["*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.svg",
+               "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.webp", "**/*.svg"]
+    [[module.imports.mounts]]
+      source = "extension"
+      target = "static/internal/marketing-assets/extension"
+      files = ["*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.svg",
+               "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.webp", "**/*.svg"]
     # Feature index page and its data for /internal/features/ (same pattern
     # as the persona matrix above: the YAML mounts into assets and the
     # internal-features shortcode unmarshals it).

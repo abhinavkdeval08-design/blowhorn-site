@@ -14,7 +14,7 @@
         {{ partial "interface-art.html" "desktop" }}
         <h3 class="h3">Desktop app</h3>
         <p>The full console on your computer: queue, profiles, approvals and run history.</p>
-        <p><a href="{{ "download/" | relURL }}">Download Blowhorn</a></p>
+        <p>{{ partial "download-button.html" (dict "kind" "text") }}</p>
       </li>
       <li class="card ways-card card-stamp">
         {{ partial "interface-art.html" "extension" }}

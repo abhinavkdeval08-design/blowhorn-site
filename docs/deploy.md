@@ -94,6 +94,57 @@ New `workflow_run` workflows only become active after they reach `master`.
 The first preview must therefore be verified on a new or updated PR after
 this change is merged and the one-time Pages handoff below is complete.
 
+## Relationship to layer5io/docs workflows
+
+The site borrows workflow patterns from `layer5io/docs`, but only where they
+match Blowhorn's build and hosting model. The comparison for issue #425 made
+these decisions:
+
+- Keep `site.yml` as the only production build and deployment workflow.
+  Layer5's `hugo.yaml` is not copied: `site.yml` already uses the repository's
+  pinned Go, Node.js and Hugo toolchain, runs the repository checks, uploads a
+  Pages artifact and deploys it from `master` with GitHub's Pages actions.
+- Keep the existing `label-commenter.yml`, `labeler.yml` and `slack.yml`
+  workflows instead of adding copies from Layer5.
+- Do not port `cloud-release-docs.yml`,
+  `meshery-extension-release-docs.yml`, `discussion-data-files-update.yml`,
+  `feature-list.yml`, `generate-keys.yml` or `generate-pricing-list.yml`.
+  They dispatch Meshery and Kanvas release notes, fetch Meshery discussion
+  data or generate Meshery documentation from Google Sheets, and have no
+  Blowhorn equivalent.
+- `copilot-pr-handler.yml` adapts Layer5's Copilot pull-request handler with a
+  Blowhorn repository guard, the `copilot-swe-agent[bot]` author check and
+  pinned actions.
+- Treat the Layer5 pull-request preview workflows as a pattern, not a direct
+  port. They publish to a `gh-pages` branch, while this repository publishes
+  Pages from a workflow artifact. Preview publication therefore waits for a
+  maintainer-selected host; the production deployment model stays unchanged.
+
+### Copilot pull-request handler
+
+[`copilot-pr-handler.yml`](../.github/workflows/copilot-pr-handler.yml) runs
+when `copilot-swe-agent[bot]` opens, updates or reopens a pull request against
+`master`. It marks a draft ready for review, then approves any workflow runs
+waiting for approval at that pull request's exact head SHA. A maintainer can
+also run it manually with a pull request number. This `workflow_dispatch` path
+is maintainer-only and intentionally bypasses the Copilot-author check; it is a
+recovery or testing path, not equivalent to automatic handling. Approval is
+deliberately workflow-agnostic: every run waiting for approval at that exact
+head SHA is approved, including runs from workflows added later. The
+pending-run search reads at most 100 pages of 100 runs. If all 100 pages are
+full, it fails before approving anything rather than assume the result set is
+complete; that bound is an intentional fail-closed trade-off.
+
+The handler needs `actions: write` to approve runs, `pull-requests: write` to
+mark a draft ready and `contents: read` to check out its helper. It uses the
+run's `GITHUB_TOKEN`; this repository does not need a separate access-token
+secret. Because `pull_request_target` is privileged, its checkout is pinned to
+`master`, credentials are not persisted, and it never checks out or executes
+the pull request head. Repository logic lives in
+`.github/scripts/copilot_pr_handler.py`, runs through
+`make copilot-pr-handle PR_NUMBER=<number>` and is covered by
+`make test-scripts`.
+
 ### Verify a deployment
 
 ```bash

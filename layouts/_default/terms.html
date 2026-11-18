@@ -1,5 +1,6 @@
-{{- /* The tag index (/tags/): every tag on the site with its page count.
-  Tags live on Resources content; the chips link to each term page. */ -}}
+{{- /* The tag index (/tags/): every tag on the site as a card with its cast
+  art, its page count and its newest item. Tags live on Resources content;
+  the cards link to each term page. */ -}}
 {{ define "main" }}
     <main id="main" class="page resources-page">
       <div class="wrap">
@@ -8,9 +9,19 @@
           <h1 class="display">{{ .Title }}</h1>
           <p class="body-lg muted lede">Browse by topic. Every tag used across the Resources center.</p>
         </header>
-        <ul class="tag-chips">
-          {{- range .Data.Terms.Alphabetical }}
-          <li><a class="tag-chip" href="{{ .Page.RelPermalink }}">{{ .Page.Title }} ({{ .Count }})</a></li>
+        {{- $terms := .Data.Terms.Alphabetical }}
+        <ul class="tag-grid">
+          {{- range $i, $t := $terms }}
+          {{- $slug := path.Base (strings.TrimSuffix "/" $t.Page.RelPermalink) -}}
+          {{- $art := partial "tag-art.html" $slug -}}
+          {{- $newest := index ($t.Page.Pages.ByDate.Reverse) 0 -}}
+          <li>
+            <a class="card card-link tag-card {{ partial "card-variant.html" (dict "i" $i "grid" "tag-grid" "n" (len $terms)) }}" href="{{ $t.Page.RelPermalink }}">
+              <img class="tag-card-art" src="{{ $art.src | relURL }}" alt="" width="960" height="540" loading="lazy">
+              <span class="h3 tag-card-title">{{ $t.Page.Title }}</span>
+              <span class="tag-card-meta">{{ $t.Count }} {{ if eq $t.Count 1 }}item{{ else }}items{{ end }} · Newest: {{ $newest.Title }}</span>
+            </a>
+          </li>
           {{- end }}
         </ul>
       </div>

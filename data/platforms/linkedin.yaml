@@ -3,7 +3,7 @@
 # come from data/actions.json; name and default description live there.
 # behavior here overrides the default where LinkedIn differs. Keep the
 # action order of every platform file: post, comment, reply, amplify,
-# react, follow, unfollow, accept, withdraw, find, analytics. Checked
+# react, star, follow, unfollow, accept, withdraw, find, analytics. Checked
 # against the blowhorn repository's blowhorn/cli.py SUPPORTED_PLATFORMS_BY_COMMAND.
 key: linkedin
 name: LinkedIn

@@ -4,6 +4,7 @@ heading: Blowhorn Trust Center
 description: How Blowhorn handles your data, sessions and accounts, in plain language, and every policy that covers the Blowhorn website, the Blowhorn app for macOS and the Blowhorn Chrome extension.
 lead: Many public voices, one coordinated queue, every action on your own computer. Every policy for the Blowhorn website, desktop app and Chrome extension, each with a plain-language summary. Where a summary differs from its policy, the policy decides.
 layout: trust-center
+aliases: [/trust-center/]
 lastmod: 2026-10-25
 sitemap:
   changefreq: monthly

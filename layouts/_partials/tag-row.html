@@ -1,0 +1,8 @@
+{{- /* One article or tip in a tag term page's numbered list: title, date,
+  reading time, column and video length, then the summary. Context: the page. */ -}}
+<li class="tag-row">
+  <a class="tag-row-title" href="{{ .RelPermalink }}">{{ .Title }}</a>
+  <p class="tag-row-meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time> <span aria-hidden="true">·</span> {{ .ReadingTime }} min read{{- with .Params.column }} <span aria-hidden="true">·</span> {{ partial "column-label.html" . }}{{ end }}{{- with .Params.video }}{{- with .duration }} <span aria-hidden="true">·</span> Video · {{ . }}{{ end }}{{ end }}</p>
+  {{- $summary := .Params.summary | default .Description -}}
+  {{- with $summary }}<p class="tag-row-summary">{{ . }}</p>{{ end }}
+</li>

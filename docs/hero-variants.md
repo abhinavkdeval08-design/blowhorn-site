@@ -31,40 +31,62 @@ Twitter and JSON-LD descriptions (the tagline stands in when it does not).
 to rotate every variant. Variants not listed never rotate, but still render after the
 rotating ones, so `?hero=<id>` reaches them for review (`?hero=<n>` counts rotating heroes only).
 
-Production rotates 23 heroes, one per UTC day: the five AI hybrid heroes first (Yi,
-2026-10-20), then the 18 round 2 heroes. With 23 ids a given hero comes back every 23
-days. The five AI hybrid heroes:
+Production rotates 26 heroes, one per UTC day, in priority order (Lee, 18 November
+2026). He asked for the most compelling variants first, for a layman marketer: a
+concrete pain in plain words, a clear outcome, a privacy angle where the claim is
+honest, and readable copy. Only claims the capability dump supports. No Instagram,
+TikTok or Windows claims. With 26 ids a given hero comes back every 26 days.
 
-1. `plug-in-ai`: "Automate your social voice. Plug in AI anytime."
-2. `scripted-ai-ready`: "Scripted where it counts. AI where it helps." Default and fallback (Yi, 2026-10-20).
-3. `same-rules`: "You post. Your agent posts. Same rules."
-4. `ai-optional`: "Your voice, automated. AI optional, never in charge."
-5. `human-or-ai`: "One queue. Every profile. Human or AI."
+`copy-paste` is the default and fallback (no-JavaScript, crawlers and social
+previews). Tab chaos is the broadest pain, the headline is plain, and the outcome
+is concrete: one post, many profiles, as you, from your own browser. That is
+clearly stronger for a first-time marketer than the previous default,
+`scripted-ai-ready`, which leads with the AI hybrid rule.
 
-The 18 round 2 heroes (Blowhorn Marketing, 2026-10-27, approved by Lee), in rotation
-order, have a headline only, no subhead and no `cta`, so their secondary button is
-"See how it works":
+The first three are the issue #254 top picks (promoted 2026-11-13, reordered
+2026-11-18), one per pain. They carry a plain-words subhead and a self-identification
+line in the data file, neither rendered in the hero (the tagline still shows). The
+default variant's subhead still feeds the meta, Open Graph, Twitter and JSON-LD
+descriptions, so `content/en/_index.md`'s `description` follows `copy-paste`.
 
-| id | Headline |
-| --- | --- |
-| `r2-sound-wave` | Make a sound wave, not a ripple. |
-| `r2-advocacy` | Employee advocacy, minus the enterprise invoice. |
-| `r2-whisper` | The algorithm can't hear a whisper. |
-| `r2-ovation` | Your launch deserves an ovation, not a pity like. |
-| `r2-password` | Your password called. It wants to stay home. |
-| `r2-scarecrows` | Bought likes are scarecrows with thumbs up. |
-| `r2-manners` | Automation with manners. |
-| `r2-backup` | Not a bot. Just you, with backup. |
-| `r2-every-computer` | Every computer you own, reporting for duty. |
-| `r2-army-marches` | Close your laptop. The army keeps marching. |
-| `r2-halt` | Second thoughts? One button halts the whole army. |
-| `r2-juggling` | Juggling clients? Put the balls down. |
-| `r2-agency-name` | Your agency's name on it. Our army behind it. |
-| `r2-remote-team` | Remote team. One battle plan. Everyone keeps their own keys. |
-| `r2-no-meter` | No meter. No credits. No rationing. |
-| `r2-per-breath` | Social tools charge per seat, per post, per breath. |
-| `r2-crickets` | Built by a tiny team that got tired of crickets. |
-| `r2-ai-orders` | Let your AI give the orders. Blowhorn follows them. |
+| # | id | Headline | Why this place |
+| --- | --- | --- | --- |
+| 1 | `copy-paste` | You did not start a company to copy-paste for a living. | Tab chaos: broadest pain, clearest outcome. Default. |
+| 2 | `password-cookie-2fa` | Other tools want your password. And your cookie. And your 2FA secret. | Custody: sharpest privacy angle, sessions stay on your computer. |
+| 3 | `nine-likes` | Your launch post deserves better than nine likes and a Slack pity-react. | Flat launch: first-hour amplification without pinging the team. |
+
+The rest of the rotation keeps every previously approved hero, sorted by the same
+bar. Close cousins of the top three come next, then pricing, identity, fleet and
+control, then narrower agency and team lines, then the AI hybrid set (Yi,
+2026-10-20) plus `r2-ai-orders`. The 18 round 2 heroes (Blowhorn Marketing,
+2026-10-27, approved by Lee) have a headline only, no subhead and no `cta`, so
+their secondary button is "See how it works".
+
+| # | id | Headline | Why this place |
+| --- | --- | --- | --- |
+| 4 | `r2-password` | Your password called. It wants to stay home. | Same custody story as #2, punchy but less specific. |
+| 5 | `r2-ovation` | Your launch deserves an ovation, not a pity like. | Same launch-day pain as #3, shorter and less concrete. |
+| 6 | `r2-sound-wave` | Make a sound wave, not a ripple. | Core amplify differentiator; the metaphor is less plain than #3. |
+| 7 | `r2-advocacy` | Employee advocacy, minus the enterprise invoice. | Pricing pain small marketing teams already have a name for. |
+| 8 | `r2-per-breath` | Social tools charge per seat, per post, per breath. | Familiar SaaS-pricing jab, still no stale numbers. |
+| 9 | `r2-no-meter` | No meter. No credits. No rationing. | Same pricing family, slightly less of a scene. |
+| 10 | `r2-backup` | Not a bot. Just you, with backup. | Identity and privacy in plain words, less of a pain. |
+| 11 | `r2-every-computer` | Every computer you own, reporting for duty. | Unique fleet claim; more feature than pain. |
+| 12 | `r2-halt` | Second thoughts? One button halts the whole army. | Clear control outcome, supported by pause. |
+| 13 | `r2-whisper` | The algorithm can't hear a whisper. | Reach metaphor; the outcome is less explicit. |
+| 14 | `r2-scarecrows` | Bought likes are scarecrows with thumbs up. | Funny anti-fake-engagement line, weaker on outcome. |
+| 15 | `r2-crickets` | Built by a tiny team that got tired of crickets. | Origin story and trust, not a visitor's next action. |
+| 16 | `r2-manners` | Automation with manners. | Safety and pace, a bit vague on its own. |
+| 17 | `r2-juggling` | Juggling clients? Put the balls down. | Agency pain; narrower than the founder-marketer lead. |
+| 18 | `r2-agency-name` | Your agency's name on it. Our army behind it. | White-label agency line, narrower still on the homepage. |
+| 19 | `r2-remote-team` | Remote team. One battle plan. Everyone keeps their own keys. | Strong privacy, but team onboarding is still Coming soon. |
+| 20 | `r2-army-marches` | Close your laptop. The army keeps marching. | Fleet failover is real if another computer is awake; easy to misread as "works while your computer is off", which we do not claim. |
+| 21 | `plug-in-ai` | Automate your social voice. Plug in AI anytime. | Best of the AI set for a marketer, still feature-led. |
+| 22 | `scripted-ai-ready` | Scripted where it counts. AI where it helps. | Former default; the hybrid rule is insider next to tab chaos. |
+| 23 | `ai-optional` | Your voice, automated. AI optional, never in charge. | AI-assist control, less of a concrete pain. |
+| 24 | `same-rules` | You post. Your agent posts. Same rules. | For the agent-heavy user. |
+| 25 | `human-or-ai` | One queue. Every profile. Human or AI. | Fleet plus agents, three ways to drive. |
+| 26 | `r2-ai-orders` | Let your AI give the orders. Blowhorn follows them. | AI-control line, most insider of the set. |
 
 Hero copy says computer, never Mac, and browser, never Chrome (Lee, 2026-10-28).
 `make check-naming` enforces the Mac half, with no exceptions.
@@ -212,16 +234,19 @@ in `layouts/_partials/hero-rotation-head.html`.
 ## The 12 heroes from issue #254
 
 The 12 quippy, sarcastic heroes from blowhorn-ai/blowhorn-site issue #254 are
-in `data/hero.json`, outside the production rotation, so the daily rotation and
-the default hero are unchanged. Their ids, in issue order, are `copy-paste`,
-`seven-tabs`, `congratulations-posted`, `password-cookie-2fa`, `not-a-vendor`,
-`not-rental`, `nine-likes`, `no-begging`, `say-it-like-you-mean-it`,
-`hundred-seats`, `298-stack` and `too-small-for-demo`. Each carries its
-plain-words subhead and its self-identification line (`identification` in the
-data file). Neither is rendered: like every hero, they show the tagline.
-To promote one to production, add its id to `rotation.ids`; do not change
-`default` unless the no-JavaScript, crawler and social-preview hero should
-change with it.
+in `data/hero.json`. Three of them lead the production rotation (the recommended
+top 3, promoted 2026-11-13, reordered 2026-11-18: `copy-paste`,
+`password-cookie-2fa`, `nine-likes`). `copy-paste` is the default and fallback.
+The other nine stay outside the rotation. Their ids, in issue order, are
+`copy-paste`, `seven-tabs`, `congratulations-posted`, `password-cookie-2fa`,
+`not-a-vendor`, `not-rental`, `nine-likes`, `no-begging`,
+`say-it-like-you-mean-it`, `hundred-seats`, `298-stack` and
+`too-small-for-demo`. Each carries its plain-words subhead and its
+self-identification line (`identification` in the data file). Neither is
+rendered: like every hero, they show the tagline. To promote one to production,
+add its id to `rotation.ids`. Change `default` only when the no-JavaScript,
+crawler and social-preview hero should change with it, and then update
+`content/en/_index.md`'s `description` by hand to that variant's subhead.
 
 ## Easter egg hotkey
 

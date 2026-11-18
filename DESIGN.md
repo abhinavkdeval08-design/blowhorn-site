@@ -40,7 +40,7 @@ How a grid gets its variants:
 - **A loop** calls `layouts/_partials/card-variant.html` with the card's index, the grid (`"grid" "grid-3"`, or `"cols"` with every column count it shows), the number of cards (`"n"`, required) and, if the default does not fit the content, the variants in order of preference. `card-deal.html` deals them card by card: each card takes the first variant that no card in its row and not the card above it holds, at any of those widths, and the build fails when the variants run out. A grid that shows 3 or 4 across needs four variants once it has a second row.
 - **A grid class** that holds cards lists its column counts in `card-deal.html`, so keep that map in step with the CSS. Card grids use fixed breakpoints, not `auto-fill`, so the counts are known.
 - **A filter** that hides cards (`resources.js`, `action-filter.js`) hands the variants out again: the grid prints its deal as `data-card-deal`, and `assets/js/card-deal.js` gives its first k entries to the k visible cards after each change (the deal for fewer cards is always the start of the deal for more). Load the filter through `layouts/_partials/filter-script.html`.
-- **Docs cards** come from the synced Markdown without a variant; `layouts/_partials/docs-content.html` deals each grid of them for the columns its container shows.
+- **Docs cards** come from the synced Markdown without a variant; `layouts/_partials/docs-content.html` deals each grid of them for the columns its container shows. Two grids are dealt by content instead: the start list (Install on paper, the featured item; platforms on dispatch) and the quadrants (Reference on dispatch, Explanation on stamp). `card-deal.html` still checks an explicit deal: one variant per card, a known variant, and the neighbour rule at every width, or the build fails.
 - **A hand-written grid** names each card's variant; or, better, calls the helper with literal indexes; check it at every width the grid shows. Count only the cards drawn: collect a filtered list first, then range over it.
 
 Paper and Dispatch keep one palette in both themes, so they also set `--ink`, `--ink-muted`, `--link`, `--line` and `--surface-tint` for everything inside them. A component rule that reads those tokens stays legible inside either card without a per-variant override. A card link's round arrow chip fills with `--card-chip`, which defaults to `--surface-tint`; Field, whose own fill is that tint, sets it to `--surface` so the chip still shows.
@@ -76,6 +76,13 @@ Don't:
 
 Live specimen: /brand/#cards.
 
+## Install call to action
+
+- Every install link says "Download" and comes from `layouts/_partials/download-button.html` (kind primary, secondary or text). The header's is always secondary.
+- A view has one teal primary (`.button-primary`) in its main content. A free check is a text link; a second action is an outline button.
+- `make check-install-cta` (in `make check`) fails a second primary or an old label. Docs are skipped; the home page is pending its rebuild (#418).
+- `/download/`: the Mac button is the only primary. The extension, the command and the bookmarklet are outline buttons. Windows is a plain line.
+
 ## Concision
 
 Say less, more clearly. Turn the verbosity dial down a notch from your first draft.
@@ -94,6 +101,7 @@ Say less, more clearly. Turn the verbosity dial down a notch from your first dra
 - [ ] Paragraphs stay within `--text-measure`; cards use `--card-pad` and `--grid-gap`
 - [ ] No coloured stripe on one edge of a card, callout, quote, table row or panel, and no hard offset shadow; no two cards in a row, and no card and the one above it, share a card variant, at any width the grid shows
 - [ ] Checked at 1280, 390 and 320 px, light and dark
+- [ ] One teal primary per view; install links come from `download-button.html` and say "Download"
 - [ ] Intros <= 2 sentences, card bodies <= ~30 words, one idea per sentence
 - [ ] No em dashes; no trailing periods on section titles
 
@@ -112,10 +120,16 @@ Rule (Lee, 12 Oct 2026): **anywhere the site shows a command a reader might run,
 
 The miniature product UI in the Product menu and the homepage "Ways in" section is one partial, `layouts/_partials/interface-art.html` (styles under "Interface art" in `assets/css/site.css`). It is drawn from the real surfaces, never invented:
 
-- **Desktop app** copies the console: lights at the top of the left rail (hidden-inset title bar, no URL bar), the Crowhorn and wordmark, "+ New activity", the five places (Home, Activity, Profiles, Performance, Safety) and the "on watch" status line, beside Activity's Upcoming list. Sources in the product repository: `desktop/src/renderer/console/ConsoleRail.tsx`, `places.ts` and `desktop/src/ui/PlatformIcon.tsx`. When the app's rail or vocabulary changes, update the art.
+- **Desktop app** copies the console: lights at the top of the left rail (hidden-inset title bar, no URL bar), the Crowhorn and wordmark, "+ New activity", the five places (Dashboard, Activity, Profiles, Performance, Posture) and the "on watch" status line, beside Activity's Upcoming list. Sources in the product repository: `desktop/src/renderer/console/ConsoleRail.tsx`, `places.ts` and `desktop/src/ui/PlatformIcon.tsx`. When the app's rail or vocabulary changes, update the art.
 - **Web app** and **Chrome extension** share a Chrome-on-Mac frame (`interface-art-browser.html`): lights at the far left of the tab strip, back/forward/reload, the omnibox, a bookmarks bar; the extension adds the pinned Blowhorn icon.
 - Platform marks are the app's monoline marks (`interface-art-mark.html`), not filled brand logos. App labels say "activity", never "post".
 - The menu's narrow rows draw the art at 92px; a container query in the same CSS keeps each piece legible there. Check both widths, light and dark.
+
+## Home scroll reveals
+
+On the Signal home page, each `section.section` below the hero settles in once as it scrolls into view. `assets/js/home-reveal.js` (Motion, bundled the same way as `assets/js/ai-cards.js`) fades the eyebrow, the headline and the lede in a short stagger, about 0.08s apart, then the body a beat later. Each piece moves from opacity 0 and a 20px rise to rest in about 0.65s, ease `0.2, 0.7, 0.2, 1`. Transform and opacity only. The script does not animate `.iface-art`; `ai-cards.js` owns that.
+
+The hidden start is set by the script, never by CSS. With JavaScript off, or with `prefers-reduced-motion: reduce`, every section is fully visible and nothing moves. Anything already in the viewport when the script runs stays visible, so the hero and the first screen do not flash. A hash target (`#platforms`, `#how`, `#trust`, `#download`, or any other id in a section) or focus inside a hidden section shows that section at once, with no animation. Content stays in the accessibility tree.
 
 ## Mascot consistency
 

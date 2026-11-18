@@ -249,6 +249,9 @@ export function createHandler(db) {
         return fail(request, 429, 'Too many requests. Try again shortly.', null);
       }
     } catch {
+      if (isUnsubscribeGet) {
+        return pageResponse(request, 500, 'Something went wrong', 'Something went wrong. Try again shortly.');
+      }
       return fail(request, 500, 'Something went wrong.', null);
     }
 

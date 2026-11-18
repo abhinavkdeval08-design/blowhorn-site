@@ -6,6 +6,7 @@ Run with `make test-scripts` (CI runs it too).
 """
 
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -53,6 +54,22 @@ class RedirectCheckTest(unittest.TestCase):
     def test_old_legal_urls_are_listed(self):
         self.assertEqual(contract.REDIRECTS["privacy.html"], "https://blowhorn.ai/legal/privacy/")
         self.assertEqual(contract.REDIRECTS["terms.html"], "https://blowhorn.ai/legal/terms/")
+
+
+
+    def test_action_matrix_url_is_a_contract(self):
+        """HelpTips deep-link to /integrations/actions/ and its group and action anchors."""
+        page = "integrations/actions/index.html"
+        self.assertIn(page, contract.PAGES)
+        ids = contract.PAGES[page]
+        self.assertIn("main", ids)
+        self.assertIn("matrix-title", ids)
+        root = Path(__file__).resolve().parents[2]
+        actions = json.loads((root / "data/actions.json").read_text(encoding="utf-8"))
+        for group in actions["groups"]:
+            self.assertIn(f"group-{group['id']}", ids)
+        for action in actions["actions"]:
+            self.assertIn(f"action-{action['id']}", ids)
 
 
 if __name__ == "__main__":

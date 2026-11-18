@@ -319,8 +319,8 @@ pre code { background: none; padding: 0; overflow-wrap: normal; }
 }
 .body-lg { font-size: 18px; line-height: 28px; }
 .body { font-size: 16px; line-height: 24px; }
-.ui { font-size: 14px; line-height: 20px; font-weight: 500; }
-.caption { font-size: 12px; line-height: 16px; font-weight: 500; }
+.ui { font-size: 15px; line-height: 22px; font-weight: 500; }
+.caption { font-size: 13px; line-height: 18px; font-weight: 500; }
 .muted { color: var(--ink-muted); }
 .label {
   font-family: var(--font-mono);
@@ -484,7 +484,6 @@ pre code { background: none; padding: 0; overflow-wrap: normal; }
   /* Sibling swap: the surface stays put, only its content changes. */
   .site-header.is-mm-swap .mm-item.is-open > .mm-panel { animation: none; }
 }
-.mm-intro-title,
 .mm-group-title {
   margin: 0;
   font-family: var(--font-mono);
@@ -495,13 +494,8 @@ pre code { background: none; padding: 0; overflow-wrap: normal; }
   text-transform: uppercase;
   color: var(--ink-muted);
 }
-.mm-intro-title a,
 .mm-group-title a { color: inherit; }
-.mm-intro-title a:hover,
 .mm-group-title a:hover { color: var(--link); }
-.mm-intro-text { margin: var(--space-3) 0 0; font-family: var(--font-display); font-weight: 700; font-size: 18px; line-height: 24px; color: var(--ink-wordmark); max-width: 22rem; }
-.mm-intro-more { margin: var(--space-4) 0 0; font-size: 14px; font-weight: 600; }
-.mm-intro-more a::after { content: " \2192"; }
 .mm-links { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-1) var(--space-4); align-content: start; }
 .mm-group .mm-links { margin-top: var(--space-3); }
 .mm-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -520,12 +514,12 @@ pre code { background: none; padding: 0; overflow-wrap: normal; }
 .mm-link:hover .mm-link-title { color: var(--link); }
 .mm-link-desc { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
 .mm-compact .mm-link { padding-block: 6px; }
-.mm-intro-sub { margin: var(--space-3) 0 0; font-size: 14px; line-height: 20px; color: var(--ink-muted); max-width: 22rem; }
 
-/* Product panel as a card grid: the ways in to one product, each with its
-   own small animated illustration (interface-art.html). The sixth card is
-   the point of the whole panel: one subscription, not six products. */
-.mm-panel-cards { grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); }
+/* Product panel as a card grid: the ways in to one product, cards only (no
+   intro copy; the home page carries the mock). Link-only panels (Resources)
+   take one full-width row of links. */
+.mm-panel-cards { grid-template-columns: minmax(0, 1fr); }
+.mm-panel-links { grid-template-columns: minmax(0, 1fr); }
 .mm-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
 .mm-card {
   position: relative; display: grid; gap: var(--space-2); align-content: start;
@@ -583,9 +577,6 @@ pre code { background: none; padding: 0; overflow-wrap: normal; }
   .mm-card-plan-mark, .ways-card-plan .mm-card-plan-mark { border-color: var(--cream); }
   .mm-card-arrow { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2.5 7h8.5M7.5 3.5L11 7l-3.5 3.5' fill='none' stroke='%2300D3A9' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 }
-.mm-cards-foot { margin: var(--space-4) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); font-size: 13px; font-weight: 600; }
-.mm-cards-foot a { color: var(--ink-muted); }
-.mm-cards-foot a:hover { color: var(--link); }
 @media (max-width: 1079px) {
   .mm-cards { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
   .mm-card { grid-template-columns: auto minmax(0, 1fr); column-gap: var(--space-3); align-items: center; padding: var(--space-3); }
@@ -594,8 +585,6 @@ pre code { background: none; padding: 0; overflow-wrap: normal; }
   .mm-card-title { grid-row: 1; grid-column: 2; }
   .mm-card-desc { grid-column: 2; }
   .mm-card-arrow { display: none; }
-  .mm-intro-sub { display: none; }
-  .mm-cards-foot { gap: var(--space-3) var(--space-4); }
 }
 @media (min-width: 600px) and (max-width: 1079px) {
   .mm-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -900,7 +889,6 @@ pre code { background: none; padding: 0; overflow-wrap: normal; }
     animation: none !important;
   }
   .site-header:not(.is-enhanced) .mm-panel { display: grid; }
-  .mm-intro-text { display: none; }
   .mm-cols-2 { grid-template-columns: minmax(0, 1fr); }
   .mm-cols-3,
   .mm-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1364,10 +1352,15 @@ html[data-hero-art="fan"] .platforms-fan { display: none; }
 /* Windows notify: the toggle is hidden until download.js reveals it, so
    without JavaScript the form below is simply visible and posts on its
    own. The form reuses the newsletter input row; the card's own gap
-   separates it from the button, so it drops the newsletter's top margin. */
-.windows-notify-toggle[hidden] { display: none !important; }
+   separates it from the button, so it drops the newsletter's top margin.
+   After a signup download.js hides the input row and the note, and the
+   row's display: flex would otherwise keep it on screen. */
+.windows-notify-toggle[hidden],
+.windows-notify [hidden] { display: none !important; }
 .windows-notify { margin-top: 0; }
 .windows-notify-status { margin-top: var(--space-2); color: var(--ink); }
+/* Focus lands here after a signup. It's a message, so no ring. */
+.windows-notify-status:focus { outline: none; }
 .soon-sign {
   position: absolute;
   top: calc(-1 * var(--space-3));
@@ -1410,9 +1403,9 @@ html[data-hero-art="fan"] .platforms-fan { display: none; }
 }
 
 /* ---------- Footer ----------
-   A glass panel: a top band (brand left, newsletter right), then one row of
-   short titled columns with Compare spanning two, then a bottom bar. The
-   panel is a glass surface (see "Liquid glass" below). */
+   A glass panel: a top band (the tagline left, the newsletter right), one row
+   of links, then the legal bar. The panel is a glass surface (see "Liquid
+   glass" below). */
 .site-footer {
   padding-block: var(--space-12) var(--space-8);
   color: var(--ink-muted);
@@ -1429,10 +1422,8 @@ html[data-hero-art="fan"] .platforms-fan { display: none; }
   padding-bottom: var(--space-8);
   border-bottom: var(--stroke-hairline) solid var(--line);
 }
-.footer-logo { display: inline-block; }
-.footer-logo img { width: 200px; height: auto; }
 .footer-tagline {
-  margin-top: var(--space-3);
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 18px;
@@ -1457,31 +1448,17 @@ html[data-hero-art="fan"] .platforms-fan { display: none; }
 .footer-social a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: var(--radius-md); }
 .footer-social img { width: 20px; height: 20px; object-fit: contain; }
 .footer-news .newsletter { margin-top: 0; max-width: none; }
-.footer-cols {
-  display: grid;
-  gap: var(--space-8) var(--space-6);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.footer-links ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-6);
 }
-.footer-col-wide { grid-column: 1 / -1; }
-.footer-col-wide ul { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(6, auto); grid-auto-flow: column; }
-/* Free tools (data/tells.json footer) takes its own row below 1080px, its
-   links on Compare's columns, so no column is left alone in a half-empty row. */
-.footer-col-tools { grid-column: 1 / -1; }
-.footer-col-tools ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-@media (max-width: 399px) { .footer-col-tools ul { grid-template-columns: minmax(0, 1fr); } }
-.footer-title {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 16px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-}
-.footer-col ul { margin-top: var(--space-3); display: grid; row-gap: var(--space-1); column-gap: var(--space-6); align-content: start; }
-.footer-col a {
-  display: inline-block;
-  padding-block: var(--space-1);
+.footer-links a,
+.footer-links .footer-consent {
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
@@ -1489,7 +1466,8 @@ html[data-hero-art="fan"] .platforms-fan { display: none; }
   text-decoration: none;
   white-space: nowrap;
 }
-.footer-col a:hover { color: var(--link); }
+.footer-links a:hover,
+.footer-links .footer-consent:hover { color: var(--link); }
 .footer-bottom {
   margin-top: var(--space-6);
   padding-inline: var(--space-2);
@@ -1498,25 +1476,11 @@ html[data-hero-art="fan"] .platforms-fan { display: none; }
   align-items: center;
   gap: var(--space-2) var(--space-6);
 }
-.footer-tm { flex-basis: 100%; }
-@media (min-width: 720px) {
-  .footer-cols { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .footer-col-wide ul { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(3, auto); }
-  .footer-col-tools ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
 @media (min-width: 960px) {
   .footer-top { grid-template-columns: minmax(240px, 1fr) minmax(0, 26rem); align-items: center; gap: var(--space-8); }
 }
 @media (min-width: 1080px) {
   .footer-panel { padding: var(--space-12); gap: var(--space-8); }
-  /* One row, each column as wide as its longest link and the slack spread
-     between them: equal tracks cut "For AI agents and scripts" (and
-     "Chrome extension") short of their nowrap width. */
-  .footer-cols { grid-template-columns: repeat(6, max-content); justify-content: space-between; }
-  .footer-col-wide,
-  .footer-col-tools { grid-column: auto; }
-  .footer-col-tools ul { grid-template-columns: max-content; }
-  .footer-col-wide ul { grid-template-columns: repeat(2, max-content); grid-template-rows: repeat(6, auto); }
 }
 /* Service status: ported from a shared footer pattern (
    src/sections/General/Footer/footer.style.js, .status-link and .pulse-icon). */
@@ -1761,14 +1725,6 @@ body { background: var(--surface); }
 }
 .brand-hero-copy > * + * { margin-top: var(--space-4); }
 .brand-hero-copy .body-lg { max-width: 34rem; }
-.brand-hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3) var(--space-4);
-  margin-top: var(--space-6);
-}
-.brand-hero-actions .caption { max-width: 22rem; }
 /* The two kit downloads: each button with its own caption underneath, side by side
    when there is room, stacked on narrow screens. */
 .brand-downloads {
@@ -2184,7 +2140,7 @@ body { background: var(--surface); }
   .brand-page { padding-top: 0; }
   .brand-section { break-before: page; border-top: 0; }
   .brand-section .h2, .brand-subhead, .section-head { break-after: avoid; }
-  .site-header, .site-footer, .brand-index, .brand-hero-actions, .brand-cta, .asset-gets, .asset-get, .copy, .skip-link { display: none !important; }
+  .site-header, .site-footer, .brand-index, .brand-cta, .asset-gets, .asset-get, .copy, .skip-link { display: none !important; }
   .brand-section { break-inside: auto; padding-block: var(--space-8); }
   .asset, .swatch, .rule, .type-card, .major-card, .clear-grid { break-inside: avoid; }
   .major-card { box-shadow: none; }
@@ -3085,13 +3041,59 @@ a.card.docs-card > * { margin-top: 0; }
 @media (min-width: 640px) { .proof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 960px) { .proof-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .proof-card-feature { grid-column: 1 / -1; }
-.proof-card { position: relative; overflow: hidden; padding: var(--card-pad, var(--space-6)); border-radius: 1.25rem; }
+.proof-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  padding: var(--card-pad, var(--space-6));
+  border-radius: var(--radius-lg);
+}
 .proof-mark { display: block; font-family: var(--font-display); font-weight: 800; font-size: 2.6rem; line-height: 0.7; color: var(--teal-deep); }
 .proof-card blockquote { margin: var(--space-3) 0 var(--space-4); }
 .proof-who { display: flex; gap: var(--space-3); align-items: center; margin: 0; }
+.proof-card > .proof-who {
+  margin-top: auto;
+  padding-top: var(--space-4);
+}
 .proof-card-feature .proof-mark { font-size: 4.5rem; }
-.proof-card-feature blockquote { font-family: var(--font-display); font-weight: 700; font-size: 1.45rem; line-height: 1.35; }
-.proof-band { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); margin-bottom: var(--space-8); }
+.proof-card-feature {
+  padding: var(--space-8);
+}
+.proof-card.card-field,
+.proof-card.card-plain {
+  --card-shadow: var(--shadow-soft);
+}
+.proof-card-feature blockquote {
+  max-width: 65ch;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.45rem;
+  line-height: 1.35;
+}
+
+/* improved featured testimonial on small screens */
+@media (max-width: 479px) {
+  .proof-card-feature {
+    padding: var(--space-6);
+  }
+
+  .proof-card-feature blockquote {
+    font-size: 1.2rem;
+    line-height: 1.45;
+  }
+
+  .proof-card-feature .proof-mark {
+    font-size: 3.5rem;
+  }
+}
+.proof-band {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  margin-bottom: var(--space-8);
+}
 .proof-band figure { margin: 0; padding: var(--card-pad, var(--space-6)); }
 /* Rotating proof (solutions pages): one quote at a time. The first quote
    shows with no JavaScript; the nav only appears once
@@ -3406,10 +3408,17 @@ a.card.docs-card > * { margin-top: 0; }
 }
 .plan-features li { position: relative; padding-left: 26px; color: var(--ink); }
 .plan-features li::before {
-  content: ""; position: absolute; left: 2px; top: 6px; width: 12px; height: 7px;
-  border-left: 2px solid var(--teal); border-bottom: 2px solid var(--teal);
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 6px;
+  width: 12px;
+  height: 7px;
+  border-left: 2px solid var(--teal);
+  border-bottom: 2px solid var(--teal);
   transform: rotate(-45deg);
 }
+
 .pricing-included .h3 { font-size: 18px; }
 .pricing-refund { padding: clamp(24px, 5vw, 56px); border-radius: var(--radius-xl); }
 .refund-steps {
@@ -3857,127 +3866,11 @@ a.docs-card.platform-card[href$="/facebook/"]::before { background-image: url(".
 
 
 /* ---------- Blowhorn Tells, the free Am I a Bot? check (data/tells.json) ----------
-   One look for every place the site points at Tells: a slim bar above the
-   header (message + Am I a Bot?/Free CTA centered as a group; dismiss pinned
-   far right and separated), the Resources menu entry, the home page band, the
-   callout on compare, /ai/ and /agents/, and the card on /download/thanks/.
-   Sleeper Cell's art keeps its black ground in a rounded frame, like the cast
-   pages. The docs card lives with the docs layout
-   (assets/scss/_styles_project.scss). */
-.tells-bar {
-  background: var(--yellow);
-  color: var(--on-yellow);
-  box-shadow: inset 0 -1px 0 0 var(--yellow-shade);
-}
-/* Dismissed: tells-bar-head.html sets this before first paint. */
-html[data-tells-bar="off"] .tells-bar { display: none; }
-/* Three columns: equal side lanes keep the message+CTA group optically
-   centered; the dismiss control sits in the right lane, clear of the CTA. */
-.tells-bar-inner {
-  display: grid;
-  grid-template-columns: minmax(32px, 1fr) auto minmax(32px, 1fr);
-  align-items: center;
-  column-gap: var(--space-2);
-  min-height: 40px;
-  padding-block: var(--space-2);
-  padding-inline: var(--gutter);
-}
-/* Message immediately followed by the CTA; the pair is the centered group.
-   Never wrap: one horizontal line at every width, including 320. */
-.tells-bar-cluster {
-  grid-column: 2;
-  display: inline-flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: center;
-  gap: 6px var(--space-2);
-  max-width: 100%;
-  text-align: center;
-  white-space: nowrap;
-}
-.tells-bar-text {
-  margin: 0;
-  font-size: 13px;
-  line-height: 18px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-.tells-bar-text-short { display: none; }
-@media (max-width: 719px) {
-  .tells-bar-text-full { display: none; }
-  .tells-bar-text-short { display: inline; }
-  .tells-bar-cluster { gap: 6px; }
-  .tells-bar-cta { padding-inline: 4px; }
-}
-/* One clickable cluster: label + Free pill. Free appears only in the pill. */
-.tells-bar-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 4px 2px 6px;
-  border-radius: var(--radius-md);
-  color: var(--on-yellow);
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.tells-bar-cta-label {
-  font-size: 13px;
-  line-height: 18px;
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-thickness: var(--stroke-hairline);
-  text-underline-offset: 3px;
-  text-decoration-color: transparent;
-}
-.tells-bar-pill {
-  display: inline-block;
-  padding: 0 6px;
-  border-radius: var(--radius-pill);
-  background: var(--teal-deep);
-  color: var(--white);
-  font-size: 11px;
-  line-height: 16px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
-}
-@media (prefers-color-scheme: dark) {
-  .tells-bar-pill { background: var(--teal-bright); color: var(--near-black); }
-}
-/* Hover / focus: underline the label, darken and lift the pill; keep ink on yellow. */
-.tells-bar-cta:hover,
-.tells-bar-cta:focus-visible {
-  color: var(--on-yellow);
-  text-decoration: none;
-}
-.tells-bar-cta:hover .tells-bar-cta-label,
-.tells-bar-cta:focus-visible .tells-bar-cta-label {
-  text-decoration-color: currentColor;
-  text-decoration-thickness: 2px;
-}
-.tells-bar-cta:hover .tells-bar-pill,
-.tells-bar-cta:focus-visible .tells-bar-pill {
-  background: color-mix(in srgb, var(--teal-deep) 82%, var(--near-black));
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(30, 33, 23, 0.22);
-}
-@media (prefers-color-scheme: dark) {
-  .tells-bar-cta:hover .tells-bar-pill,
-  .tells-bar-cta:focus-visible .tells-bar-pill {
-    background: color-mix(in srgb, var(--teal-bright) 86%, var(--white));
-  }
-}
-.tells-bar :focus-visible { outline-color: var(--on-yellow); }
-.tells-bar-cta:focus-visible {
-  outline: 2px solid var(--on-yellow);
-  outline-offset: 2px;
-}
-@media (prefers-reduced-motion: reduce) {
-  .tells-bar-pill { transition: none; }
-  .tells-bar-cta:hover .tells-bar-pill,
-  .tells-bar-cta:focus-visible .tells-bar-pill { transform: none; }
-}
+   One look for every place the site points at Tells: the Resources menu
+   entry, the home page band, the callout on compare, /ai/ and /agents/, and
+   the card on /download/thanks/. Sleeper Cell's art keeps its black ground
+   in a rounded frame, like the cast pages. The docs card lives with the
+   docs layout (assets/scss/_styles_project.scss). */
 /* Docs card link (separate from the bar CTA): keep its own underline treatment. */
 .tells-docs-card-link a {
   display: inline-flex;
@@ -3996,26 +3889,6 @@ html[data-tells-bar="off"] .tells-bar { display: none; }
   .tells-docs-card-link svg { transition: transform 160ms ease; }
   .tells-docs-card-link a:hover svg { transform: translateX(2px); }
 }
-/* Dismiss in the right lane, separated from the centered CTA. */
-.tells-bar-close {
-  grid-column: 3;
-  justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--on-yellow);
-  cursor: pointer;
-}
-.tells-bar-close[hidden] { display: none; }
-.tells-bar-close:hover { background: color-mix(in srgb, var(--on-yellow) 14%, transparent); color: var(--on-yellow); }
-.tells-bar-close svg { fill: none; stroke: currentColor; stroke-width: var(--stroke-icon); stroke-linecap: round; }
-
 /* Home band (layouts/_partials/home/tells.html) and the callout
    (layouts/_partials/tells-callout.html). */
 .tells-panel {
@@ -4052,7 +3925,7 @@ html[data-tells-bar="off"] .tells-bar { display: none; }
 .tells-callout-copy > * + * { margin-top: var(--intro-gap); }
 .tells-callout-copy p { max-width: var(--text-measure); }
 .tells-callout-copy .tells-actions { margin-top: var(--space-6); column-gap: var(--space-6); }
-.tells-callout-more { color: var(--link); }
+.tells-callout-more, .tells-callout-cta { color: var(--link); }
 @media (min-width: 720px) {
   .tells-callout { grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); gap: var(--space-8); }
 }
@@ -4101,3 +3974,102 @@ html[data-tells-bar="off"] .tells-bar { display: none; }
    fill it while sighted visitors never see it. The Worker answers such
    submissions with success without storing anything. */
 .signup-honeypot { position: absolute; left: -9999px; }
+
+/* ---------- Image lightbox (internal site, layouts/_partials/image-lightbox.html) ----------
+   The styles are layer5io/docs' assets/scss/_image-modal_project.scss: a
+   fixed dark overlay with the clicked image centred in it. The modal opens
+   from assets/js/image-lightbox.js, which attaches to every image on an
+   internal page. */
+.md__image { cursor: pointer; }
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999999;
+  padding-top: 4em;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.85);
+}
+.modal-cont {
+  position: relative;
+  margin: auto;
+  padding: 0;
+  width: 90%;
+  max-width: 1400px;
+}
+.modal-pic {
+  display: flex;
+  align-content: center;
+  cursor: pointer;
+}
+/* The close button reads "close" to assistive technology and shows only an
+   x, as upstream: the text is shifted out of the button and the x is drawn
+   by the ::after rule. */
+.modal-close {
+  color: white;
+  background-color: black;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 2.5em;
+  height: 1em;
+  width: 1em;
+  text-indent: 10em;
+  overflow: hidden;
+  border: 0;
+  z-index: 99;
+}
+.modal-close::after {
+  position: absolute;
+  line-height: 0.5;
+  top: 0.2em;
+  left: 0.1em;
+  text-indent: 0;
+  content: "\00D7";
+}
+.modal-close:hover,
+.modal-close:focus {
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ---------- Docs page footer (edit link + contributor resources) ---------- */
+.docs-page-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4) var(--space-6);
+  margin-top: var(--space-12);
+  padding-top: var(--space-4);
+  border-top: var(--stroke-hairline) solid var(--line);
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+  flex-wrap: wrap;
+}
+.docs-page-meta .td-page-meta__lastmod { margin: 0; }
+.docs-page-edit-link {
+  color: var(--ink-muted);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.5px;
+  text-underline-offset: 2px;
+}
+.docs-page-edit-link:hover { color: var(--link); }
+.docs-contributor-resources {
+  margin-top: var(--space-10);
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+}
+.docs-contributor-eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+.docs-contributor-links { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: center; }
+.docs-contributor-link { color: var(--ink-muted); text-decoration: underline; text-decoration-style: dotted; text-decoration-thickness: 0.5px; text-underline-offset: 2px; }
+.docs-contributor-link:hover { color: var(--link); }
+.docs-contributor-sep { color: var(--line); }
+.docs-contributor-plain { color: var(--ink-muted); }

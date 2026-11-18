@@ -156,7 +156,7 @@ a.tag-chip {
   color: var(--ink);
 }
 
-.category-tab[aria-selected="true"] {
+.category-tab[aria-pressed="true"] {
   border-bottom-color: var(--teal);
   color: var(--ink);
   font-weight: 600;
@@ -257,7 +257,7 @@ a.tag-chip {
   border-radius: var(--radius-sm);
   background: var(--surface-raised);
   color: var(--ink);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .video-card-body {
@@ -302,7 +302,7 @@ a.tag-chip {
   border: 1px solid var(--line);
   border-radius: var(--radius-xl);
   color: var(--ink-muted);
-  font-size: 12px;
+  font-size: 13px;
   text-decoration: none;
 }
 
@@ -380,6 +380,44 @@ a.tag-chip {
   background: #000;
 }
 
+.video-dialog-youtube {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.video-dialog-youtube iframe,
+.youtube-embed iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  aspect-ratio: 16 / 9;
+}
+
+.versus-film .vs-frame,
+.youtube-embed {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.youtube-embed-pending {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  padding: 24px;
+  background: var(--surface-tint);
+  text-align: center;
+}
+
+.youtube-embed-pending p {
+  margin: 0;
+  max-width: 32em;
+}
+
 .video-dialog-bar {
   display: flex;
   align-items: center;
@@ -450,3 +488,69 @@ a.tag-chip {
 [data-card][hidden] { display: none !important; }
 .article-body ol { list-style: decimal; padding-left: 1.4em; }
 .article-body ul { list-style: disc; padding-left: 1.4em; }
+
+/* Tag term pages (/tags/<tag>/): header art, grouped numbered lists. The
+   h2-to-list gap comes from site.css (section > .h2 + :not(p)); the art
+   treatment mirrors .role-art. */
+.tag-art {
+  margin: var(--space-6) 0 0;
+  max-width: 40rem;
+}
+.tag-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  background: var(--near-black);
+}
+
+.tag-group { margin-top: var(--space-12); }
+.tag-list {
+  margin: 0;
+  padding-left: 1.5em;
+  list-style: decimal;
+}
+.tag-list li::marker {
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+.tag-list li + li { margin-top: var(--space-4); }
+.tag-row-title {
+  color: var(--ink);
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.tag-row-title:hover { color: var(--link); text-decoration: underline; }
+.tag-row-meta,
+.tag-row-summary { margin: var(--space-1) 0 0; color: var(--ink-muted); }
+.tag-row-meta { font-size: 0.9rem; }
+.tag-foot { margin-top: var(--space-12); }
+
+/* Tag index (/tags/): one card per tag, fixed breakpoints (card-deal.html
+   deals the variants for 1, 2 and 3 across). The card is the link, as on
+   role cards: the arrow chip sits over the art's corner, so the art takes
+   no chip room. */
+.tag-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 640px) { .tag-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 960px) { .tag-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.tag-grid > li { min-width: 0; }
+a.card-link.tag-card { display: flex; flex-direction: column; }
+a.card-link.tag-card > img:first-child { padding-right: 0; }
+.tag-card-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  background: var(--near-black);
+}
+.tag-card-meta { color: var(--ink-muted); }

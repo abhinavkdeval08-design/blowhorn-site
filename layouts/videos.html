@@ -35,24 +35,28 @@
             <input type="search" id="video-search" data-collection-search placeholder="Search by title, topic or tag" autocomplete="off">
           </div>
           {{- $tags := slice -}}
-          {{- range $videos }}{{ range .GetTerms "tags" }}{{ $tags = $tags | append . }}{{ end }}{{ end -}}
+          {{- range $videos }}{{ range .Params.tags }}{{ $tags = $tags | append . }}{{ end }}{{ end -}}
           {{- with $tags | uniq }}
           <div role="group" aria-label="Filter by tag">
             <ul class="tag-chips">
-              {{- range sort . "Title" }}
+              {{- range sort . }}
+              {{- with $.Site.GetPage (printf "/tags/%s" .) }}
               <li><button type="button" class="tag-chip" data-tag-chip="{{ .Data.Term }}" aria-pressed="false">{{ .Title }}</button></li>
+              {{- end }}
               {{- end }}
             </ul>
           </div>
           {{- end }}
         </div>
 
-        <ul class="category-tabs" role="tablist" aria-label="Video categories">
-          <li><button type="button" class="category-tab" role="tab" data-category-tab="all" aria-selected="true">All videos</button></li>
-          {{- range .Sections.ByWeight }}
-          <li><button type="button" class="category-tab" role="tab" data-category-tab="{{ path.Base (strings.TrimSuffix "/" .RelPermalink) }}" aria-selected="false">{{ .Title }}</button></li>
-          {{- end }}
-        </ul>
+        <div role="group" aria-label="Filter by category">
+          <ul class="category-tabs">
+            <li><button type="button" class="category-tab" data-category-tab="all" aria-pressed="true">All videos</button></li>
+            {{- range .Sections.ByWeight }}
+            <li><button type="button" class="category-tab" data-category-tab="{{ path.Base (strings.TrimSuffix "/" .RelPermalink) }}" aria-pressed="false">{{ .Title }}</button></li>
+            {{- end }}
+          </ul>
+        </div>
         <p class="collection-status" data-collection-status aria-live="polite"></p>
 
         {{- $all := slice }}{{ range .Sections.ByWeight }}{{ $all = $all | append .RegularPages }}{{ end }}

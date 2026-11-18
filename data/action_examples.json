@@ -512,6 +512,34 @@
       }
     },
     {
+      "platform": "slack",
+      "action": "react",
+      "surfaces": {
+        "app": {
+          "status": "placeholder",
+          "screenshot": "assets/docs/actions/slack/react.png"
+        },
+        "cli": {
+          "status": "available",
+          "command": "blowhorn slack react --profile work --target \"https://acme.slack.com/archives/C0123/p1776000000000100\" --emoji white_check_mark",
+          "cliRef": "/docs/reference/cli/slack/"
+        },
+        "rest": {
+          "status": "placeholder",
+          "notes": "The Blowhorn REST API is coming soon. Until then, use the CLI or MCP."
+        },
+        "mcp": {
+          "status": "available",
+          "prompt": "Dry-run adding a white_check_mark reaction to https://acme.slack.com/archives/C0123/p1776000000000100 from my work profile. Show me what would happen and wait for my go before you confirm.",
+          "notes": "Ask an assistant connected to the Blowhorn MCP server. Writes come back as a dry run first; nothing goes out until you say go."
+        },
+        "skill": {
+          "status": "available",
+          "notes": "The Blowhorn skill teaches your agent this action: read first, rehearse, then ask before it fires."
+        }
+      }
+    },
+    {
       "platform": "bluesky",
       "action": "post",
       "surfaces": {
@@ -737,6 +765,34 @@
     },
     {
       "platform": "github",
+      "action": "star",
+      "surfaces": {
+        "app": {
+          "status": "placeholder",
+          "screenshot": "assets/docs/actions/github/star.png"
+        },
+        "cli": {
+          "status": "available",
+          "command": "blowhorn star --platform github --profile personal --repo acme/widgets --dry-run",
+          "cliRef": "/docs/reference/cli/star/"
+        },
+        "rest": {
+          "status": "placeholder",
+          "notes": "The Blowhorn REST API is coming soon. Until then, use the CLI or MCP."
+        },
+        "mcp": {
+          "status": "available",
+          "prompt": "Dry-run starring acme/widgets on GitHub from my personal profile. Show me what would happen and wait for my go before you confirm.",
+          "notes": "Ask an assistant connected to the Blowhorn MCP server. Writes come back as a dry run first; nothing goes out until you say go."
+        },
+        "skill": {
+          "status": "available",
+          "notes": "The Blowhorn skill teaches your agent this action: read first, rehearse, then ask before it fires."
+        }
+      }
+    },
+    {
+      "platform": "github",
       "action": "follow",
       "surfaces": {
         "app": {
@@ -773,8 +829,8 @@
         },
         "cli": {
           "status": "available",
-          "command": "blowhorn source --platform github --profile personal --repo layer5io/meshery --audience stargazers --dry-run",
-          "cliRef": "/docs/reference/cli/source/"
+          "command": "blowhorn find --platform github --query \"service mesh\" --repo meshery/meshery --type issue --state open --profile company",
+          "cliRef": "/docs/reference/cli/find/"
         },
         "rest": {
           "status": "placeholder",
@@ -782,7 +838,7 @@
         },
         "mcp": {
           "status": "available",
-          "prompt": "List the first 20 stargazers of layer5io/meshery so I can choose whom to reach; read only, nothing to confirm, and do not follow anyone.",
+          "prompt": "Search GitHub for open issues about service mesh in meshery/meshery and show me the results (read only, nothing to confirm).",
           "notes": "Ask an assistant connected to the Blowhorn MCP server. Writes come back as a dry run first; nothing goes out until you say go."
         },
         "skill": {

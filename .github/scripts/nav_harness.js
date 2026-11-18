@@ -65,8 +65,12 @@ class El {
     for (let n = this; n; n = n.parent) if (n.matches(sel)) return n;
     return null;
   }
-  // Selectors nav.js uses: ".class", "tag" and ".class tag" (descendant).
+  hasAttribute(n) { return Object.prototype.hasOwnProperty.call(this.attrs, n); }
+  // Selectors nav.js uses: ".class", "tag", ".class tag" (descendant) and
+  // '.class[attr="value"]'.
   matches(sel) {
+    const a = /^\.([a-z-]+)\[([a-z-]+)="([^"]*)"\]$/.exec(sel);
+    if (a) return this.classList.contains(a[1]) && this.getAttribute(a[2]) === a[3];
     const m = /^\.([a-z-]+) ([a-z]+)$/.exec(sel);
     if (m) return this.tag === m[2] && !!(this.parent && this.parent.closest("." + m[1]));
     if (/^\.[a-z-]+$/.test(sel)) return this.classList.contains(sel.slice(1));

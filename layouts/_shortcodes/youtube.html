@@ -1,0 +1,4 @@
+{{- /* {{< youtube id="VIDEO_ID" title="Optional title" duration="0:36" >}}
+  Use id="TODO_YOUTUBE_ID" for a placeholder that does not contact YouTube.
+  See layouts/_partials/youtube-embed.html. */ -}}
+{{ partial "youtube-embed.html" (dict "id" (.Get "id") "title" (.Get "title") "duration" (.Get "duration") "poster" (.Get "poster")) }}

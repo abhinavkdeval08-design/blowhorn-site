@@ -18,6 +18,13 @@ $link-color: #00756A;
 $link-hover-color: #008F80;
 $code-color: #1E2117;
 
+// Muted body text: Bootstrap's defaults are translucent body colour, which
+// falls to 3.12:1 on white for tertiary (search placeholder, breadcrumb
+// separators, table-of-contents borders, metadata). Map both to brand tokens
+// that hold AA on white: --ink-muted (5.6:1) and --charcoal (9.3:1).
+$body-secondary-color: #5B6A70;
+$body-tertiary-color: #3C494F;
+
 // Dark-ground equivalents: teal-bright is the link and focus colour.
 $body-bg-dark: #1E2117;
 $body-color-dark: #FFFFFF;

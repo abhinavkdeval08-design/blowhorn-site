@@ -124,6 +124,18 @@ class CheckThirdPartyTest(unittest.TestCase):
     def test_inline_script_naming_disclosed_github_api_passes(self):
         self.assert_passes({"index.html": page(body='<script>fetch("https://api.github.com/repos/x/releases")</script>')})
 
+    def test_script_may_name_youtube_nocookie_for_play_on_click_facade(self):
+        self.assert_passes({
+            "index.html": page(body='<script src="/js/resources.js"></script>'),
+            "js/resources.js": 'iframe.src = "https://www.youtube-nocookie.com/embed/" + id;',
+        })
+
+    def test_youtube_iframe_in_built_html_still_fails(self):
+        self.assert_fails_naming(
+            {"index.html": page(body='<iframe src="https://www.youtube-nocookie.com/embed/dQw4w9wgGcQ"></iframe>')},
+            "youtube-nocookie.com",
+        )
+
     def test_json_ld_data_block_passes(self):
         self.assert_passes({"index.html": page('<script type="application/ld+json">{"@context": "https://schema.org", '
                                                '"author": {"url": "https://layer5.io/"}}</script>')})

@@ -34,11 +34,11 @@ def page(*placements):
 
 def complete_site():
     return {
-        "index.html": page("nav", "bar", "footer", "home"),
+        "index.html": page("nav", "home"),
         "ai/index.html": page("ai"),
         "agents/index.html": page("agents"),
         "download/thanks/index.html": page("thanks"),
-        "404.html": page("404", "bar"),
+        "404.html": page("404"),
         "compare/index.html": page(),
         "compare/phantombuster/index.html": page("compare"),
         "docs/index.html": page("docs"),
@@ -62,7 +62,7 @@ class TellsPlacements(unittest.TestCase):
 
     def test_a_missing_placement_fails(self):
         pages = complete_site()
-        pages["index.html"] = page("nav", "bar", "footer")
+        pages["index.html"] = page("nav")
         failures = self.run_check(pages)
         self.assertEqual(len(failures), 1)
         self.assertIn("utm_content=home", failures[0])

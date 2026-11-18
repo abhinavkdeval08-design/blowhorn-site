@@ -41,6 +41,11 @@ scripts from third parties other than the ones it discloses: Google Analytics
   fails if it names a host missing from the reviewed AVATAR_HOSTS set here, so
   adding an avatar host takes a reviewed change to this checker. It also fails
   if the constant cannot be found.
+  A sixth: a script a page loads may name www.youtube-nocookie.com so that a
+  play-on-click facade can insert a YouTube player after the reader presses
+  play (assets/js/resources.js). The privacy page discloses this. Built HTML
+  must not include a YouTube URL: an iframe, img or other attribute that
+  names that host still fails.
 - CSS: every url(...) and @import in each stylesheet a page loads.
 - JavaScript: every absolute URL in each script a page loads. The Download section's script
   (assets/js/download.js) asks GitHub's public API for the newest release, a
@@ -62,7 +67,7 @@ from urllib.parse import urlparse
 
 FIRST_PARTY = "blowhorn.ai"
 # Hosts a script may name. Each one must be disclosed on the privacy page.
-SCRIPT_HOSTS = {"api.github.com", "github.com"}
+SCRIPT_HOSTS = {"api.github.com", "github.com", "www.youtube-nocookie.com"}
 # Hosts a <script src> may load Google Analytics 4 (gtag.js) from. Disclosed on the privacy page.
 ANALYTICS_SCRIPT_HOSTS = {"www.googletagmanager.com"}
 # Hosts a <form action> may post to. Each one must be disclosed on the privacy page.

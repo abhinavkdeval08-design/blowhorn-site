@@ -6,7 +6,6 @@
 <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{- partial "theme-head.html" . }}
-    {{- partial "tells-bar-head.html" . }}
     {{- $docTitle := .Params.seo_title | default (printf "%s: %s" .Title site.Title) -}}
     {{- $docDesc := .Description | default .Summary | default site.Params.description -}}
     <title>{{ if .Params.seo_title }}{{ .Params.seo_title }}{{ else }}{{ .Title }}: {{ site.Title }}{{ end }}</title>

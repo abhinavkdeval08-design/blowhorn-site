@@ -36,6 +36,29 @@
           </div>
         </header>
 
+        {{- with $p.video }}
+        <section class="agent-section versus-film" aria-labelledby="film-title">
+          <div class="section-head">
+            <h2 id="film-title" class="h2">{{ .title | default (printf "Blowhorn vs %s" $p.competitor) }}</h2>
+            {{- with .duration }}<p class="muted">Duration {{ . }}</p>{{ end }}
+          </div>
+          {{- $yt := strings.TrimSpace (.youtube_id | default "" | string) }}
+          {{- if and $yt (ne $yt "TODO_YOUTUBE_ID") }}
+          {{ partial "youtube-embed.html" (dict "id" (.youtube_id | default "") "title" (.title | default $.Title) "duration" .duration "poster" .poster) }}
+          {{- else if or .mp4 .webm }}
+          <div class="vs-frame">
+            <video controls preload="metadata" playsinline{{ with .poster }} poster="{{ . | relURL }}"{{ end }}>
+              {{- with .webm }}<source src="{{ . | relURL }}" type="video/webm">{{ end }}
+              {{- with .mp4 }}<source src="{{ . | relURL }}" type="video/mp4">{{ end }}
+            </video>
+          </div>
+          {{- else }}
+          {{ partial "youtube-embed.html" (dict "id" (.youtube_id | default "") "title" (.title | default $.Title) "duration" .duration "poster" .poster) }}
+          {{- end }}
+          {{- with .page }}<p class="ui"><a href="{{ . | relURL }}">Open the video page</a></p>{{ end }}
+        </section>
+        {{- end }}
+
         <section class="agent-section" aria-labelledby="fit-title">
           <div class="section-head">
             <h2 id="fit-title" class="h2">Which one fits you</h2>
@@ -58,7 +81,7 @@
                 {{- end }}
               </ul>
               {{- end }}
-              <p class="ui"><a href="{{ "download/" | relURL }}">Get Blowhorn</a></p>
+              <p class="ui">{{ partial "download-button.html" (dict "kind" "text") }}</p>
             </div>
           </div>
         </section>
@@ -174,7 +197,7 @@
         <section class="agent-section agent-cta glass" aria-labelledby="cta-title">
           <h2 id="cta-title" class="h2">One message out, many ears in</h2>
           <p class="muted">If that sounds like what you've been missing, give Blowhorn a try. It's free during early access.</p>
-          <p class="actions"><a class="button button-primary" href="{{ "download/" | relURL }}">Download Blowhorn</a></p>
+          <p class="actions">{{ partial "download-button.html" (dict) }}</p>
         </section>
 
         <section class="agent-section" aria-labelledby="more-title">
@@ -184,4 +207,13 @@
         </section>
       </div>
     </main>
+    {{- if $p.video }}
+    {{ partial "video-dialog.html" . }}
+    {{- end }}
 {{- end }}
+
+{{ define "scripts" }}
+    {{- if .Params.video }}
+    {{- partial "filter-script.html" "js/resources.js" }}
+    {{- end }}
+{{ end }}

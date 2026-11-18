@@ -39,6 +39,8 @@
     <script src="{{ $signal.RelPermalink }}" defer></script>
     {{- $aiCards := resources.Get "js/ai-cards.js" | js.Build (dict "minify" true "target" "es2018") | fingerprint }}
     <script src="{{ $aiCards.RelPermalink }}" defer></script>
+    {{- $reveal := resources.Get "js/home-reveal.js" | js.Build (dict "minify" true "target" "es2018") | fingerprint }}
+    <script src="{{ $reveal.RelPermalink }}" defer></script>
     {{- end -}}
     {{- $cycle := resources.Get "js/hero-cycle.js" | minify | fingerprint }}
     <script src="{{ $cycle.RelPermalink }}" defer></script>

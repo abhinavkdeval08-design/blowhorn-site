@@ -50,12 +50,12 @@
                   </tr>
                 </thead>
                 {{- range $mx.groups }}
-                <tbody class="matrix-group" data-matrix-group="{{ .id }}">
+                <tbody class="matrix-group" id="group-{{ .id }}" data-matrix-group="{{ .id }}">
                   <tr class="matrix-group-row">
                     <th scope="rowgroup" colspan="{{ add $cols 1 }}"><span class="matrix-group-name">{{ .name }}</span> <span class="matrix-group-summary">{{ .summary }}</span></th>
                   </tr>
                   {{- range .actions }}
-                  <tr class="matrix-row" data-matrix-action="{{ .id }}">
+                  <tr class="matrix-row" id="action-{{ .id }}" data-matrix-action="{{ .id }}">
                     <th scope="row" class="matrix-action" title="{{ .description }}">{{ .name }}</th>
                     {{- range .cells }}
                     <td class="matrix-cell is-{{ .status }}" data-matrix-cell="{{ .action }}:{{ .platform }}" data-status="{{ .status }}">

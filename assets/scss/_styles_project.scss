@@ -35,6 +35,11 @@
 
   .docs-toc {
     display: block;
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-4));
+    align-self: start;
+    max-height: calc(100vh - var(--header-h) - var(--space-8));
+    overflow-y: auto;
   }
 }
 
@@ -47,7 +52,7 @@
 // Field-toned; the support card (docs-support-card.html) below it is a
 // Dispatch card from cards.css, so the two never share a variant
 // (DESIGN.md, Cards). The Tells link and arrow share their style with the
-// announcement bar (site.css).
+// Tells link rules (site.css).
 .docs-rail-card {
   max-width: 24rem;
   margin-top: var(--space-12);
@@ -313,8 +318,13 @@ div.docs-quadrants {
   display: block;
 }
 
+// The span is the card's body text, so it reads the card's own muted token
+// (cards.css): a dispatch card's description stays mint on near-black and a
+// paper card's stays charcoal on cream. No visual change today, since
+// dispatch and paper already re-scope --ink-muted to the same values; this
+// reads the token directly, so the rule stays right if that changes.
 .docs-card > span:last-child {
-  color: var(--ink-muted);
+  color: var(--card-muted, var(--ink-muted));
 }
 
 .docs-landing .platforms {
@@ -341,6 +351,14 @@ div.docs-quadrants {
 
 .docs-sidebar {
   min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .td-sidebar__inner {
+    top: calc(var(--header-h) + var(--space-4));
+    max-height: calc(100vh - var(--header-h) - var(--space-8));
+    overflow-y: auto;
+  }
 }
 
 .docs-sidebar a {
@@ -569,6 +587,20 @@ div.docs-quadrants {
 
 .td-toc a:hover {
   color: var(--link);
+}
+
+// The "Top of page" link remains hidden (taking no layout space) at the top of the page.
+// When scrolled down past the header, docs-toggle.js adds .is-scrolled to .docs-toc,
+// revealing the up arrow between the title text and the collapse toggle.
+.td-toc-title__link {
+  display: none;
+}
+
+.docs-wrap:not(.toc-collapsed) .docs-toc.is-scrolled .td-toc-title__link {
+  display: inline-block;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto;
 }
 
 .section-index .entry h5 a {

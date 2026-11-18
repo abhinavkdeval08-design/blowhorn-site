@@ -2,16 +2,23 @@
   bundled locally. Docsy's own scripts bundle is deliberately not used: it
   pulls in Bootstrap's JavaScript, whose comments name documentation hosts,
   and base.js, which only drives Docsy's navbar. jQuery and lunr load in the
-  head (layouts/_partials/docs-head.html). */ -}}
+  head (layouts/_partials/docs-head.html). On internal pages the bundle also
+  carries the image lightbox (assets/js/image-lightbox.js), which the
+  lightbox overlay in layouts/docs/baseof.html needs. */ -}}
 {{- $jsSearch := resources.Get "js/offline-search.js" }}
 {{- $jsToggle := resources.Get "js/docs-toggle.js" }}
 {{- $jsCode := resources.Get "js/code-card.js" }}
 {{- $jsTabs := resources.Get "js/tabs.js" }}
 {{- $jsTable := resources.Get "js/action-table.js" }}
 {{- $jsCmp := resources.Get "js/cmp-table.js" }}
-{{- $js := slice $jsSearch $jsToggle $jsCode $jsTabs $jsTable $jsCmp | resources.Concat "js/docs.js" }}
+{{- $parts := slice $jsSearch $jsToggle $jsCode $jsTabs $jsTable $jsCmp }}
+{{- if eq hugo.Environment "internal" }}
+{{- $parts = $parts | append (resources.Get "js/image-lightbox.js") }}
+{{- end }}
+{{- $js := $parts | resources.Concat "js/docs.js" }}
 {{- if hugo.IsProduction }}{{ $js = $js | minify | fingerprint }}{{ end }}
 <script src="{{ $js.RelPermalink }}"{{ with $js.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }} defer></script>
+{{- if .Param "asset_catalog" }}{{ partial "asset-catalog-script.html" . }}{{ end }}
 {{ partial "anchor-redirects.html" . }}
 {{- /* Mermaid diagrams: the bundle loads only on a page with a ```mermaid fence
   (render-codeblock-mermaid.html sets hasMermaid while .Content renders, which

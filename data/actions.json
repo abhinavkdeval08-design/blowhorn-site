@@ -51,7 +51,13 @@
       "id": "react",
       "name": "React",
       "group": "rally",
-      "description": "Add reactions to an issue or pull request."
+      "description": "Add a reaction to a post or message."
+    },
+    {
+      "id": "star",
+      "name": "Star",
+      "group": "rally",
+      "description": "Star repositories over the API."
     },
     {
       "id": "follow",

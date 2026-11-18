@@ -3,16 +3,19 @@
   walks through setup, so it works without script. assets/js/download.js fills
   in the version, size, date and release notes from the newest GitHub release.
   Each card states its own minimum (.download-req), matching the requirements
-  block below it. The bookmarklet card's draggable link writes
-  data/bookmarklet.json as a safeHTMLAttr href, because Go templates rewrite
-  javascript: URLs and percent-encode safeURL ones; check_bookmarklet.py keeps
-  the code equal to the docs page. The Windows card is a placeholder: no link, a
-  decorative hanging "Coming soon" sign, and a "Notify me when available"
-  button that reveals an email form for the Windows waitlist (topic
-  "windows" on the signup service, separate from the newsletter list).
-  Without JavaScript the form is visible and posts to the service, which
-  redirects to /coming-soon/thanks/; with JavaScript download.js hides it
-  until the button is clicked and submits it in place. */ -}}
+  block below it. The extension is the page's only primary, per the
+  platform-pages contract (the download page's extension card is the one
+  install path the site offers); the Mac card, the command and the
+  bookmarklet are secondary. The bookmarklet card's draggable link
+  writes data/bookmarklet.json as a safeHTMLAttr href, because Go templates
+  rewrite javascript: URLs and percent-encode safeURL ones;
+  check_bookmarklet.py keeps the code equal to the docs page. The Windows
+  card hosts the Windows waitlist signup: a "Notify me when available"
+  button that reveals an email form for the waitlist (topic "windows" on
+  the signup service, separate from the newsletter list). Without
+  JavaScript the form is visible and posts to the service, which redirects
+  to /coming-soon/thanks/; with JavaScript download.js hides it until the
+  button is clicked and submits it in place. */ -}}
 {{ define "sprite" }}
     {{ partial "sprite.html" . }}
 {{- end }}
@@ -35,13 +38,10 @@
             <p>The Mac app runs your activities and installs the Blowhorn command.</p>
             <p class="download-req caption">Requires macOS 13 or newer</p>
             <p class="actions">
-              <a class="button button-primary" href="{{ $thanks }}">
-                <svg aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#glyph-download"></use></svg>
-                Download for Mac
-              </a>
+              {{ partial "download-button.html" (dict "kind" "secondary" "href" $thanks) }}
               <span class="caption muted">Blowhorn-{{ site.Data.download.version }}-mac-universal.dmg</span>
             </p>
-            <p class="download-fallback caption muted">After you click Download for Mac, your download starts on the next page. If it doesn't, <a href="{{ $dmg }}">download Blowhorn Desktop manually</a>.</p>
+            <p class="download-fallback caption muted">After you click Download, your download starts on the next page. If it doesn't, <a href="{{ $dmg }}">download Blowhorn Desktop manually</a>.</p>
             <p class="meta caption"><span><a href="https://github.com/blowhorn-ai/blowhorn-site/releases/tag/v{{ site.Data.download.version }}">Release notes</a></span></p>
           </div>
           <div class="download-card card-field">
@@ -56,7 +56,7 @@
             <img class="download-icon" src="{{ "assets/icons/blowhorn-terminal.svg" | relURL }}" alt="Terminal prompt" width="72" height="72">
             <h2 class="h3">The Blowhorn command</h2>
             <p>The Mac app installs the Blowhorn command, so there is nothing else to download. Set it up from the install guide.</p>
-            <p class="actions"><a class="button button-primary" href="{{ "docs/how-to/set-up/install-the-app/#the-blowhorn-command" | relURL }}">Install the CLI</a></p>
+            <p class="actions"><a class="button button-secondary" href="{{ "docs/how-to/set-up/install-the-app/#the-blowhorn-command" | relURL }}">Set up the command</a></p>
             <p class="meta caption"><a href="{{ "docs/reference/cli/" | relURL }}">CLI reference</a></p>
           </div>
           <div class="download-card card-dispatch">
@@ -65,7 +65,7 @@
             <p>Click it on any page to start a Blowhorn post from that page, its title and the text you selected.</p>
             <p class="download-req caption">Requires the Blowhorn Mac app and Google Chrome</p>
             <p class="actions">
-              <a class="button button-primary" {{ printf "href=\"%s\"" (site.Data.bookmarklet.code | htmlEscape) | safeHTMLAttr }}>{{ site.Data.bookmarklet.name }}</a>
+              <a class="button button-secondary" {{ printf "href=\"%s\"" (site.Data.bookmarklet.code | htmlEscape) | safeHTMLAttr }}>{{ site.Data.bookmarklet.name }}</a>
               <span class="caption muted">Drag to your Google Chrome bookmarks bar</span>
             </p>
             <p class="meta caption"><a href="{{ "docs/how-to/publish/manage-the-content-worksheet/#capture-a-page-from-the-browser" | relURL }}">How to add it</a></p>
@@ -83,9 +83,9 @@
             <img class="download-icon" src="{{ "assets/brand/logo/blowhorn-app-icon.svg" | relURL }}" alt="" width="72" height="72">
             <h2 id="windows-title" class="h3">Blowhorn for Windows<span class="visually-hidden">, coming soon</span></h2>
             <p>We're working on it. Really.</p>
-            <p class="actions"><button class="button button-primary windows-notify-toggle" type="button" id="windows-notify-toggle" aria-expanded="false" aria-controls="windows-notify-form" hidden>Notify me when available</button></p>
+            <p class="actions"><button class="button button-secondary windows-notify-toggle" type="button" id="windows-notify-toggle" hidden>Notify me when available</button></p>
             <form id="windows-notify-form" class="newsletter windows-notify" method="post" action="https://api.blowhorn.ai/api/waitlist">
-              <label class="newsletter-label ui" for="windows-notify-email">Email address</label>
+              <label class="visually-hidden" for="windows-notify-email">Email address</label>
               <div class="newsletter-row">
                 <input type="email" id="windows-notify-email" name="email" autocomplete="email" placeholder="Email address" required maxlength="254">
                 <button class="button button-primary" type="submit">Notify me</button>
@@ -97,7 +97,7 @@
                 <input id="windows-notify-website" name="website" type="text" tabindex="-1" autocomplete="off">
               </p>
               <p class="caption muted">One email when Windows support ships, nothing else. Your address is only used for that, and every email carries an unsubscribe link.</p>
-              <p id="windows-notify-status" class="windows-notify-status" role="status"></p>
+              <p id="windows-notify-status" class="windows-notify-status" role="status" tabindex="-1"></p>
             </form>
           </div>
         </div>

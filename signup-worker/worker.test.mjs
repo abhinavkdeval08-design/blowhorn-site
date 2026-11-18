@@ -310,6 +310,44 @@ test('pageResponse structurally escapes title and plain body, preserving safeHtm
   assert.match(textHtml, /<p><b>formatted<\/b><\/p>/);
 });
 
+test('rate limiter failure on GET /api/unsubscribe returns HTML error page', async () => {
+  const db = fakeDb();
+  db.rateHit = async () => {
+    throw new Error('D1 connection failure');
+  };
+  const handle = createHandler(db);
+
+  const res = await handle(new Request('https://api.blowhorn.ai/api/unsubscribe?token=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'));
+  assert.equal(res.status, 500);
+  assert.equal(res.headers.get('content-type'), 'text/html; charset=utf-8');
+  const text = await res.text();
+  assert.match(text, /Something went wrong/);
+  assert.match(text, /Try again shortly/);
+  assert.doesNotMatch(text, /{"ok":false/);
+});
+
+test('rate limiter failure on other requests retains existing response behavior', async () => {
+  const db = fakeDb();
+  db.rateHit = async () => {
+    throw new Error('D1 connection failure');
+  };
+  const handle = createHandler(db);
+
+  // Normal JSON signup request returns JSON 500
+  const jsonRes = await handle(post('/api/subscribe', { email: 'user@example.com' }));
+  assert.equal(jsonRes.status, 500);
+  assert.equal(jsonRes.headers.get('content-type'), 'application/json; charset=utf-8');
+  assert.deepEqual(await jsonRes.json(), { ok: false, error: 'Something went wrong.' });
+
+  // Unsubscribe POST form request returns HTML 500 form error page
+  const formRes = await handle(formPost('/api/unsubscribe', { token: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' }));
+  assert.equal(formRes.status, 500);
+  assert.equal(formRes.headers.get('content-type'), 'text/html; charset=utf-8');
+  const formText = await formRes.text();
+  assert.match(formText, /Something went wrong/);
+  assert.match(formText, /Go back/);
+});
+
 test('signup responses include security headers for MIME, frame and referrer protection', async () => {
   const handler = createHandler(fakeDb());
 

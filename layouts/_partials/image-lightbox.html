@@ -1,0 +1,12 @@
+{{- /* The image lightbox overlay. The mechanism is layer5io/docs'
+  layouts/partials/image-modal.html: a #myModal overlay whose image shows
+  the clicked image at a larger size, closed by its button, by a click
+  anywhere on it, or by Escape (assets/js/image-lightbox.js). It renders on
+  internal pages only (layouts/docs/baseof.html), so public pages never get
+  it. */ -}}
+<div id="myModal" class="modal" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="modal-close" onclick="closeModal()">close</button>
+  <div class="modal-cont">
+    <img class="modal-pic" id="modalPic" onclick="closeModal()" style="max-width: 100%; max-height: 80vh; margin: auto;" alt="">
+  </div>
+</div>

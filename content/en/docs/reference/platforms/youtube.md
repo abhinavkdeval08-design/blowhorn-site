@@ -17,7 +17,8 @@ The limits Blowhorn knows for YouTube.
 
 | Limit | Value |
 |---|---|
-| Title | 5000 |
+| Post | 5000 |
+| Title | 100 |
 
 <!-- END generated limits -->
 

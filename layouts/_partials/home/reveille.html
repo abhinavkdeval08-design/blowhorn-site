@@ -16,10 +16,7 @@
             {{- /* data/hero.json tagline: one plain line under every headline. */}}
             <p class="body-lg hero-sub hero-tagline">{{ $rot.tagline }}</p>
             <div class="hero-actions">
-              <a class="button button-primary" href="{{ "download/" | relURL }}">
-                <svg aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#glyph-download"></use></svg>
-                Download for Mac
-              </a>
+              {{ partial "download-button.html" (dict) }}
               <a class="button button-secondary" href="#how">See how it works</a>
             </div>
           </div>
@@ -210,7 +207,7 @@
               <p>Blowhorn submits stories and comments. It never votes, and caps each profile at 2 link submissions a day. <a href="{{ (site.GetPage "/docs/how-to/publish/post-to-hacker-news").RelPermalink }}">Post to Hacker News</a>.</p>
             </li>
           </ul>
-          <p class="section-body"><a class="button button-secondary" href="{{ (site.GetPage "/legal").RelPermalink }}">Visit the Trust Center</a></p>
+          <p class="section-body"><a class="button button-secondary" href="{{ "trust-center/" | relURL }}">Visit the Trust Center</a></p>
         </div>
       </section>
 
@@ -257,10 +254,7 @@
               <p class="body-lg muted">One disk image for Apple silicon and Intel, plus a browser extension. About a minute to set up.</p>
             </div>
             <p class="download-cta-actions">
-              <a class="button button-primary" href="{{ "download/" | relURL }}">
-                <svg aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#glyph-download"></use></svg>
-                Get Blowhorn for Mac
-              </a>
+              {{ partial "download-button.html" (dict) }}
             </p>
           </div>
         </div>

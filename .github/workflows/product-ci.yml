@@ -1,8 +1,8 @@
 name: Product CI
 
-# Runs the product repository's own CI (its ci.yml: the Python suite and the
-# desktop typecheck, lint, test and build) on this public repository's free
-# runners. The product repository is private and has no Actions minutes, so
+# Runs the product repository's own CI (its ci.yml: the Python suite, the
+# desktop typecheck, lint, test and build, and the Rust engine tests) on this
+# public repository's free runners. The product repository is private and has no Actions minutes, so
 # nothing runs there; this workflow checks it out at one commit instead.
 #
 # The logs here are public, so they must never show private code:
@@ -65,6 +65,11 @@ jobs:
         with:
           python-version: "3.14"
 
+      # The product's asset-manifest test measures videos with ffprobe, and the
+      # runner image does not ship ffmpeg.
+      - name: Install ffmpeg (ffprobe)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ffmpeg >/dev/null
+
       - name: Python suite (output withheld)
         run: make product-ci SUITE=python PRODUCT_DIR=product PRODUCT_CI_LOG="$RUNNER_TEMP/product-ci/python.log"
 
@@ -102,3 +107,35 @@ jobs:
 
       - name: Desktop checks (output withheld)
         run: make product-ci SUITE=desktop PRODUCT_DIR=product PRODUCT_CI_LOG="$RUNNER_TEMP/product-ci/desktop.log"
+
+  rust:
+    name: rust (1.85)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check the requested commit
+        env:
+          REF: ${{ inputs.ref }}
+        run: |
+          [[ "$REF" =~ ^[0-9a-f]{40}$ ]] || { echo "ref must be a full 40-character commit SHA"; exit 1; }
+
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check out the product commit (read-only)
+        uses: actions/checkout@v4
+        with:
+          repository: blowhorn-ai/blowhorn
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.DMG_SOURCE_TOKEN }}
+          path: product
+          persist-credentials: false
+
+      - name: Install Rust 1.85
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.85.1
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+
+      - name: Rust suite (output withheld)
+        run: make product-ci SUITE=rust PRODUCT_DIR=product PRODUCT_CI_LOG="$RUNNER_TEMP/product-ci/rust.log"

@@ -1,0 +1,15 @@
+{{- /* Markdown images. The mechanism is layer5io/docs'
+  layouts/_default/_markup/render-image.html: on internal pages a markdown
+  image opens in the image lightbox (layouts/_partials/image-lightbox.html),
+  so any image markdown tag anywhere on the internal site gets
+  click-to-see-a-larger-version behaviour. Raw HTML <img> tags get the same
+  behaviour from the lightbox script itself, which attaches to every image.
+  Anywhere else the image renders exactly as Goldmark would, so public pages
+  are unchanged. */ -}}
+{{- if eq hugo.Environment "internal" }}
+<div class="md__image">
+  <img src="{{ .Destination | safeURL }}" onclick="openModal(this)" alt="{{ .Text }}"{{ with .Title }} title="{{ . }}"{{ end }} class="md-image-responsive">
+</div>
+{{- else }}
+<img src="{{ .Destination | safeURL }}" alt="{{ .Text }}"{{ with .Title }} title="{{ . }}"{{ end }}>
+{{- end }}

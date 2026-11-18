@@ -11,3 +11,5 @@ actions:
     limits: One profile sends per run. A target Blowhorn can't read is refused, never sent somewhere else.
   - id: reply
     behavior: Replies in a thread when you give it the link to the message.
+  - id: react
+    behavior: Adds an emoji reaction to a message. A reaction already there is left as-is. Take it back with --remove.

@@ -220,6 +220,9 @@ export async function handle(request, env, fetchImpl = fetch) {
     if (!claims) return deny();
   }
   const url = new URL(request.url);
+  if (url.pathname === '/internal/signups') {
+    return Response.redirect(new URL('/internal/signups/' + url.search, url).toString(), 301);
+  }
   // The signups admin lives behind the same Access check: the list holds
   // email addresses, so it is never served to an unauthenticated request.
   if (url.pathname === '/internal/signups/' || url.pathname === '/internal/signups/export') {

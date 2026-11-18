@@ -9,6 +9,13 @@
 {{- $marker := `class="card docs-card` -}}
 {{- $parts := split (string .Content) $marker -}}
 {{- $grids := dict "docs-start-list" "stack" "docs-start" "stack" "docs-quadrants" "docs-quadrants" "platform-cards" "grid-2" -}}
+{{- /* Two grids are dealt by content, not by position: the start list leads
+  with the featured Install card on paper and puts the technical platforms
+  card on dispatch; the quadrants put Reference on dispatch and Explanation
+  on stamp. Both deals still hold the neighbour rule (card-deal.html checks).
+  The Markdown is synced from the product repository, so the deal lives here,
+  not in the content. */ -}}
+{{- $deals := dict "docs-start-list" (slice "card-paper" "card-field" "card-dispatch") "docs-quadrants" (slice "card-field" "card-plain" "card-dispatch" "card-stamp") -}}
 {{- /* Count the cards in each run first: a part that ends in </a> and the
   start of the next card continues its run. */ -}}
 {{- $runs := slice -}}
@@ -29,9 +36,16 @@
     {{- $grid := "" -}}
     {{- range findRE `<div class="[^"]*"` $before }}{{ $grid = . }}{{ end -}}
     {{- $name := "" -}}
-    {{- with $grid }}{{ range $cls, $g := $grids }}{{ if in (split (replaceRE `^<div class="|"$` "" $grid) " ") $cls }}{{ $name = $g }}{{ end }}{{ end }}{{ end -}}
+    {{- $container := "" -}}
+    {{- with $grid }}{{ range $cls, $g := $grids }}{{ if in (split (replaceRE `^<div class="|"$` "" $grid) " ") $cls }}{{ $name = $g }}{{ $container = $cls }}{{ end }}{{ end }}{{ end -}}
     {{- $n := index $runs $run -}}
-    {{- if $name }}{{ $deal = partial "card-deal.html" (dict "grid" $name "n" $n) }}{{ else }}{{ $deal = partial "card-deal.html" (dict "cols" (slice 1 2 3) "n" $n) }}{{ end -}}
+    {{- if $name -}}
+      {{- $args := dict "grid" $name "n" $n -}}
+      {{- with index $deals $container }}{{ $args = merge $args (dict "deal" .) }}{{ end -}}
+      {{- $deal = partial "card-deal.html" $args -}}
+    {{- else -}}
+      {{- $deal = partial "card-deal.html" (dict "cols" (slice 1 2 3) "n" $n) -}}
+    {{- end -}}
   {{- end -}}
   {{- $out = printf "%s%s %s%s" $out $marker (index $deal $k) $part -}}
   {{- $k = add $k 1 -}}

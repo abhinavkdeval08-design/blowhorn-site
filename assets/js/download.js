@@ -140,14 +140,15 @@
     });
 })();
 
-// Windows notify signup on the coming-soon card: the button reveals the
-// waitlist form (topic "windows", stored separately from the newsletter
+// Windows notify signup on the coming-soon card: the button gives way to
+// the waitlist form (topic "windows", stored separately from the newsletter
 // list), and submitting it posts JSON to the signup service and shows an
-// inline result, mirroring assets/js/signup.js. Without JavaScript, or
-// without fetch, the toggle stays hidden and the form stays visible: it
-// posts to the service, which redirects to a thanks page. An invalid
-// address is caught by the browser's own validation, and a failed
-// submission leaves the entered address in place.
+// inline result, mirroring assets/js/signup.js. After a successful signup
+// only the confirmation stays. Without JavaScript, or without fetch, the
+// toggle stays hidden and the form stays visible: it posts to the service,
+// which redirects to a thanks page. An invalid address is caught by the
+// browser's own validation, and a failed submission leaves the form and
+// the entered address in place.
 (function () {
   "use strict";
 
@@ -158,18 +159,27 @@
   }
   var status = document.getElementById("windows-notify-status");
   var email = document.getElementById("windows-notify-email");
+  var submit = form.querySelector("[type=submit]");
   toggle.hidden = false;
   form.hidden = true;
   toggle.addEventListener("click", function () {
-    var open = form.hidden;
-    form.hidden = !open;
-    toggle.setAttribute("aria-expanded", open ? "true" : "false");
-    if (open && email) {
+    toggle.hidden = true;
+    form.hidden = false;
+    if (email) {
       email.focus();
     }
   });
+  function showError(message) {
+    status.textContent = message;
+    if (submit) {
+      submit.disabled = false;
+    }
+  }
   form.addEventListener("submit", function (ev) {
     ev.preventDefault();
+    if (submit) {
+      submit.disabled = true;
+    }
     var data = {};
     new FormData(form).forEach(function (value, key) {
       data[key] = value;
@@ -187,13 +197,18 @@
       .then(function (pair) {
         if (pair.res.ok && pair.body.ok) {
           form.reset();
-          status.textContent = "You are on the list. We will email you when Blowhorn for Windows is ready.";
+          // The field is gone, so focus moves to the confirmation.
+          form.querySelectorAll(".newsletter-row, .caption").forEach(function (node) {
+            node.hidden = true;
+          });
+          status.textContent = "You are on the list! We will email you when Blowhorn for Windows is ready.";
+          status.focus();
         } else {
-          status.textContent = (pair.body && pair.body.error) || "Something went wrong. Please try again.";
+          showError((pair.body && pair.body.error) || "Something went wrong. Please try again.");
         }
       })
       .catch(function () {
-        status.textContent = "Something went wrong. Please try again.";
+        showError("Something went wrong. Please try again.");
       });
   });
 })();

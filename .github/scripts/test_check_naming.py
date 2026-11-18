@@ -95,7 +95,7 @@ class TheServiceIsBlowhorn(unittest.TestCase):
             "index.html": page("<h2>You give the orders. Your Macs carry them out.</h2>"),
             "major/index.html": page("<p>He keeps them on your own Mac.</p>"),
             "download/index.html": page(head='<meta name="description" content="Install Blowhorn on your Mac">'),
-            "home-oil/index.html": page(footer="<p>Runs on every Mac you own.</p>"),
+            "brand/index.html": page(footer="<p>Runs on every Mac you own.</p>"),
             "compare/x/index.html": page('<img src="a.png" alt="Two MACS">'),
         })
         self.assertEqual(len(failures), 5)

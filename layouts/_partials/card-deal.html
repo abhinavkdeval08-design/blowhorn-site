@@ -10,7 +10,9 @@
     "grid"     a grid class named below, or
     "cols"     a slice of every column count the grid shows (1 for a stack);
     "n"        how many cards the grid draws (0 gives an empty deal);
-    "variants" optional: variant classes in order of preference.
+    "variants" optional: variant classes in order of preference;
+    "deal"     optional: the variant for each card, one per card, for a grid
+               whose cards are picked by content, not by position.
 
   How the deal works: card i, shown c across, has row mates i-1 back to the
   start of its row (i mod c of them) and sits under card i-c. Each card takes
@@ -36,6 +38,7 @@
   "fig-grid-2"     (slice 1 2)
   "fig-grid-3"     (slice 1 3)
   "docs-quadrants" (slice 1 2)
+  "tag-grid"       (slice 1 2 3)
 -}}
 {{- $cols := .cols -}}
 {{- with .grid -}}
@@ -50,8 +53,28 @@
 {{- if not (isset . "n") }}{{ errorf "card-deal.html: pass \"n\", the number of cards the grid draws (grid %v)" $cols }}{{ end -}}
 {{- $n := int (.n | default 0) -}}
 {{- if lt $n 0 }}{{ errorf "card-deal.html: \"n\" is %d; a grid draws zero or more cards (grid %v)" $n $cols }}{{ end -}}
+{{- /* An explicit deal: the caller names one variant per card, for a grid
+  whose cards are picked by content, not by position (DESIGN.md, "Cards").
+  It must name one variant per card, each a known grid variant (glass never
+  sits on a grid), and still hold the neighbour rule at every column count;
+  the build fails otherwise. */ -}}
 {{- $deal := slice -}}
-{{- if gt $n 0 -}}
+{{- if .deal -}}
+  {{- $explicit := .deal -}}
+  {{- if ne (len $explicit) $n }}{{ errorf "card-deal.html: an explicit deal names one variant per card, got %d for %d cards" (len $explicit) $n }}{{ end -}}
+  {{- $known := slice "card-paper" "card-dispatch" "card-stamp" "card-field" "card-plain" -}}
+  {{- range $i, $v := $explicit -}}
+    {{- if not (in $known $v) }}{{ errorf "card-deal.html: %q is not a grid card variant (%v)" $v $known }}{{ end -}}
+    {{- $taken := slice -}}
+    {{- range $c := $cols -}}
+      {{- $pos := mod $i $c -}}
+      {{- if gt $pos 0 }}{{ range $k := seq 1 $pos }}{{ $taken = $taken | append (index $explicit (sub $i $k)) }}{{ end }}{{ end -}}
+      {{- if ge $i $c }}{{ $taken = $taken | append (index $explicit (sub $i $c)) }}{{ end -}}
+    {{- end -}}
+    {{- if in $taken $v }}{{ errorf "card-deal.html: explicit deal puts %q on card %d, sharing it with a neighbour; pick by content and keep the neighbour rule" $v (add $i 1) }}{{ end -}}
+  {{- end -}}
+  {{- $deal = $explicit -}}
+{{- else if gt $n 0 -}}
   {{- range $i := seq 0 (sub $n 1) -}}
     {{- $taken := slice -}}
     {{- range $c := $cols -}}
